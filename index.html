@@ -152,6 +152,23 @@
   .scenario-item.positive .s-val { color: var(--green); }
 
   .footer { text-align: center; padding: 18px; color: var(--gray-400); font-size: 12px; }
+  .type-with-specs { position: relative; cursor: help; }
+  .specs-tooltip { display: none; position: fixed; background: white; border: 1px solid var(--gray-300); border-radius: var(--radius); padding: 10px 12px; box-shadow: var(--shadow-lg); z-index: 1000; font-size: 10px; min-width: 180px; max-width: 200px; }
+  .type-with-specs:hover .specs-tooltip { display: block; }
+  .specs-tooltip .spec-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 3px 0; border-bottom: 1px solid #f0f0f0; }
+  .specs-tooltip .spec-row:last-child { border-bottom: none; }
+  .spec-label { font-weight: 700; color: var(--gray-600); word-break: break-word; }
+  .spec-value { text-align: right; color: var(--primary); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 9px; }
+  .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
+  .modal.active { display: flex; }
+  .modal-content { background: white; border-radius: var(--radius); padding: 24px; max-width: 500px; max-height: 80vh; overflow-y: auto; box-shadow: var(--shadow-lg); }
+  .modal-header { font-size: 18px; font-weight: 800; color: var(--primary); margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
+  .modal-close { cursor: pointer; font-size: 24px; color: var(--gray-400); transition: color 0.2s; }
+  .modal-close:hover { color: var(--primary); }
+  .specs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .spec-item { background: var(--gray-100); padding: 10px 12px; border-radius: 6px; }
+  .spec-label { font-size: 11px; font-weight: 700; color: var(--gray-600); text-transform: uppercase; margin-bottom: 4px; }
+  .spec-value { font-size: 13px; font-weight: 600; color: var(--primary); }
   @media print { .sidebar { display: none; } .content { width: 100%; } body { background: white; } }
 </style>
 </head>
@@ -376,6 +393,16 @@
   SCOTCH Group Replace Report FY2026 · IT Infrastructure Team · <span id="footer-date"></span>
 </div>
 
+<div class="modal" id="specsModal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <span id="specsTitle">Laptop Specs</span>
+      <span class="modal-close" onclick="closeSpecsModal()">✕</span>
+    </div>
+    <div class="specs-grid" id="specsGrid"></div>
+  </div>
+</div>
+
 <script>
 // =============================================
 // MASTER DATA & PRICES
@@ -434,6 +461,29 @@ const TYPE_CHIPS = {
   'Monitor 24"':           '<span class="type-chip chip-mon">Monitor 24"</span>',
   'Laptop - Pro':          '<span class="type-chip chip-pro">Laptop Pro</span>',
   'Laptop - Engineering':  '<span class="type-chip chip-eng">Laptop Engineering</span>'
+};
+
+const LAPTOP_SPECS = {
+  'Laptop - Standard 14"': {
+    cpu: '225H', ram: '16GB', ssd: '512GB', os: 'Win11Pro', warranty: '3Yrs',
+    monitor: '14"', vga: 'No', sku: 'Asus.B5405CCA-NZ1580X', price: '30,500'
+  },
+  'Laptop - Standard 16"': {
+    cpu: '225H', ram: '16GB', ssd: '512GB', os: 'Win11Pro', warranty: '3Yrs',
+    monitor: '16"', vga: 'No', sku: 'Asus.B3605CCA-MB1734X', price: '28,500'
+  },
+  'Laptop - Pro': {
+    cpu: '258V', ram: '32GB', ssd: '512GB', os: 'Win11Pro', warranty: '3Yrs',
+    monitor: '14"', vga: 'No', sku: 'Lenovo.21U2008JTH', price: '42,500'
+  },
+  'Laptop - Engineering': {
+    cpu: '258V', ram: '16GB', ssd: '512GB', os: 'Win11Pro', warranty: '3Yrs',
+    monitor: '16"', vga: 'Yes', sku: 'Asus.90NX08N1-M02JC0', price: '36,700'
+  },
+  'Desktop - Graphic': {
+    cpu: 'I7-14700F', ram: '64GB', ssd: '1TB+2TB', os: 'Win11Pro', warranty: '3Yrs',
+    monitor: '–', vga: 'RTX 5060TI', sku: 'Custom Build', price: '83,555'
+  }
 };
 
 const ALL_PEOPLE = [
@@ -555,9 +605,22 @@ function initFilters() {
     label.className = 'checkbox-item';
     const shortType = TYPE_SHORT[i];
     const chipStyle = isUpgradeType ? 'color:#7c3aed;font-weight:700;' : '';
-    label.innerHTML = `<input type="checkbox" id="cb-type-${safeId(type)}" checked onchange="applyFilters()">
-      <span class="label-text" style="${chipStyle}">${shortType}</span>
-      <span class="badge-count" id="cnt-type-${safeId(type)}">${cnt}</span>`;
+    const specs = LAPTOP_SPECS[type];
+    let labelHtml = `<input type="checkbox" id="cb-type-${safeId(type)}" checked onchange="applyFilters()">`;
+    if (specs) {
+      const tooltipHtml = `<div class="specs-tooltip">
+        <div class="spec-row"><span class="spec-label">CPU</span><span class="spec-value">${specs.cpu}</span></div>
+        <div class="spec-row"><span class="spec-label">RAM</span><span class="spec-value">${specs.ram}</span></div>
+        <div class="spec-row"><span class="spec-label">SSD</span><span class="spec-value">${specs.ssd}</span></div>
+        <div class="spec-row"><span class="spec-label">SKU</span><span class="spec-value" style="text-align:right;font-size:10px;">${specs.sku}</span></div>
+        <div class="spec-row"><span class="spec-label">Price</span><span class="spec-value">฿${specs.price}</span></div>
+      </div>`;
+      labelHtml += `<span class="label-text type-with-specs" style="${chipStyle}">${shortType}${tooltipHtml}</span>`;
+    } else {
+      labelHtml += `<span class="label-text" style="${chipStyle}">${shortType}</span>`;
+    }
+    labelHtml += `<span class="badge-count" id="cnt-type-${safeId(type)}">${cnt}</span>`;
+    label.innerHTML = labelHtml;
     typeCont.appendChild(label);
   });
   renderCompare();
@@ -743,6 +806,29 @@ function toggleCalcType(idx) {
   else calcExcludedTypes.add(type);
   renderSummary();
   updateCompareScenario();
+}
+
+function showSpecsModal(type) {
+  const specs = LAPTOP_SPECS[type];
+  if (!specs) return;
+  document.getElementById('specsTitle').textContent = type;
+  const specsHtml = `
+    <div class="spec-item"><div class="spec-label">CPU</div><div class="spec-value">${specs.cpu}</div></div>
+    <div class="spec-item"><div class="spec-label">RAM</div><div class="spec-value">${specs.ram}</div></div>
+    <div class="spec-item"><div class="spec-label">SSD</div><div class="spec-value">${specs.ssd}</div></div>
+    <div class="spec-item"><div class="spec-label">OS</div><div class="spec-value">${specs.os}</div></div>
+    <div class="spec-item"><div class="spec-label">Warranty</div><div class="spec-value">${specs.warranty}</div></div>
+    <div class="spec-item"><div class="spec-label">Monitor</div><div class="spec-value">${specs.monitor}</div></div>
+    <div class="spec-item"><div class="spec-label">VGA</div><div class="spec-value">${specs.vga}</div></div>
+    <div class="spec-item" style="grid-column:1/-1;"><div class="spec-label">SKU</div><div class="spec-value" style="word-break:break-all;">${specs.sku}</div></div>
+    <div class="spec-item" style="grid-column:1/-1;"><div class="spec-label">Price</div><div class="spec-value">฿${specs.price}</div></div>
+  `;
+  document.getElementById('specsGrid').innerHTML = specsHtml;
+  document.getElementById('specsModal').classList.add('active');
+}
+
+function closeSpecsModal() {
+  document.getElementById('specsModal').classList.remove('active');
 }
 
 function handleMonitorChange(key, status) {
