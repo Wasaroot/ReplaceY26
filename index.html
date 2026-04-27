@@ -233,7 +233,7 @@
           </div>
         </div>
         <table class="company-table">
-          <thead><tr><th>รายการ</th><th class="right">จำนวน</th><th class="right">ราคา/หน่วย</th><th class="right">รวม</th></tr></thead>
+          <thead><tr><th style="width:28px;"></th><th>รายการ</th><th class="right">จำนวน</th><th class="right">ราคา/หน่วย</th><th class="right">รวม</th></tr></thead>
           <tbody id="ss-body"></tbody>
         </table>
       </div>
@@ -246,7 +246,7 @@
           </div>
         </div>
         <table class="company-table">
-          <thead><tr><th>รายการ</th><th class="right">จำนวน</th><th class="right">ราคา/หน่วย</th><th class="right">รวม</th></tr></thead>
+          <thead><tr><th style="width:28px;"></th><th>รายการ</th><th class="right">จำนวน</th><th class="right">ราคา/หน่วย</th><th class="right">รวม</th></tr></thead>
           <tbody id="sc-body"></tbody>
         </table>
       </div>
@@ -403,20 +403,23 @@ const TYPE_SHORT = [
   'Laptop Engineering ⬆'
 ];
 
+// All types available for calc exclusion checkboxes (device types + monitor)
+const CALC_TYPES = [...TYPE_LIST, 'Monitor 24"'];
+
 // Working price — updated by compare section
 let scenarioPrices = { ...BASE_PRICES };
 
 const COMPARE_14 = [
   { no:1, brand:'Asus',   cpu:'225H', ram:'16GB', sku:'B5405CCA-NZ1580X', price:30500 },
-  { no:2, brand:'Lenovo', cpu:'226V', ram:'16GB', sku:'21U2008JTH',        price:32500 },
-  { no:3, brand:'HP',     cpu:'226V', ram:'16GB', sku:'–',                 price:35000 },
-  { no:4, brand:'Dell',   cpu:'236V', ram:'16GB', sku:'–',                 price:45700 }
+  { no:2, brand:'Lenovo', cpu:'226V', ram:'16GB', sku:'21U20040TH',        price:32500 },
+  { no:3, brand:'HP',     cpu:'226V', ram:'16GB', sku:'D85MMPT',           price:35000 },
+  { no:4, brand:'Dell',   cpu:'236V', ram:'16GB', sku:'SNSPB142501',       price:45700 }
 ];
 const COMPARE_16 = [
   { no:1, brand:'Asus',   cpu:'225H', ram:'16GB', sku:'B3605CCA-MB1734X',  price:28500 },
-  { no:2, brand:'Lenovo', cpu:'226V', ram:'16GB', sku:'–',                 price:32200 },
-  { no:3, brand:'HP',     cpu:'255H', ram:'16GB', sku:'–',                 price:35000 },
-  { no:4, brand:'Dell',   cpu:'236V', ram:'16GB', sku:'–',                 price:39500 }
+  { no:2, brand:'Lenovo', cpu:'226V', ram:'16GB', sku:'22AY005TTH',        price:32200 },
+  { no:3, brand:'HP',     cpu:'255H', ram:'16GB', sku:'BX8N9PT',           price:35000 },
+  { no:4, brand:'Dell',   cpu:'236V', ram:'16GB', sku:'SNSPB1625005',      price:39500 }
 ];
 
 let selected14 = 1, selected16 = 1; // index (1-based)
@@ -493,6 +496,7 @@ const ALL_PEOPLE = [
 let filteredPeople = [...ALL_PEOPLE];
 let excludedKeys  = new Set();
 let typeOverrides = {};        // personKey → newType (upgrade)
+let calcExcludedTypes = new Set(); // item types excluded from summary totals
 let baseTotalFull = 0;
 
 // =============================================
@@ -631,7 +635,7 @@ function renderSummary() {
     const active = getActivePeople().filter(p => p.company === company);
     const typeMap = {};
     active.forEach(p => {
-      const t = effectiveType(p);       // use effective (may be upgraded)
+      const t = effectiveType(p);
       const devPx = devicePrice(p);
       if (!typeMap[t]) typeMap[t] = { qty: 0, total: 0, unitPrice: devPx };
       typeMap[t].qty++;
@@ -639,27 +643,47 @@ function renderSummary() {
     });
     const monCount = active.filter(p => p.hasMonitor).length;
     const monTotal = monCount * BASE_PRICES['Monitor 24"'];
+    const monExcluded = calcExcludedTypes.has('Monitor 24"');
 
     let html = '', grandTotal = 0, totalItems = 0;
-    // Sort by TYPE_LIST order
     const sortedTypes = TYPE_LIST.filter(t => typeMap[t]);
     sortedTypes.forEach(type => {
       const data = typeMap[type];
-      grandTotal += data.total; totalItems += data.qty;
+      const excluded = calcExcludedTypes.has(type);
+      if (!excluded) { grandTotal += data.total; totalItems += data.qty; }
       const upgraded = (type === 'Laptop - Pro' || type === 'Laptop - Engineering');
       const upgradeTag = upgraded ? ' <span style="font-size:10px;color:#7c3aed;font-weight:700;">⬆UPGRADE</span>' : '';
-      html += `<tr><td>${TYPE_CHIPS[type]||type}${upgradeTag}</td><td class="right">${data.qty}</td><td class="right">${fmt(data.unitPrice)}</td><td class="right td-total">${fmt(data.total)}</td></tr>`;
+      const rowStyle = excluded ? 'opacity:0.4;' : '';
+      const strikeStyle = excluded ? 'text-decoration:line-through;color:#94a3b8;' : '';
+      const typeIdx = CALC_TYPES.indexOf(type);
+      html += `<tr style="${rowStyle}">
+        <td style="text-align:center;"><input type="checkbox" class="row-cb" ${excluded?'':'checked'} onchange="toggleCalcType(${typeIdx})"></td>
+        <td style="${strikeStyle}">${TYPE_CHIPS[type]||type}${upgradeTag}</td>
+        <td class="right" style="${strikeStyle}">${data.qty}</td>
+        <td class="right" style="${strikeStyle}">${fmt(data.unitPrice)}</td>
+        <td class="right td-total" style="${strikeStyle}">${fmt(data.total)}</td>
+      </tr>`;
     });
     if (monCount > 0) {
-      grandTotal += monTotal;
-      html += `<tr><td>${TYPE_CHIPS['Monitor 24"']}</td><td class="right">${monCount}</td><td class="right">${fmt(BASE_PRICES['Monitor 24"'])}</td><td class="right td-total">${fmt(monTotal)}</td></tr>`;
+      if (!monExcluded) grandTotal += monTotal;
+      const rowStyle = monExcluded ? 'opacity:0.4;' : '';
+      const strikeStyle = monExcluded ? 'text-decoration:line-through;color:#94a3b8;' : '';
+      const monIdx = CALC_TYPES.indexOf('Monitor 24"');
+      html += `<tr style="${rowStyle}">
+        <td style="text-align:center;"><input type="checkbox" class="row-cb" ${monExcluded?'':'checked'} onchange="toggleCalcType(${monIdx})"></td>
+        <td style="${strikeStyle}">${TYPE_CHIPS['Monitor 24"']}</td>
+        <td class="right" style="${strikeStyle}">${monCount}</td>
+        <td class="right" style="${strikeStyle}">${fmt(BASE_PRICES['Monitor 24"'])}</td>
+        <td class="right td-total" style="${strikeStyle}">${fmt(monTotal)}</td>
+      </tr>`;
     }
-    html += `<tr class="subtotal-row"><td>รวม ${company}</td><td class="right">${totalItems} เครื่อง${monCount>0?` +${monCount} Mon`:''}</td><td></td><td class="right">${fmt(grandTotal)}</td></tr>`;
-    document.getElementById(`${company.toLowerCase()}-body`).innerHTML = html || '<tr><td colspan="4" class="no-data">ไม่มีรายการ</td></tr>';
+    const monLabel = (!monExcluded && monCount > 0) ? ` +${monCount} Mon` : '';
+    html += `<tr class="subtotal-row"><td></td><td>รวม ${company}</td><td class="right">${totalItems} เครื่อง${monLabel}</td><td></td><td class="right">${fmt(grandTotal)}</td></tr>`;
+    document.getElementById(`${company.toLowerCase()}-body`).innerHTML = html || '<tr><td colspan="5" class="no-data">ไม่มีรายการ</td></tr>';
     document.getElementById(`${company.toLowerCase()}-total`).textContent = fmt(grandTotal);
-    document.getElementById(`${company.toLowerCase()}-count-label`).textContent = `${totalItems} เครื่อง${monCount>0?` + ${monCount} Monitor`:''}`;
+    document.getElementById(`${company.toLowerCase()}-count-label`).textContent = `${totalItems} เครื่อง${(!monExcluded&&monCount>0)?` + ${monCount} Monitor`:''}`;
     window[`_total_${company}`] = grandTotal;
-    window[`_items_${company}`] = { devices: totalItems, monitors: monCount };
+    window[`_items_${company}`] = { devices: totalItems, monitors: monExcluded ? 0 : monCount };
   });
 
   const gt = (window._total_SS||0) + (window._total_SC||0);
@@ -672,7 +696,6 @@ function renderSummary() {
   document.getElementById('gt-ss-items').textContent = `${ssI.devices||0}${ssI.monitors?` +${ssI.monitors}M`:''}`;
   document.getElementById('gt-sc-items').textContent = `${scI.devices||0}${scI.monitors?` +${scI.monitors}M`:''}`;
 
-  // Savings vs absolute full base (BASE_PRICES, ALL people, no overrides)
   const fullBase = ALL_PEOPLE.reduce((s,p) => s + (BASE_PRICES[p.type]||0) + (p.hasMonitor?BASE_PRICES['Monitor 24"']:0), 0);
   const savings = fullBase - gt;
   const savingsEl = document.getElementById('savings-amount');
@@ -701,6 +724,14 @@ function handleTypeChange(key, typeIdx) {
 function resetTypeOverrides() {
   typeOverrides = {};
   applyFilters();
+}
+
+function toggleCalcType(idx) {
+  const type = CALC_TYPES[idx];
+  if (calcExcludedTypes.has(type)) calcExcludedTypes.delete(type);
+  else calcExcludedTypes.add(type);
+  renderSummary();
+  updateCompareScenario();
 }
 
 // =============================================
@@ -834,12 +865,22 @@ function updateScenarioIndicator() {
 
 function updateCompareScenario() {
   const active = getActivePeople();
-  // Count by effective type for the scenario comparison
-  const l14 = active.filter(p => effectiveType(p)==='Laptop - Standard 14"');
-  const l16 = active.filter(p => effectiveType(p)==='Laptop - Standard 16"');
-  const base = l14.length*COMPARE_14[0].price + l16.length*COMPARE_16[0].price;
+  const l14excluded = calcExcludedTypes.has('Laptop - Standard 14"');
+  const l16excluded = calcExcludedTypes.has('Laptop - Standard 16"');
+  const l14 = l14excluded ? [] : active.filter(p => effectiveType(p)==='Laptop - Standard 14"');
+  const l16 = l16excluded ? [] : active.filter(p => effectiveType(p)==='Laptop - Standard 16"');
+  // Fixed costs: non-standard-laptop devices + monitors (unchanged by scenario), respecting calc exclusions
+  const fixedCost = active.reduce((sum, p) => {
+    const t = effectiveType(p);
+    if (t !== 'Laptop - Standard 14"' && t !== 'Laptop - Standard 16"') {
+      if (!calcExcludedTypes.has(t)) sum += BASE_PRICES[t] || 0;
+    }
+    if (p.hasMonitor && !calcExcludedTypes.has('Monitor 24"')) sum += BASE_PRICES['Monitor 24"'];
+    return sum;
+  }, 0);
+  const base = l14.length*COMPARE_14[0].price + l16.length*COMPARE_16[0].price + fixedCost;
   const newVal = l14.length*(COMPARE_14[selected14-1]?.price||COMPARE_14[0].price)
-               + l16.length*(COMPARE_16[selected16-1]?.price||COMPARE_16[0].price);
+               + l16.length*(COMPARE_16[selected16-1]?.price||COMPARE_16[0].price) + fixedCost;
   const diff = newVal - base;
   document.getElementById('sc-base').textContent = fmt(base);
   document.getElementById('sc-new').textContent = fmt(newVal);
