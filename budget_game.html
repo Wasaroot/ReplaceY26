@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IT Budget Commander 2026 — SCOTCH Group</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#0f1923;color:#e2e8f0;min-height:100vh;overflow-x:hidden}
+
+/* SCREENS */
+.screen{display:none;min-height:100vh}
+.screen.active{display:flex;flex-direction:column}
+
+/* ===== INTRO SCREEN ===== */
+#screen-intro{align-items:center;justify-content:center;background:linear-gradient(160deg,#0f1923 0%,#1a2d45 50%,#0f1923 100%);position:relative;overflow:hidden}
+#screen-intro::before{content:'';position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(37,99,168,0.15) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none}
+.intro-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:48px 52px;max-width:520px;width:90%;text-align:center;position:relative;z-index:1}
+.intro-logo{font-size:48px;margin-bottom:16px}
+.intro-title{font-size:28px;font-weight:800;color:#f1f5f9;letter-spacing:-0.5px;margin-bottom:6px}
+.intro-sub{font-size:14px;color:#64748b;margin-bottom:32px;line-height:1.6}
+.budget-input-wrap{margin-bottom:28px;text-align:left}
+.budget-input-wrap label{font-size:12px;color:#94a3b8;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;display:block;margin-bottom:8px}
+.budget-input{width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:10px;padding:12px 16px;font-size:18px;font-weight:700;color:#f1f5f9;text-align:center;outline:none;transition:border-color 0.2s}
+.budget-input:focus{border-color:#3b82f6}
+.budget-presets{display:flex;gap:8px;margin-top:8px}
+.preset-btn{flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:7px;font-size:12px;color:#94a3b8;cursor:pointer;transition:all 0.15s}
+.preset-btn:hover{background:rgba(59,130,246,0.2);border-color:#3b82f6;color:#93c5fd}
+.start-btn{width:100%;padding:15px;background:linear-gradient(135deg,#2563a8,#1d4ed8);border:none;border-radius:12px;font-size:16px;font-weight:800;color:white;cursor:pointer;letter-spacing:0.3px;transition:all 0.2s;position:relative;overflow:hidden}
+.start-btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(37,99,168,0.4)}
+.start-btn:active{transform:translateY(0)}
+.stats-row{display:flex;gap:16px;margin-bottom:28px}
+.stat-item{flex:1;background:rgba(255,255,255,0.04);border-radius:10px;padding:12px;text-align:center}
+.stat-item .sv{font-size:22px;font-weight:800;color:#f1f5f9}
+.stat-item .sl{font-size:11px;color:#64748b;margin-top:2px}
+
+/* ===== GAME SCREEN ===== */
+#screen-game{background:#111827}
+.game-header{background:#0f1923;border-bottom:1px solid rgba(255,255,255,0.08);padding:12px 24px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.game-title-sm{font-size:13px;font-weight:700;color:#475569;white-space:nowrap}
+.budget-bar-wrap{flex:1;min-width:200px}
+.budget-bar-labels{display:flex;justify-content:space-between;font-size:11px;color:#64748b;margin-bottom:4px}
+.budget-bar-track{background:rgba(255,255,255,0.08);border-radius:100px;height:8px;overflow:hidden}
+.budget-bar-fill{height:100%;border-radius:100px;transition:width 0.4s ease,background 0.3s;background:linear-gradient(90deg,#16a34a,#22c55e)}
+.budget-bar-fill.warn{background:linear-gradient(90deg,#d97706,#f59e0b)}
+.budget-bar-fill.danger{background:linear-gradient(90deg,#dc2626,#ef4444)}
+.hdr-stat{text-align:center;white-space:nowrap}
+.hdr-stat .val{font-size:16px;font-weight:800;color:#f1f5f9}
+.hdr-stat .lbl{font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:0.6px}
+
+.game-body{flex:1;display:flex;gap:0;min-height:0}
+
+/* LEFT PANEL */
+.panel-left{width:220px;background:#0f1923;border-right:1px solid rgba(255,255,255,0.06);padding:16px;flex-shrink:0;overflow-y:auto}
+.panel-title{font-size:11px;color:#475569;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:12px}
+.dept-item{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:8px;margin-bottom:4px;transition:background 0.15s;cursor:pointer;border-left:3px solid transparent}
+.dept-item:hover{background:rgba(255,255,255,0.06)}
+.dept-item.selected{background:rgba(59,130,246,0.12);border-left:3px solid #3b82f6}
+.dept-all-btn{display:flex;align-items:center;gap:6px;padding:7px 9px;border-radius:8px;margin-bottom:8px;cursor:pointer;font-size:12px;font-weight:700;color:#64748b;transition:all 0.15s;border:1px solid rgba(255,255,255,0.06);border-left:3px solid transparent}
+.dept-all-btn:hover{background:rgba(255,255,255,0.05);color:#94a3b8}
+.dept-all-btn.selected{background:rgba(59,130,246,0.12);border-left:3px solid #3b82f6;color:#93c5fd}
+.company-section{margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.07)}
+.company-section-title{font-size:11px;color:#475569;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px}
+.company-row{display:flex;gap:6px}
+.company-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 4px;border-radius:9px;cursor:pointer;font-size:11px;font-weight:800;transition:all 0.15s;border:2px solid transparent}
+.company-btn.ss{color:#4ade80;background:rgba(22,163,74,0.07);border-color:rgba(22,163,74,0.2)}
+.company-btn.ss:hover{background:rgba(22,163,74,0.16)}
+.company-btn.ss.selected{background:rgba(22,163,74,0.22);border-color:#16a34a;box-shadow:0 0 10px rgba(22,163,74,0.2)}
+.company-btn.sc{color:#fbbf24;background:rgba(217,119,6,0.07);border-color:rgba(217,119,6,0.2)}
+.company-btn.sc:hover{background:rgba(217,119,6,0.16)}
+.company-btn.sc.selected{background:rgba(217,119,6,0.22);border-color:#d97706;box-shadow:0 0 10px rgba(217,119,6,0.2)}
+.company-badge-sm{font-size:12px;font-weight:900;padding:2px 8px;border-radius:20px}
+.company-badge-sm.ss{background:rgba(22,163,74,0.3);color:#4ade80}
+.company-badge-sm.sc{background:rgba(217,119,6,0.3);color:#fbbf24}
+.company-count{font-size:10px;opacity:0.7}
+.intro-logo-img{width:80px;height:auto;margin-bottom:8px;display:block;margin-left:auto;margin-right:auto}
+.dept-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0}
+.dept-info{flex:1;min-width:0}
+.dept-name{font-size:12px;font-weight:600;color:#e2e8f0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dept-prog{font-size:10px;color:#64748b;margin-top:1px}
+.dept-mini-bar{height:3px;background:rgba(255,255,255,0.08);border-radius:100px;margin-top:4px}
+.dept-mini-fill{height:100%;border-radius:100px;background:#3b82f6;transition:width 0.4s}
+.dept-item.complete .dept-icon{background:#16a34a!important}
+.dept-item.complete .dept-name{color:#4ade80}
+.dept-item.complete .dept-mini-fill{background:#16a34a}
+
+/* CENTER STAGE */
+.stage{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;position:relative}
+
+/* PROGRESS DOTS */
+.progress-dots{display:flex;gap:4px;flex-wrap:wrap;justify-content:center;max-width:460px;margin-bottom:20px}
+.pdot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.1);transition:all 0.3s}
+.pdot.approved{background:#16a34a}
+.pdot.rejected{background:#dc2626}
+.pdot.upgraded{background:#7c3aed}
+.pdot.current{background:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,0.3)}
+
+/* CARD */
+.card-stage{perspective:1200px;width:100%;max-width:420px}
+.card-3d{position:relative;transition:transform 0.5s cubic-bezier(0.4,0,0.2,1);transform-style:preserve-3d}
+.card-3d.fly-left{transform:translateX(-150%) rotate(-15deg) scale(0.8);opacity:0}
+.card-3d.fly-right{transform:translateX(150%) rotate(15deg) scale(0.8);opacity:0}
+.card-3d.fly-up{transform:translateY(-120%) scale(0.8);opacity:0}
+.person-card{background:linear-gradient(160deg,#1e293b 0%,#1a2535 100%);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:28px;width:100%}
+
+.card-company{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.company-badge{padding:5px 14px;border-radius:20px;font-size:12px;font-weight:800;letter-spacing:0.5px}
+.company-badge.SS{background:rgba(22,163,74,0.2);color:#4ade80;border:1px solid rgba(22,163,74,0.3)}
+.company-badge.SC{background:rgba(217,119,6,0.2);color:#fbbf24;border:1px solid rgba(217,119,6,0.3)}
+.card-number{font-size:11px;color:#475569;font-weight:600}
+
+.card-dept{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.dept-avatar{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex-shrink:0}
+.dept-meta .dept-n{font-size:15px;font-weight:700;color:#f1f5f9}
+.dept-meta .div-n{font-size:12px;color:#64748b;margin-top:2px}
+
+.card-name{font-size:19px;font-weight:800;color:#f8fafc;margin-bottom:20px;line-height:1.3}
+
+.card-equipment{background:rgba(255,255,255,0.04);border-radius:12px;padding:14px 16px;margin-bottom:16px}
+.eq-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0}
+.eq-row:not(:last-child){border-bottom:1px solid rgba(255,255,255,0.06)}
+.eq-label{font-size:12px;color:#64748b}
+.eq-val{font-size:13px;font-weight:700;color:#e2e8f0}
+.eq-val.green{color:#4ade80}
+.eq-val.purple{color:#c084fc}
+
+.cost-display{text-align:center;margin-bottom:20px}
+.cost-amount{font-size:32px;font-weight:800;color:#f8fafc}
+.cost-breakdown{font-size:12px;color:#64748b;margin-top:4px}
+
+/* ACTION BUTTONS */
+.action-buttons{display:grid;grid-template-columns:1fr 1.4fr 1fr;gap:10px;width:100%;max-width:420px}
+.action-btn{padding:14px 8px;border:none;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.15s;letter-spacing:0.3px}
+.action-btn:hover{transform:translateY(-2px)}
+.action-btn:active{transform:translateY(0) scale(0.97)}
+.btn-reject{background:rgba(220,38,38,0.15);color:#f87171;border:1px solid rgba(220,38,38,0.3)}
+.btn-reject:hover{background:rgba(220,38,38,0.25);box-shadow:0 6px 20px rgba(220,38,38,0.2)}
+.btn-approve{background:linear-gradient(135deg,rgba(22,163,74,0.3),rgba(16,185,129,0.2));color:#4ade80;border:1px solid rgba(22,163,74,0.4)}
+.btn-approve:hover{background:linear-gradient(135deg,rgba(22,163,74,0.45),rgba(16,185,129,0.35));box-shadow:0 6px 20px rgba(22,163,74,0.25)}
+.btn-upgrade{background:rgba(124,58,237,0.15);color:#c084fc;border:1px solid rgba(124,58,237,0.3)}
+.btn-upgrade:hover{background:rgba(124,58,237,0.25);box-shadow:0 6px 20px rgba(124,58,237,0.2)}
+.btn-upgrade.disabled{opacity:0.3;cursor:not-allowed;transform:none}
+
+/* FEEDBACK FLASH */
+.feedback-overlay{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:999;pointer-events:none;opacity:0;transition:opacity 0.1s}
+.feedback-overlay.show{opacity:1}
+.feedback-text{font-size:56px;font-weight:900;letter-spacing:-1px;text-shadow:0 4px 20px rgba(0,0,0,0.5)}
+
+/* RIGHT PANEL */
+.panel-right{width:200px;background:#0f1923;border-left:1px solid rgba(255,255,255,0.06);padding:16px;flex-shrink:0;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
+.log-item{padding:8px 10px;background:rgba(255,255,255,0.03);border-radius:8px;border-left:3px solid transparent;font-size:11px;color:#64748b;line-height:1.4}
+.log-item.approved{border-left-color:#16a34a;color:#4ade80}
+.log-item.rejected{border-left-color:#dc2626;color:#f87171}
+.log-item.upgraded{border-left-color:#7c3aed;color:#c084fc}
+.log-name{font-weight:700;margin-bottom:2px;color:inherit}
+.log-dept{color:#475569;font-size:10px}
+
+/* SCORE POPUP */
+.score-popup{position:fixed;top:80px;right:20px;background:#1e293b;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 16px;font-size:14px;font-weight:800;z-index:998;transform:translateX(120%);transition:transform 0.3s;pointer-events:none}
+.score-popup.show{transform:translateX(0)}
+
+/* ===== RESULTS SCREEN ===== */
+#screen-results{background:linear-gradient(160deg,#0f1923,#1a2d45,#0f1923);align-items:center;justify-content:center;padding:24px}
+.results-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:40px 44px;max-width:600px;width:100%}
+.results-title{font-size:24px;font-weight:800;color:#f1f5f9;text-align:center;margin-bottom:8px}
+.rating-display{text-align:center;margin:20px 0}
+.rating-stars{font-size:40px;letter-spacing:4px;margin-bottom:8px}
+.rating-label{font-size:18px;font-weight:800;margin-bottom:4px}
+.rating-sub{font-size:13px;color:#64748b}
+.results-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:24px 0}
+.result-item{background:rgba(255,255,255,0.05);border-radius:12px;padding:14px 16px;text-align:center}
+.result-item .rv{font-size:22px;font-weight:800;color:#f1f5f9;margin-bottom:4px}
+.result-item .rl{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:0.5px}
+.dept-results{margin-bottom:20px}
+.dept-result-item{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.06);font-size:13px}
+.dept-result-item:last-child{border-bottom:none}
+.dr-name{color:#94a3b8}
+.dr-prog{color:#f1f5f9;font-weight:700}
+.dr-full{color:#4ade80;font-size:11px;font-weight:800}
+.results-actions{display:flex;gap:12px;margin-top:24px}
+.res-btn{flex:1;padding:13px;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.15s;border:none}
+.res-btn:hover{transform:translateY(-1px)}
+.res-replay{background:rgba(255,255,255,0.08);color:#e2e8f0}
+.res-report{background:linear-gradient(135deg,#2563a8,#1d4ed8);color:white}
+
+/* UPGRADE NOTE on card */
+.upgrade-note{background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.25);border-radius:8px;padding:8px 12px;font-size:11px;color:#a78bfa;margin-bottom:14px;display:none}
+
+/* BONUS TOAST */
+.bonus-toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);background:linear-gradient(135deg,#7c3aed,#5b21b6);border-radius:14px;padding:20px 32px;text-align:center;z-index:1000;transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1),opacity 0.3s}
+.bonus-toast.show{transform:translate(-50%,-50%) scale(1)}
+.bonus-toast .bt-title{font-size:14px;color:#c4b5fd;font-weight:700;margin-bottom:4px}
+.bonus-toast .bt-points{font-size:32px;font-weight:900;color:white}
+.bonus-toast .bt-sub{font-size:12px;color:#ddd6fe;margin-top:4px}
+
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.shake{animation:shake 0.3s ease}
+.back-intro-btn{width:100%;margin-top:10px;padding:9px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:9px;font-size:12px;font-weight:700;color:#64748b;cursor:pointer;transition:all 0.15s;text-align:center}
+.back-intro-btn:hover{background:rgba(255,255,255,0.1);color:#94a3b8}
+.approve-all-btn{width:100%;margin-top:6px;padding:9px;background:rgba(22,163,74,0.12);border:1px solid rgba(22,163,74,0.3);border-radius:9px;font-size:12px;font-weight:700;color:#4ade80;cursor:pointer;transition:all 0.15s;text-align:center}
+.approve-all-btn:hover{background:rgba(22,163,74,0.22);border-color:#16a34a}
+.report-link-btn{width:100%;margin-top:6px;padding:9px;background:rgba(37,99,168,0.12);border:1px solid rgba(37,99,168,0.3);border-radius:9px;font-size:12px;font-weight:700;color:#93c5fd;cursor:pointer;transition:all 0.15s;text-align:center;text-decoration:none;display:block}
+.report-link-btn:hover{background:rgba(37,99,168,0.22);border-color:#2563a8}
+.mood-bar{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:10px;min-height:36px}
+.mood-emoji{font-size:28px;transition:all 0.3s;line-height:1}
+.mood-score-label{font-size:11px;color:#64748b;text-align:center}
+</style>
+</head>
+<body>
+
+<!-- ===== INTRO ===== -->
+<div id="screen-intro" class="screen active">
+  <div class="intro-card">
+    <img src="https://itp1.itopfile.com/ImageServer/z_itp_12052024va2c/0/0/logoz-z1176349371245.png" class="intro-logo-img" alt="SCOTCH Group Logo" onerror="this.style.display='none'">
+    <div class="intro-logo">🎮</div>
+    <div class="intro-title">IT Budget Commander</div>
+    <div class="intro-sub">SCOTCH Group · Replace 2026<br>คุณคือผู้บริหารที่ต้องตัดสินใจอนุมัติอุปกรณ์ IT ให้กับ 54 คน<br>ภายใต้งบประมาณที่กำหนด</div>
+    <div class="stats-row">
+      <div class="stat-item"><div class="sv">54</div><div class="sl">รายการทั้งหมด</div></div>
+      <div class="stat-item"><div class="sv">7</div><div class="sl">ฝ่าย</div></div>
+      <div class="stat-item"><div class="sv">2</div><div class="sl">บริษัท</div></div>
+    </div>
+    <div class="budget-input-wrap">
+      <label>งบประมาณที่ได้รับ (บาท)</label>
+      <input type="text" class="budget-input" id="budget-input" value="1,819,155" oninput="formatBudgetInput(this)">
+      <div class="budget-presets">
+        <button class="preset-btn" onclick="setPreset(1500000)">฿1.5M</button>
+        <button class="preset-btn" onclick="setPreset(1800000)">฿1.8M</button>
+        <button class="preset-btn" onclick="setPreset(2000000)">฿2.0M</button>
+        <button class="preset-btn" onclick="setPreset(2500000)">฿2.5M</button>
+      </div>
+    </div>
+    <button class="start-btn" onclick="startGame()">⚔️ เริ่มเกม</button>
+  </div>
+</div>
+
+<!-- ===== GAME ===== -->
+<div id="screen-game" class="screen">
+  <div class="game-header">
+    <div class="game-title-sm">IT Budget Commander 2026</div>
+    <div class="budget-bar-wrap">
+      <div class="budget-bar-labels">
+        <span>งบคงเหลือ: <b id="hdr-budget">–</b></span>
+        <span id="hdr-pct">100%</span>
+      </div>
+      <div class="budget-bar-track"><div class="budget-bar-fill" id="budget-bar" style="width:100%"></div></div>
+    </div>
+    <div class="hdr-stat"><div class="val" id="hdr-score">0</div><div class="lbl">Score</div></div>
+    <div class="hdr-stat"><div class="val" id="hdr-progress">0/54</div><div class="lbl">ตัดสินแล้ว</div></div>
+    <div class="hdr-stat"><div class="val" id="hdr-approved" style="color:#4ade80">0/54</div><div class="lbl">อนุมัติ</div></div>
+  </div>
+
+  <div class="game-body">
+    <!-- Left: Dept tracker -->
+    <div class="panel-left">
+      <div class="panel-title">ความคืบหน้าต่อฝ่าย</div>
+      <div id="dept-tracker"></div>
+      <div class="company-section">
+        <div class="company-section-title">บริษัท</div>
+        <div class="company-row">
+          <div class="company-btn ss" id="cbtn-SS" onclick="setCompanyFilter('SS')">
+            <span class="company-badge-sm ss">SS</span>
+            <span class="company-count" id="ccount-SS">– คน</span>
+          </div>
+          <div class="company-btn sc" id="cbtn-SC" onclick="setCompanyFilter('SC')">
+            <span class="company-badge-sm sc">SC</span>
+            <span class="company-count" id="ccount-SC">– คน</span>
+          </div>
+        </div>
+      </div>
+      <button class="back-intro-btn" onclick="backToIntro()">← ออกจากเกม</button>
+      <button class="approve-all-btn" onclick="approveAll()">✓✓ อนุมัติทั้งหมด</button>
+      <a class="report-link-btn" href="index.html" target="_blank">📋 ดู IT Report</a>
+    </div>
+
+    <!-- Center: Main stage -->
+    <div class="stage">
+      <div class="progress-dots" id="progress-dots"></div>
+
+      <div class="card-stage">
+        <div class="card-3d" id="person-card-3d">
+          <div class="person-card" id="person-card">
+            <!-- filled by JS -->
+          </div>
+        </div>
+      </div>
+
+      <div style="height:16px"></div>
+      <div class="action-buttons">
+        <button class="action-btn btn-reject" onclick="decide('reject')">✕ ปฏิเสธ<br><span style="font-size:10px;opacity:0.7">-1 pts</span></button>
+        <button class="action-btn btn-approve" onclick="decide('approve')">✓ อนุมัติ<br><span style="font-size:10px;opacity:0.7" id="approve-pts">+1 pts</span></button>
+        <button class="action-btn btn-upgrade" id="btn-upgrade" onclick="decide('upgrade')">⬆ Upgrade<br><span style="font-size:10px;opacity:0.7">+5 pts</span></button>
+      </div>
+      <div class="mood-bar">
+        <span class="mood-emoji" id="mood-emoji">😐</span>
+        <span class="mood-score-label" id="mood-label">0 / 54 pts</span>
+      </div>
+      <div style="margin-top:4px;font-size:11px;color:#374151;text-align:center" id="upgrade-avail-note"></div>
+    </div>
+
+    <!-- Right: Activity log -->
+    <div class="panel-right">
+      <div class="panel-title">กิจกรรมล่าสุด</div>
+      <div id="activity-log"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Feedback overlay -->
+<div class="feedback-overlay" id="feedback-overlay">
+  <div class="feedback-text" id="feedback-text"></div>
+</div>
+
+<!-- Score popup -->
+<div class="score-popup" id="score-popup"></div>
+
+<!-- Bonus toast -->
+<div class="bonus-toast" id="bonus-toast">
+  <div class="bt-title" id="bt-title">DEPT COMPLETE!</div>
+  <div class="bt-points" id="bt-points">+500</div>
+  <div class="bt-sub" id="bt-sub">ครบทุกคนในฝ่าย!</div>
+</div>
+
+<!-- ===== RESULTS ===== -->
+<div id="screen-results" class="screen">
+  <div class="results-card">
+    <div class="results-title">📊 สรุปผลการตัดสินใจ</div>
+    <div class="rating-display">
+      <div class="rating-stars" id="res-stars">⭐⭐⭐</div>
+      <div class="rating-label" id="res-rating-label">–</div>
+      <div class="rating-sub" id="res-rating-sub">–</div>
+    </div>
+    <div class="results-grid" id="results-grid"></div>
+    <div class="dept-results" id="dept-results-detail"></div>
+    <div class="results-actions">
+      <button class="res-btn res-replay" onclick="restartGame()">🔄 เล่นใหม่</button>
+      <button class="res-btn res-report" onclick="openReport()">📋 ดู Full Report</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// =============================================
+// DATA
+// =============================================
+const PRICES = {
+  'Laptop - Standard 14"': 30500,
+  'Laptop - Standard 16"': 28500,
+  'Desktop - Graphic':     83555,
+  'Monitor 24"':           2300,
+  'Laptop - Pro':          42500,
+  'Laptop - Engineering':  36700
+};
+const UPGRADE_MAP = {
+  'Laptop - Standard 14"': 'Laptop - Pro',
+  'Laptop - Standard 16"': 'Laptop - Engineering'
+};
+const DEPT_COLORS = {
+  'FA':    '#ec4899','CD':    '#3b82f6','SCM':   '#f59e0b',
+  'Manu':  '#10b981','CHMBD': '#8b5cf6','MKT':   '#ef4444','HR&IT': '#06b6d4'
+};
+// Data synced from Excel Y26 .xlsx / Sheet 64 — verify total ฿1,819,155
+const ALL_PEOPLE = [
+  {key:"SC_1",no:1,company:"SC",dept:"SCM",division:"Logistic",type:'Laptop - Standard 14"',name:'Sukunya Muichin(Yui)',hasMonitor:false},
+  {key:"SC_2",no:2,company:"SC",dept:"Manu",division:"RD",type:'Laptop - Standard 16"',name:'Pimwadee(nan)',hasMonitor:true},
+  {key:"SC_3",no:3,company:"SC",dept:"Manu",division:"Plant",type:'Laptop - Standard 14"',name:'Phornphan Khantee (Tay)',hasMonitor:true},
+  {key:"SC_6",no:6,company:"SC",dept:"Manu",division:"Safety",type:'Laptop - Standard 14"',name:'Poohsita Sukjareon(Pongpang)',hasMonitor:true},
+  {key:"SC_7",no:7,company:"SC",dept:"SCM",division:"Procurement",type:'Laptop - Standard 14"',name:'Worathip Kamlangkeau (Na)',hasMonitor:true},
+  {key:"SC_8",no:8,company:"SC",dept:"Manu",division:"Logistic",type:'Laptop - Standard 14"',name:'Saranya Khemglad (Fern)',hasMonitor:true},
+  {key:"SC_9",no:9,company:"SC",dept:"FA",division:"FA",type:'Laptop - Standard 14"',name:'Jubjang Unkaew(Jubjang)',hasMonitor:true},
+  {key:"SC_10",no:10,company:"SC",dept:"Manu",division:"Store",type:'Laptop - Standard 14"',name:'Sunanta baitaee(Waan)',hasMonitor:true},
+  {key:"SC_11",no:11,company:"SC",dept:"SCM",division:"Logistic",type:'Laptop - Standard 14"',name:'Jitsumon Jaroenkul(Muay)',hasMonitor:true},
+  {key:"SC_12",no:12,company:"SC",dept:"SCM",division:"Logistic",type:'Laptop - Standard 14"',name:'Nanticha Pawong(Nan)',hasMonitor:true},
+  {key:"SC_13",no:13,company:"SC",dept:"FA",division:"FA",type:'Laptop - Standard 14"',name:'Raksamol Guntud (Rak)',hasMonitor:true},
+  {key:"SC_14",no:14,company:"SC",dept:"SCM",division:"Procurement",type:'Laptop - Standard 14"',name:'Pimpa Thongleam(Pa)',hasMonitor:true},
+  {key:"SS_17",no:17,company:"SS",dept:"CD",division:"TT",type:'Laptop - Standard 14"',name:'Komgrit Promjan(Nong)',hasMonitor:false},
+  {key:"SS_18",no:18,company:"SS",dept:"CD",division:"TT",type:'Laptop - Standard 14"',name:'TT Quota ใหม่',hasMonitor:false},
+  {key:"SS_19",no:19,company:"SS",dept:"CHMBD",division:"Export",type:'Laptop - Standard 14"',name:'Marisa Teddee(Chompu)',hasMonitor:true},
+  {key:"SS_20",no:20,company:"SS",dept:"CD",division:"FFO",type:'Laptop - Standard 14"',name:'Watcharobon Yodkaewkong(Muay)',hasMonitor:false},
+  {key:"SS_21",no:21,company:"SS",dept:"CD",division:"TT",type:'Laptop - Standard 14"',name:'Nipitphon Khumee(Benz)',hasMonitor:false},
+  {key:"SS_22",no:22,company:"SS",dept:"CD",division:"FFO",type:'Laptop - Standard 14"',name:'Sukantana Wareephet(Aomm)',hasMonitor:false},
+  {key:"SS_23",no:23,company:"SS",dept:"CD",division:"MT",type:'Laptop - Standard 14"',name:'Pongsathorn Sansaksit(Te)',hasMonitor:false},
+  {key:"SS_24",no:24,company:"SS",dept:"CD",division:"MKT",type:'Laptop - Standard 14"',name:'Chutirat Chavalvechakul(Chu)',hasMonitor:false},
+  {key:"SC_25",no:25,company:"SC",dept:"SCM",division:"SCM-Demand",type:'Laptop - Standard 14"',name:'Weena Niemkrathok(Noi)',hasMonitor:true},
+  {key:"SS_26",no:26,company:"SS",dept:"CD",division:"TT",type:'Laptop - Standard 14"',name:'Papatchaya Chotichiynapang(Aey)',hasMonitor:false},
+  {key:"SS_27",no:27,company:"SS",dept:"CHMBD",division:"TMKT",type:'Laptop - Standard 14"',name:'Jittima Phantham(Ice)',hasMonitor:true},
+  {key:"SS_28",no:28,company:"SS",dept:"CD",division:"TT",type:'Laptop - Standard 14"',name:'Komson Prakornkaew(Kom)',hasMonitor:false},
+  {key:"SS_29",no:29,company:"SS",dept:"CD",division:"MT",type:'Laptop - Pro',name:'Pongchai Pongpaichate(Pong)',hasMonitor:false},
+  {key:"SS_30",no:30,company:"SS",dept:"MKT",division:"MKT",type:'Laptop - Standard 14"',name:'Thanchanok Kittinunthakul(Fang)',hasMonitor:false},
+  {key:"SS_31",no:31,company:"SS",dept:"MKT",division:"MKT",type:'Laptop - Standard 14"',name:'Kochaporn Khrutthatsa(Cartoon)',hasMonitor:true},
+  {key:"SS_32",no:32,company:"SS",dept:"FA",division:"FA",type:'Laptop - Standard 14"',name:'Chanakhan Plaitho(Bow)',hasMonitor:true},
+  {key:"SC_33",no:33,company:"SC",dept:"FA",division:"FA",type:'Laptop - Standard 14"',name:'Kanlayanee Jansorn (Amm)',hasMonitor:true},
+  {key:"SS_34",no:34,company:"SS",dept:"FA",division:"FA",type:'Laptop - Standard 14"',name:'Oraparn Janchay(Mam)',hasMonitor:true},
+  {key:"SS_35",no:35,company:"SS",dept:"CD",division:"FFO",type:'Laptop - Standard 14"',name:'Onanong Chakkaew(On)',hasMonitor:true},
+  {key:"SS_36",no:36,company:"SS",dept:"FA",division:"FA",type:'Laptop - Standard 14"',name:'Natticha Jayakom(First)',hasMonitor:true},
+  {key:"SC_37",no:37,company:"SC",dept:"SCM",division:"Procurement",type:'Laptop - Standard 14"',name:'Natnicha Rassamee(Fha)',hasMonitor:true},
+  {key:"SS_38",no:38,company:"SS",dept:"CD",division:"FFO",type:'Laptop - Standard 14"',name:'Titaree Theeraritthiphan(Nann)',hasMonitor:true},
+  {key:"SS_39",no:39,company:"SS",dept:"FA",division:"FA",type:'Laptop - Standard 14"',name:'Purichaya Nongyai(Moji)',hasMonitor:true},
+  {key:"SS_40",no:40,company:"SS",dept:"FA",division:"FA",type:'Laptop - Standard 14"',name:'Kannanat Danlummajak(Ning)',hasMonitor:true},
+  {key:"SS_41",no:41,company:"SS",dept:"FA",division:"FA",type:'Laptop - Standard 14"',name:'Pimonporn Jankla(Ple)',hasMonitor:true},
+  {key:"SS_43",no:43,company:"SS",dept:"FA",division:"FA",type:'Laptop - Standard 14"',name:'Kassuda Ekkapok(Lookkad)',hasMonitor:true},
+  {key:"SS_44",no:44,company:"SS",dept:"FA",division:"FA",type:'Laptop - Standard 14"',name:'Sarinya Sukjadid(Oil)',hasMonitor:true},
+  {key:"SS_45",no:45,company:"SS",dept:"FA",division:"FA",type:'Laptop - Standard 14"',name:'Yolravee Moonsri(Ploy)',hasMonitor:true},
+  {key:"SS_46",no:46,company:"SS",dept:"FA",division:"FA",type:'Laptop - Standard 14"',name:'Achiraya Chuenrudee(Lookyee)',hasMonitor:true},
+  {key:"SS_47",no:47,company:"SS",dept:"FA",division:"FA",type:'Laptop - Standard 14"',name:'Charinrat Kaputin(Fern)',hasMonitor:true},
+  {key:"SS_49",no:49,company:"SS",dept:"SCM",division:"Procurement",type:'Laptop - Standard 14"',name:'Busayamas Insuwan(Nicole)',hasMonitor:true},
+  {key:"SS_50",no:50,company:"SS",dept:"SCM",division:"CS",type:'Laptop - Standard 14"',name:'Paranee Pimsuvan(Golf)',hasMonitor:true},
+  {key:"SS_51",no:51,company:"SS",dept:"HR&IT",division:"IT",type:'Laptop - Pro',name:'Natthapong Charoenpentham(Note)',hasMonitor:true},
+  {key:"SS_53",no:53,company:"SS",dept:"HR&IT",division:"IT",type:'Laptop - Pro',name:'Asawin Romruen(Tay)',hasMonitor:true},
+  {key:"SS_54",no:54,company:"SS",dept:"FA",division:"FA",type:'Laptop - Standard 14"',name:'Sr Commercial finance',hasMonitor:true},
+  {key:"SS_55",no:55,company:"SS",dept:"FA",division:"FA",type:'Laptop - Standard 14"',name:'Finance Business Partner - Category',hasMonitor:true},
+  {key:"SS_56",no:56,company:"SS",dept:"CD",division:"FFO",type:'Laptop - Standard 14"',name:'Operation manager',hasMonitor:true},
+  {key:"SS_57",no:57,company:"SS",dept:"CD",division:"MT",type:'Laptop - Standard 14"',name:'key account manager',hasMonitor:false},
+  {key:"SS_58",no:58,company:"SS",dept:"HR&IT",division:"IT",type:'Laptop - Standard 14"',name:'Spare',hasMonitor:false},
+  {key:"SS_59",no:59,company:"SS",dept:"HR&IT",division:"IT",type:'Laptop - Standard 14"',name:'Spare',hasMonitor:false},
+  {key:"SS_60",no:60,company:"SS",dept:"HR&IT",division:"IT",type:'Laptop - Standard 14"',name:'Spare',hasMonitor:false},
+  {key:"SS_D1",no:"D1",company:"SS",dept:"CHMBD",division:"E-Commerce",type:'Desktop - Graphic',name:'Manopakorn Bunyabud(Boom)',hasMonitor:false}
+];
+
+// =============================================
+// GAME STATE
+// =============================================
+let BUDGET = 1819155;
+let selectedDept = null;
+let selectedCompany = null;
+let GAME_QUEUE = [...ALL_PEOPLE];
+let state = {};
+let processing = false; // prevent rapid-click double-decision
+
+function initState() {
+  state = {
+    budget: BUDGET,
+    score: 0,
+    idx: 0,
+    decisions: {},      // key → {action, cost, type}
+    deptStats: {},
+    combo: 0,
+    lastDept: ''
+  };
+  // Init dept stats
+  ALL_PEOPLE.forEach(p => {
+    if (!state.deptStats[p.dept]) {
+      state.deptStats[p.dept] = { total: ALL_PEOPLE.filter(x=>x.dept===p.dept).length, approved: 0, bonusGiven: false };
+    }
+  });
+}
+
+function personCost(p, useType) {
+  const t = useType || p.type;
+  return PRICES[t] + (p.hasMonitor ? PRICES['Monitor 24"'] : 0);
+}
+function fmt(n) { return '฿' + Math.round(n).toLocaleString('th-TH'); }
+
+// =============================================
+// INTRO
+// =============================================
+function formatBudgetInput(el) {
+  let v = el.value.replace(/[^0-9]/g,'');
+  if (v) el.value = parseInt(v).toLocaleString('th-TH');
+}
+function setPreset(val) {
+  document.getElementById('budget-input').value = val.toLocaleString('th-TH');
+}
+function parseBudget() {
+  return parseInt(document.getElementById('budget-input').value.replace(/[^0-9]/g,'')) || 2000000;
+}
+
+// =============================================
+// START
+// =============================================
+function computeQueue() {
+  return ALL_PEOPLE.filter(p => {
+    if (selectedCompany && p.company !== selectedCompany) return false;
+    if (selectedDept && p.dept !== selectedDept) return false;
+    return true;
+  });
+}
+
+function startGame() {
+  BUDGET = parseBudget();
+  selectedDept = null;
+  selectedCompany = null;
+  GAME_QUEUE = [...ALL_PEOPLE];
+  initState();
+  showScreen('game');
+  buildDeptTracker();
+  updateCompanyCounts();
+  buildProgressDots();
+  renderCard();
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+}
+
+// =============================================
+// DEPT TRACKER (left panel)
+// =============================================
+function buildDeptTracker() {
+  const depts = [...new Set(ALL_PEOPLE.map(p=>p.dept))].sort();
+  const container = document.getElementById('dept-tracker');
+  container.innerHTML =
+    `<div class="dept-all-btn selected" id="dept-all" onclick="setDeptFilter(null)">
+      <span style="font-size:14px">🌐</span>
+      <span>ทุกฝ่าย</span>
+      <span style="margin-left:auto;font-size:10px;opacity:0.7">${ALL_PEOPLE.length} คน</span>
+    </div>` +
+    depts.map(dept => {
+      const total = ALL_PEOPLE.filter(p=>p.dept===dept).length;
+      const color = DEPT_COLORS[dept] || '#64748b';
+      const initials = dept.substring(0,2).toUpperCase();
+      return `<div class="dept-item" id="dtrack-${dept}" onclick="setDeptFilter('${dept}')">
+        <div class="dept-icon" style="background:${color}22;color:${color}">${initials}</div>
+        <div class="dept-info">
+          <div class="dept-name">${dept}</div>
+          <div class="dept-prog" id="dprg-${dept}">0 / ${total}</div>
+          <div class="dept-mini-bar"><div class="dept-mini-fill" id="dfill-${dept}" style="width:0%;background:${color}"></div></div>
+        </div>
+      </div>`;
+    }).join('');
+}
+
+function setDeptFilter(dept) {
+  selectedDept = dept;
+  GAME_QUEUE = computeQueue();
+  state.idx = 0;
+  advanceToNextUndecided();
+  buildProgressDots();
+  highlightDeptFilter();
+  renderCard();
+}
+
+function setCompanyFilter(company) {
+  selectedCompany = (selectedCompany === company) ? null : company;
+  // When switching company, reset dept filter too
+  selectedDept = null;
+  GAME_QUEUE = computeQueue();
+  state.idx = 0;
+  advanceToNextUndecided();
+  buildProgressDots();
+  highlightDeptFilter();
+  highlightCompanyFilter();
+  renderCard();
+}
+
+function highlightCompanyFilter() {
+  ['SS','SC'].forEach(c => {
+    const btn = document.getElementById('cbtn-' + c);
+    if (btn) btn.classList.toggle('selected', selectedCompany === c);
+  });
+}
+
+function updateCompanyCounts() {
+  ['SS','SC'].forEach(c => {
+    const total = ALL_PEOPLE.filter(p => p.company === c).length;
+    const el = document.getElementById('ccount-' + c);
+    if (el) el.textContent = total + ' คน';
+  });
+}
+
+function advanceToNextUndecided() {
+  while (state.idx < GAME_QUEUE.length && state.decisions[GAME_QUEUE[state.idx].key]) {
+    state.idx++;
+  }
+}
+
+function highlightDeptFilter() {
+  document.querySelectorAll('.dept-item').forEach(el => el.classList.remove('selected'));
+  const allBtn = document.getElementById('dept-all');
+  if (allBtn) allBtn.classList.remove('selected');
+  if (selectedDept) {
+    const el = document.getElementById(`dtrack-${selectedDept}`);
+    if (el) el.classList.add('selected');
+  } else {
+    if (allBtn) allBtn.classList.add('selected');
+  }
+}
+
+function updateDeptTracker(dept) {
+  const ds = state.deptStats[dept];
+  if (!ds) return;
+  const pct = Math.round(ds.approved / ds.total * 100);
+  const el = document.getElementById(`dprg-${dept}`);
+  const fill = document.getElementById(`dfill-${dept}`);
+  const item = document.getElementById(`dtrack-${dept}`);
+  if (el) el.textContent = `${ds.approved} / ${ds.total}`;
+  if (fill) fill.style.width = pct + '%';
+  if (item && ds.approved === ds.total) item.classList.add('complete');
+}
+
+// =============================================
+// PROGRESS DOTS
+// =============================================
+function buildProgressDots() {
+  const cont = document.getElementById('progress-dots');
+  cont.innerHTML = GAME_QUEUE.map((_,i)=>`<div class="pdot" id="pdot-${i}"></div>`).join('');
+}
+
+function updateDots() {
+  GAME_QUEUE.forEach((p,i) => {
+    const dot = document.getElementById(`pdot-${i}`);
+    if (!dot) return;
+    const d = state.decisions[p.key];
+    if (d) {
+      dot.className = 'pdot ' + d.action;
+    } else if (i === state.idx) {
+      dot.className = 'pdot current';
+    } else {
+      dot.className = 'pdot';
+    }
+  });
+}
+
+// =============================================
+// RENDER CARD
+// =============================================
+function showDeptDone() {
+  const ds = state.deptStats[selectedDept] || {approved:0, total:GAME_QUEUE.length};
+  const card = document.getElementById('person-card');
+  const color = DEPT_COLORS[selectedDept] || '#64748b';
+  card.innerHTML = `
+    <div style="text-align:center;padding:24px 16px">
+      <div style="font-size:48px;margin-bottom:12px">✅</div>
+      <div style="font-size:20px;font-weight:800;color:#4ade80;margin-bottom:8px">ฝ่าย ${selectedDept} เสร็จแล้ว!</div>
+      <div style="font-size:14px;color:#94a3b8;margin-bottom:20px">อนุมัติ <b style="color:#f1f5f9">${ds.approved}</b> / ${ds.total} คน</div>
+      <div style="background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.2);border-radius:10px;padding:12px;font-size:12px;color:#93c5fd">
+        👈 เลือกฝ่ายอื่นจากแผงซ้าย<br>หรือกด <b>ทุกฝ่าย</b> เพื่อดูรายการที่เหลือ
+      </div>
+    </div>
+  `;
+  document.querySelector('.btn-approve').style.opacity = '0.25';
+  document.querySelector('.btn-reject').style.opacity = '0.25';
+  document.querySelector('.btn-approve').onclick = null;
+  document.querySelector('.btn-reject').onclick = null;
+  const upBtn = document.getElementById('btn-upgrade');
+  upBtn.classList.add('disabled');
+  upBtn.onclick = null;
+  updateHeader();
+  updateDots();
+}
+
+function renderCard() {
+  // Re-enable action buttons (may have been disabled by showDeptDone)
+  document.querySelector('.btn-approve').style.opacity = '';
+  document.querySelector('.btn-approve').onclick = () => decide('approve');
+  document.querySelector('.btn-reject').onclick = () => decide('reject');
+
+  if (state.idx >= GAME_QUEUE.length) {
+    const allDone = ALL_PEOPLE.every(p => state.decisions[p.key]);
+    if (allDone) { showResults(); return; }
+
+    // Auto-switch to other company if company filter is active
+    if (selectedCompany) {
+      const otherCompany = selectedCompany === 'SS' ? 'SC' : 'SS';
+      const hasRemaining = ALL_PEOPLE.some(p => p.company === otherCompany && !state.decisions[p.key]);
+      if (hasRemaining) {
+        setCompanyFilter(otherCompany);
+        return;
+      }
+    }
+
+    // Dept filter done but not all people
+    if (selectedDept) { showDeptDone(); return; }
+
+    // No filter but not all done (shouldn't happen) → results
+    showResults();
+    return;
+  }
+  const p = GAME_QUEUE[state.idx];
+  const cost = personCost(p);
+  const upType = UPGRADE_MAP[p.type];
+  const upCost = upType ? personCost(p, upType) : 0;
+  const color = DEPT_COLORS[p.dept] || '#64748b';
+  const canAfford = state.budget >= cost;
+  const canAffordUp = upType && state.budget >= upCost;
+
+  const card = document.getElementById('person-card');
+  const typeShort = p.type.replace('Laptop - ','').replace('Desktop - ','Desktop ');
+  const upShort = upType ? upType.replace('Laptop - ','') : '';
+  const diffCost = upType ? upCost - cost : 0;
+
+  card.innerHTML = `
+    <div class="card-company">
+      <span class="company-badge ${p.company}">${p.company} Company</span>
+      <span class="card-number">#${p.no} · ${state.idx+1} จาก ${GAME_QUEUE.length}${selectedDept?' ('+selectedDept+')':''}</span>
+    </div>
+    <div class="card-dept">
+      <div class="dept-avatar" style="background:${color}22;color:${color}">${p.dept.substring(0,2)}</div>
+      <div class="dept-meta">
+        <div class="dept-n">${p.dept}</div>
+        <div class="div-n">${p.division}</div>
+      </div>
+    </div>
+    <div class="card-name">${p.name}</div>
+    <div class="card-equipment">
+      <div class="eq-row"><span class="eq-label">ประเภทอุปกรณ์</span><span class="eq-val">${typeShort}</span></div>
+      <div class="eq-row"><span class="eq-label">Monitor 24"</span><span class="eq-val ${p.hasMonitor?'green':''}"> ${p.hasMonitor?'จัดซื้อใหม่ (+฿2,300)':'มีแล้ว / ไม่รับ'}</span></div>
+      ${upType?`<div class="eq-row"><span class="eq-label" style="color:#a78bfa">ถ้า Upgrade เป็น</span><span class="eq-val purple">${upShort} (+฿${diffCost.toLocaleString('th-TH')})</span></div>`:''}
+    </div>
+    <div class="cost-display">
+      <div class="cost-amount">${fmt(cost)}</div>
+      <div class="cost-breakdown">${p.type} ${p.hasMonitor?'+ Monitor':''}</div>
+    </div>
+    ${!canAfford?`<div style="text-align:center;font-size:12px;color:#f87171;margin-bottom:12px;background:rgba(220,38,38,0.1);border-radius:8px;padding:8px">⚠️ งบไม่เพียงพอสำหรับอนุมัติรายการนี้</div>`:''}
+  `;
+
+  // Update action buttons
+  const appPts = document.getElementById('approve-pts');
+  if (appPts) appPts.textContent = canAfford ? '+1 pts' : 'งบไม่พอ';
+  document.querySelector('.btn-approve').style.opacity = canAfford ? '1' : '0.4';
+
+  const upBtn = document.getElementById('btn-upgrade');
+  if (upType && canAffordUp) {
+    upBtn.classList.remove('disabled');
+    upBtn.onclick = () => decide('upgrade');
+    upBtn.innerHTML = `⬆ Upgrade<br><span style="font-size:10px;opacity:0.7">+150 pts</span>`;
+  } else if (upType && !canAffordUp) {
+    upBtn.classList.add('disabled');
+    upBtn.innerHTML = `⬆ Upgrade<br><span style="font-size:10px;opacity:0.7">งบไม่พอ</span>`;
+    upBtn.onclick = null;
+  } else {
+    upBtn.classList.add('disabled');
+    upBtn.innerHTML = `⬆ N/A<br><span style="font-size:10px;opacity:0.7">—</span>`;
+    upBtn.onclick = null;
+  }
+
+  updateHeader();
+  updateDots();
+
+  // Reset card position
+  const card3d = document.getElementById('person-card-3d');
+  card3d.style.transition = 'none';
+  card3d.style.transform = 'translateX(0) rotate(0) scale(1)';
+  card3d.style.opacity = '1';
+}
+
+// =============================================
+// DECISION
+// =============================================
+function decide(action) {
+  if (processing) return;          // block rapid click
+  if (state.idx >= GAME_QUEUE.length) return;
+  const p = GAME_QUEUE[state.idx];
+  let cost = 0;
+  let actualType = p.type;
+  let pts = 0;
+
+  if (action === 'approve') {
+    cost = personCost(p);
+    if (state.budget < cost) { shakeBudget(); return; }
+    pts = 1;
+    action = 'approved'; // normalize to past-tense for CSS/log matching
+  } else if (action === 'upgrade') {
+    const upType = UPGRADE_MAP[p.type];
+    if (!upType) return;
+    cost = personCost(p, upType);
+    if (state.budget < cost) { shakeBudget(); return; }
+    actualType = upType;
+    pts = 5;
+    action = 'upgraded'; // for display
+  } else {
+    pts = -1;
+    action = 'rejected';
+  }
+
+  state.budget -= cost;
+  state.score += pts;
+  state.decisions[p.key] = { action, cost, type: actualType };
+
+  // Dept stats (only for approve/upgrade)
+  if (action !== 'rejected') {
+    state.deptStats[p.dept].approved++;
+    updateDeptTracker(p.dept);
+  }
+
+  // Feedback flash
+  showFeedback(action, pts);
+  addLog(p, action, cost);
+
+  // Animate card out
+  const card3d = document.getElementById('person-card-3d');
+  card3d.style.transition = 'all 0.35s ease';
+  if (action === 'rejected') {
+    card3d.style.transform = 'translateX(-140%) rotate(-12deg) scale(0.8)';
+    card3d.style.opacity = '0';
+  } else {
+    card3d.style.transform = 'translateX(140%) rotate(12deg) scale(0.8)';
+    card3d.style.opacity = '0';
+  }
+
+  // Show score popup
+  showScorePopup(pts);
+
+  processing = true;
+  setTimeout(() => {
+    state.idx++;
+    advanceToNextUndecided();
+    processing = false;
+    renderCard();
+  }, 380);
+}
+
+function shakeBudget() {
+  const bar = document.querySelector('.budget-bar-wrap');
+  bar.classList.add('shake');
+  setTimeout(()=>bar.classList.remove('shake'), 300);
+}
+
+// =============================================
+// UI HELPERS
+// =============================================
+function updateMood() {
+  const s = state.score;
+  let emoji = '😐';
+  if (s > 54) emoji = '🤩';
+  else if (s >= 51) emoji = '😊';
+  else if (s >= 30) emoji = '🙂';
+  else emoji = '😤';
+  const el = document.getElementById('mood-emoji');
+  const lb = document.getElementById('mood-label');
+  if (el) el.textContent = emoji;
+  if (lb) lb.textContent = s + ' pts  (max 54)';
+}
+
+function approveAll() {
+  // Approve every undecided person across ALL_PEOPLE (regardless of current filter)
+  ALL_PEOPLE.forEach(p => {
+    if (state.decisions[p.key]) return; // already decided
+    const cost = personCost(p);
+    if (state.budget >= cost) {
+      state.budget -= cost;
+      state.score += 1;
+      state.decisions[p.key] = { action: 'approved', cost, type: p.type };
+      state.deptStats[p.dept].approved++;
+    } else {
+      // Budget not enough → approve with 0 cost (mark approved, no budget deduct)
+      state.decisions[p.key] = { action: 'approved', cost: 0, type: p.type };
+      state.deptStats[p.dept].approved++;
+      state.score += 1;
+    }
+  });
+  // Update all dept trackers
+  Object.keys(state.deptStats).forEach(d => updateDeptTracker(d));
+  // Go to results
+  showResults();
+}
+
+function backToIntro() {
+  selectedDept = null;
+  selectedCompany = null;
+  GAME_QUEUE = [...ALL_PEOPLE];
+  showScreen('intro');
+}
+
+function updateHeader() {
+  const pct = Math.round(state.budget / BUDGET * 100);
+  document.getElementById('hdr-budget').textContent = fmt(state.budget);
+  document.getElementById('hdr-pct').textContent = pct + '%';
+  document.getElementById('hdr-score').textContent = state.score.toLocaleString('th-TH');
+  const approved = Object.values(state.decisions).filter(d=>d.action==='approved'||d.action==='upgraded').length;
+  const processed = Object.keys(state.decisions).length;
+  document.getElementById('hdr-progress').textContent = `${processed}/${GAME_QUEUE.length}`;
+  document.getElementById('hdr-approved').textContent = `${approved}/${GAME_QUEUE.length}`;
+  const bar = document.getElementById('budget-bar');
+  bar.style.width = pct + '%';
+  bar.className = 'budget-bar-fill' + (pct<30?' danger':pct<60?' warn':'');
+  updateMood();
+}
+
+function showFeedback(action, pts) {
+  const el = document.getElementById('feedback-overlay');
+  const txt = document.getElementById('feedback-text');
+  const map = {
+    rejected: { text:'✕ ปฏิเสธ', color:'#f87171' },
+    approved: { text:'✓ อนุมัติ!', color:'#4ade80' },
+    upgraded: { text:'⬆ Upgrade!', color:'#c084fc' }
+  };
+  const m = map[action] || map.approved;
+  txt.textContent = m.text;
+  txt.style.color = m.color;
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'), 600);
+}
+
+function showScorePopup(pts) {
+  const el = document.getElementById('score-popup');
+  el.textContent = (pts>0?'+':'')+pts+' pts';
+  el.style.color = pts>0?'#4ade80':'#f87171';
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'), 1200);
+}
+
+function showBonusToast(dept) {
+  const el = document.getElementById('bonus-toast');
+  document.getElementById('bt-title').textContent = dept + ' COMPLETE!';
+  document.getElementById('bt-points').textContent = '+500';
+  document.getElementById('bt-sub').textContent = 'อนุมัติครบทุกคนในฝ่าย ' + dept;
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'), 2500);
+}
+
+function addLog(p, action, cost) {
+  const log = document.getElementById('activity-log');
+  const item = document.createElement('div');
+  item.className = 'log-item ' + action;
+  const icon = action==='rejected'?'✕':action==='upgraded'?'⬆':'✓';
+  item.innerHTML = `<div class="log-name">${icon} ${p.name.split('(')[0].trim()}</div>
+    <div class="log-dept">${p.dept} · ${p.company}${cost>0?' · '+fmt(cost):''}</div>`;
+  log.insertBefore(item, log.firstChild);
+  if (log.children.length > 8) log.removeChild(log.lastChild);
+}
+
+// =============================================
+// RESULTS
+// =============================================
+function showResults() {
+  showScreen('results');
+  const approved = Object.values(state.decisions).filter(d=>d.action==='approved'||d.action==='upgraded');
+  const rejected = Object.values(state.decisions).filter(d=>d.action==='rejected');
+  const upgraded = Object.values(state.decisions).filter(d=>d.action==='upgraded');
+  const totalSpent = BUDGET - state.budget;
+  const coverage = Math.round(approved.length / ALL_PEOPLE.length * 100);
+  const budgetEff = Math.round(state.budget / BUDGET * 100);
+  const finalScore = state.score;
+
+  // Rating (new system: max 54 pts base, >54 with upgrades)
+  let stars, label, sub, ratingEmoji;
+  if (finalScore > 54) {
+    stars='⭐⭐⭐⭐⭐'; label='S Rank — เหนือระดับ!'; sub='Upgrade ทำให้ทีมแข็งแกร่ง!'; ratingEmoji='🤩';
+  } else if (finalScore >= 51) {
+    stars='⭐⭐⭐⭐'; label='A Rank — ยอดเยี่ยม!'; sub='อนุมัติครบ ทำให้ SCOTCH Group แข็งแกร่ง!'; ratingEmoji='😊';
+  } else if (finalScore >= 40) {
+    stars='⭐⭐⭐'; label='B Rank — ดี!'; sub='ผ่านเกณฑ์ มีบ้างที่ถูกปฏิเสธ'; ratingEmoji='🙂';
+  } else if (finalScore >= 20) {
+    stars='⭐⭐'; label='C Rank — พอใช้ได้'; sub='งบรัดตัว ลองอีกครั้ง!'; ratingEmoji='😐';
+  } else {
+    stars='⭐'; label='F Rank — ต้องฝึกเพิ่ม'; sub='ปฏิเสธเยอะเกินไป!'; ratingEmoji='😤';
+  }
+  document.getElementById('res-stars').textContent = ratingEmoji + ' ' + stars;
+  document.getElementById('res-rating-label').textContent = label;
+  document.getElementById('res-rating-sub').textContent = sub;
+
+  // Grid
+  document.getElementById('results-grid').innerHTML = `
+    <div class="result-item"><div class="rv" style="color:#4ade80">${finalScore.toLocaleString('th-TH')}</div><div class="rl">คะแนนรวม</div></div>
+    <div class="result-item"><div class="rv">${coverage}%</div><div class="rl">Coverage Rate</div></div>
+    <div class="result-item"><div class="rv" style="color:#4ade80">${approved.length}</div><div class="rl">อนุมัติ</div></div>
+    <div class="result-item"><div class="rv" style="color:#f87171">${rejected.length}</div><div class="rl">ปฏิเสธ</div></div>
+    <div class="result-item"><div class="rv" style="color:#c084fc">${upgraded.length}</div><div class="rl">Upgrade</div></div>
+    <div class="result-item"><div class="rv">${fmt(totalSpent)}</div><div class="rl">ใช้งบ</div></div>
+    <div class="result-item"><div class="rv" style="color:#4ade80">${fmt(state.budget)}</div><div class="rl">งบคงเหลือ</div></div>
+    <div class="result-item"><div class="rv">${budgetEff}%</div><div class="rl">ประหยัดงบ</div></div>
+  `;
+
+  // Dept detail
+  const depts = [...new Set(ALL_PEOPLE.map(p=>p.dept))].sort();
+  document.getElementById('dept-results-detail').innerHTML = `
+    <div class="panel-title" style="margin-bottom:12px;">ผลต่อฝ่าย</div>` +
+    depts.map(dept => {
+      const ds = state.deptStats[dept] || { approved:0, total:0 };
+      const full = ds.approved === ds.total;
+      return `<div class="dept-result-item">
+        <span class="dr-name" style="color:${DEPT_COLORS[dept]||'#94a3b8'}">${dept}</span>
+        <div style="display:flex;align-items:center;gap:10px">
+          ${full?`<span class="dr-full">✓ ครบ</span>`:''}
+          <span class="dr-prog">${ds.approved} / ${ds.total}</span>
+        </div>
+      </div>`;
+    }).join('');
+}
+
+function restartGame() {
+  selectedDept = null;
+  selectedCompany = null;
+  GAME_QUEUE = [...ALL_PEOPLE];
+  showScreen('intro');
+}
+function openReport() {
+  window.open('index.html','_blank');
+}
+
+// Boot
+document.addEventListener('DOMContentLoaded', ()=>{});
+</script>
+</body>
+</html>
