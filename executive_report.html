@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IT Budget Review FY2026 — Executive Summary</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --navy: #1a3a5c; --navy-dk: #0f2744; --sky: #0ea5e9;
+    --ss: #1d6f42; --sc: #b45309;
+    --y26: #1a3a5c; --y27: #2563a8; --y28: #0ea5e9; --y29: #1d6f42;
+    --bg: #f1f5f9; --white: #fff;
+    --g200: #e2e8f0; --g300: #cbd5e1; --g600: #475569; --g800: #1e293b;
+    --r: 12px; --sh: 0 2px 14px rgba(0,0,0,.07);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; background: var(--bg); color: var(--g800); }
+
+  .hdr {
+    background: linear-gradient(135deg, var(--navy-dk) 0%, var(--navy) 55%, #1e4a7a 100%);
+    color: #fff; padding: 26px 48px;
+    display: flex; align-items: center; gap: 24px;
+    box-shadow: 0 4px 24px rgba(0,0,0,.22);
+  }
+  .hdr img { height: 54px; object-fit: contain; }
+  .hdr-text { flex: 1; }
+  .hdr-text h1 { font-size: 22px; font-weight: 800; letter-spacing: -0.3px; }
+  .hdr-text p { font-size: 13px; color: #93c5fd; margin-top: 5px; }
+  .hdr-badge { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.22); border-radius: 16px; padding: 10px 22px; text-align: center; min-width: 170px; }
+  .hdr-badge .b1 { font-size: 20px; font-weight: 800; color: #e0f2fe; }
+  .hdr-badge .b2 { font-size: 11px; color: #93c5fd; margin-top: 4px; }
+
+  .body { max-width: 1160px; margin: 0 auto; padding: 28px 20px; display: flex; flex-direction: column; gap: 22px; }
+
+  .kpi-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+  .kpi { background: var(--white); border-radius: var(--r); padding: 22px 26px; box-shadow: var(--sh); border-top: 5px solid; }
+  .kpi.grand { border-color: var(--navy); }
+  .kpi.units { border-color: var(--sky); }
+  .kpi.ss    { border-color: var(--ss); }
+  .kpi.sc    { border-color: var(--sc); }
+  .kpi-lbl { font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--g600); margin-bottom: 8px; }
+  .kpi-val { font-size: 30px; font-weight: 800; line-height: 1; }
+  .kpi.grand .kpi-val { color: var(--navy); }
+  .kpi.units .kpi-val { color: var(--sky); }
+  .kpi.ss    .kpi-val { color: var(--ss); }
+  .kpi.sc    .kpi-val { color: var(--sc); }
+  .kpi-meta { font-size: 12px; color: var(--g600); margin-top: 7px; }
+
+  .charts-row { display: grid; grid-template-columns: 58% 1fr; gap: 20px; align-items: start; }
+  .card { background: var(--white); border-radius: var(--r); box-shadow: var(--sh); overflow: hidden; }
+  .card-hdr { padding: 16px 24px 10px; border-bottom: 1px solid var(--g200); display: flex; align-items: center; gap: 10px; }
+  .card-title { font-size: 14px; font-weight: 800; color: var(--navy); flex: 1; }
+  .card-sub { font-size: 11px; color: var(--g600); margin-top: 3px; }
+  .card-body { padding: 16px 20px 22px; }
+
+  /* SS vs SC */
+  .cmp-card { background: var(--white); border-radius: var(--r); box-shadow: var(--sh); padding: 22px 32px; }
+  .cmp-title { font-size: 14px; font-weight: 800; color: var(--navy); margin-bottom: 16px; }
+  .cmp-bar-track { height: 22px; background: var(--g200); border-radius: 11px; overflow: hidden; display: flex; margin-bottom: 14px; }
+  .cmp-bar-ss { background: var(--ss); display: flex; align-items: center; justify-content: flex-end; padding-right: 12px; cursor: pointer; }
+  .cmp-bar-sc { background: var(--sc); display: flex; align-items: center; padding-left: 12px; cursor: pointer; }
+  .cmp-bar-lbl { font-size: 12px; color: #fff; font-weight: 800; pointer-events: none; }
+  .cmp-nums { display: flex; justify-content: space-between; align-items: flex-end; }
+  .cn-lbl { font-size: 12px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; }
+  .cn-lbl.ss { color: var(--ss); }
+  .cn-lbl.sc { color: var(--sc); }
+  .cn-amount { font-size: 24px; font-weight: 800; margin-top: 2px; }
+  .cn-amount.ss { color: var(--ss); }
+  .cn-amount.sc { color: var(--sc); text-align: right; }
+  .cn-meta { font-size: 12px; color: var(--g600); margin-top: 3px; }
+  .cn-right { text-align: right; }
+
+  /* Custom floating tooltip (SS/SC bar) */
+  #cmp-tt {
+    display: none; position: fixed; z-index: 9999;
+    background: white; border: 1px solid var(--g200); border-radius: 10px;
+    padding: 14px 18px; box-shadow: 0 6px 24px rgba(0,0,0,.16);
+    min-width: 220px; pointer-events: none; font-size: 12px;
+  }
+
+  /* Device infographic */
+  .dev-row { display: grid; grid-template-columns: repeat(5,1fr); gap: 14px; }
+  .dev-card { background: var(--white); border-radius: var(--r); box-shadow: var(--sh); padding: 22px 12px; text-align: center; border-bottom: 3px solid var(--g200); }
+  .dev-icon { font-size: 28px; line-height: 1; }
+  .dev-count { font-size: 44px; font-weight: 800; color: var(--navy); line-height: 1.1; margin-top: 4px; }
+  .dev-name { font-size: 11px; font-weight: 700; color: var(--g600); text-transform: uppercase; letter-spacing: 0.6px; margin-top: 6px; }
+  .dev-unit { font-size: 12px; color: var(--sky); font-weight: 600; margin-top: 4px; }
+  .dev-total { font-size: 11px; color: var(--g600); margin-top: 2px; }
+
+  /* Spec tooltip on device icons */
+  .dev-icon-wrap { position: relative; display: inline-block; cursor: help; }
+  .dev-icon-wrap .spec-tt {
+    display: none; position: absolute; bottom: calc(100% + 10px); left: 50%;
+    transform: translateX(-50%); background: #1e293b; color: white;
+    border-radius: 10px; padding: 12px 16px; font-size: 12px;
+    white-space: nowrap; z-index: 200; box-shadow: 0 6px 24px rgba(0,0,0,.25);
+    min-width: 170px;
+  }
+  .dev-icon-wrap .spec-tt::after {
+    content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+    border: 7px solid transparent; border-top-color: #1e293b;
+  }
+  .dev-icon-wrap:hover .spec-tt { display: block; }
+  .spec-tt-title { font-size: 11px; font-weight: 800; color: #93c5fd; letter-spacing: 1px;
+    text-transform: uppercase; margin-bottom: 8px; padding-bottom: 6px;
+    border-bottom: 1px solid rgba(255,255,255,.12); }
+  .spec-tt-row { display: flex; justify-content: space-between; gap: 20px; padding: 3px 0; }
+  .spec-tt-lbl { color: #94a3b8; font-weight: 600; }
+  .spec-tt-val { color: #e2e8f0; font-weight: 700; }
+  .spec-tt-val.yes { color: #4ade80; }
+  .spec-tt-val.no  { color: #f87171; }
+
+  /* Section divider */
+  .section-divider { display: flex; align-items: center; gap: 16px; margin: 4px 0; }
+  .section-divider .sd-line { flex: 1; height: 1px; background: var(--g300); }
+  .section-divider .sd-label { font-size: 11px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--g600); background: var(--bg); padding: 0 4px; }
+
+  /* Leasing */
+  .lease-overview { background: linear-gradient(135deg, #0f2744 0%, #1a3a5c 60%, #163b6e 100%); border-radius: var(--r); box-shadow: var(--sh); padding: 22px 28px; display: flex; align-items: center; gap: 28px; flex-wrap: wrap; color: white; }
+  .lease-ov-icon { font-size: 40px; }
+  .lease-ov-main { flex: 1; min-width: 200px; }
+  .lease-ov-title { font-size: 17px; font-weight: 800; color: #e0f2fe; }
+  .lease-ov-sub { font-size: 13px; color: #93c5fd; margin-top: 4px; }
+  .lease-insurance-badge { background: linear-gradient(135deg, #f59e0b, #d97706); border-radius: 20px; padding: 6px 18px; display: flex; align-items: center; gap: 8px; }
+  .lease-insurance-badge .ins-icon { font-size: 18px; }
+  .lease-insurance-badge .ins-text { font-size: 13px; font-weight: 800; color: #fff; line-height: 1.3; }
+  .lease-insurance-badge .ins-sub { font-size: 10px; color: #fef3c7; }
+
+  .lease-kpi-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+  .lease-kpi { background: var(--white); border-radius: var(--r); padding: 20px 22px; box-shadow: var(--sh); border-left: 5px solid; }
+  .lease-kpi.monthly { border-color: #f59e0b; }
+  .lease-kpi.total   { border-color: var(--navy); }
+  .lease-kpi.period  { border-color: var(--sky); }
+  .lkpi-lbl { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--g600); margin-bottom: 8px; }
+  .lkpi-val { font-size: 28px; font-weight: 800; line-height: 1; }
+  .lease-kpi.monthly .lkpi-val { color: #d97706; }
+  .lease-kpi.total   .lkpi-val { color: var(--navy); }
+  .lease-kpi.period  .lkpi-val { font-size: 17px; color: var(--sky); margin-top: 4px; }
+  .lkpi-meta { font-size: 12px; color: var(--g600); margin-top: 6px; }
+
+  /* Year summary cards */
+  .year-cards { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
+  .yr-card { border-radius: var(--r); padding: 16px 20px; box-shadow: var(--sh); color: white; }
+  .yr-card.y26 { background: linear-gradient(135deg, #1a3a5c, #0f2744); }
+  .yr-card.y27 { background: linear-gradient(135deg, #2563a8, #1d4ed8); }
+  .yr-card.y28 { background: linear-gradient(135deg, #0891b2, #0ea5e9); }
+  .yr-card.y29 { background: linear-gradient(135deg, #1d6f42, #15803d); }
+  .yr-card-year { font-size: 13px; font-weight: 700; opacity: 0.85; }
+  .yr-card-months { font-size: 11px; opacity: 0.7; margin-top: 2px; }
+  .yr-card-amount { font-size: 24px; font-weight: 800; margin-top: 10px; line-height: 1; }
+  .yr-card-installments { font-size: 12px; opacity: 0.75; margin-top: 4px; }
+
+  /* Monthly timeline */
+  .timeline-card { background: var(--white); border-radius: var(--r); box-shadow: var(--sh); overflow: hidden; }
+  .timeline-legend { display: flex; gap: 20px; padding: 12px 24px 0; }
+  .tl-leg-item { display: flex; align-items: center; gap: 7px; font-size: 12px; font-weight: 600; color: var(--g600); }
+  .tl-leg-dot { width: 14px; height: 14px; border-radius: 3px; }
+  .tl-leg-dot.y26 { background: var(--y26); }
+  .tl-leg-dot.y27 { background: var(--y27); }
+  .tl-leg-dot.y28 { background: var(--y28); }
+  .tl-leg-dot.y29 { background: var(--y29); }
+  .timeline-chart-wrap { padding: 8px 20px 20px; overflow-x: auto; }
+  .timeline-chart-wrap canvas { min-width: 900px; }
+
+  .footer { text-align: center; padding: 20px; font-size: 11px; color: #94a3b8; }
+
+  @media print {
+    body { background: white; }
+    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    .hdr { padding: 18px 32px; }
+    @page { margin: 1.2cm; size: A4 landscape; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Floating tooltip for SS/SC bar -->
+<div id="cmp-tt"></div>
+
+<div class="hdr">
+  <img src="https://itp1.itopfile.com/ImageServer/z_itp_12052024va2c/0/0/logoz-z1176349371245.png" alt="SCOTCH" onerror="this.style.display='none'">
+  <div class="hdr-text">
+    <h1>IT Budget Review — PC Replacement Program FY2026</h1>
+    <p>รายงานสรุปงบประมาณจัดซื้ออุปกรณ์คอมพิวเตอร์ · SCOTCH Group (SS &amp; SC) · เพื่อการอนุมัติผู้บริหาร</p>
+  </div>
+  <div class="hdr-badge">
+    <div class="b1" id="hdr-total">–</div>
+    <div class="b2" id="hdr-date">–</div>
+  </div>
+</div>
+
+<div class="body">
+
+  <!-- KPIs -->
+  <div class="kpi-row">
+    <div class="kpi grand">
+      <div class="kpi-lbl">งบประมาณรวม</div>
+      <div class="kpi-val" id="kpi-grand">–</div>
+      <div class="kpi-meta" id="kpi-grand-meta">–</div>
+    </div>
+    <div class="kpi units">
+      <div class="kpi-lbl">จำนวนอุปกรณ์</div>
+      <div class="kpi-val" id="kpi-units">–</div>
+      <div class="kpi-meta" id="kpi-units-meta">–</div>
+    </div>
+    <div class="kpi ss">
+      <div class="kpi-lbl">SS Company</div>
+      <div class="kpi-val" id="kpi-ss">–</div>
+      <div class="kpi-meta" id="kpi-ss-meta">–</div>
+    </div>
+    <div class="kpi sc">
+      <div class="kpi-lbl">SC Company</div>
+      <div class="kpi-val" id="kpi-sc">–</div>
+      <div class="kpi-meta" id="kpi-sc-meta">–</div>
+    </div>
+  </div>
+
+  <!-- Budget Charts -->
+  <div class="charts-row">
+    <div class="card">
+      <div class="card-hdr">
+        <div>
+          <div class="card-title">งบประมาณแยกตามฝ่าย</div>
+          <div class="card-sub">รวมค่าอุปกรณ์ + จอ · วางเมาส์เพื่อดูรายละเอียด</div>
+        </div>
+      </div>
+      <div class="card-body"><canvas id="deptChart"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-hdr">
+        <div>
+          <div class="card-title">สัดส่วนตามประเภทอุปกรณ์</div>
+          <div class="card-sub">แสดงเป็น % ของงบรวม</div>
+        </div>
+      </div>
+      <div class="card-body"><canvas id="typeChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- SS vs SC -->
+  <div class="cmp-card">
+    <div class="cmp-title">SS vs SC — สัดส่วนงบประมาณ <span style="font-size:11px;font-weight:400;color:var(--g600);">· วางเมาส์บนแถบเพื่อดูรายละเอียดฝ่าย</span></div>
+    <div class="cmp-bar-track">
+      <div class="cmp-bar-ss" id="bar-ss"><span class="cmp-bar-lbl" id="bar-ss-pct">–</span></div>
+      <div class="cmp-bar-sc" id="bar-sc"><span class="cmp-bar-lbl" id="bar-sc-pct">–</span></div>
+    </div>
+    <div class="cmp-nums">
+      <div>
+        <div class="cn-lbl ss">SS Company</div>
+        <div class="cn-amount ss" id="cn-ss">–</div>
+        <div class="cn-meta" id="cn-ss-meta">–</div>
+      </div>
+      <div class="cn-right">
+        <div class="cn-lbl sc">SC Company</div>
+        <div class="cn-amount sc" id="cn-sc">–</div>
+        <div class="cn-meta" id="cn-sc-meta">–</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Device infographic -->
+  <div class="dev-row">
+
+    <div class="dev-card">
+      <div class="dev-icon-wrap">
+        <div class="dev-icon">💻</div>
+        <div class="spec-tt">
+          <div class="spec-tt-title">Laptop 14" — Spec</div>
+          <div class="spec-tt-row"><span class="spec-tt-lbl">CPU</span><span class="spec-tt-val">225H</span></div>
+          <div class="spec-tt-row"><span class="spec-tt-lbl">RAM</span><span class="spec-tt-val">16 GB</span></div>
+          <div class="spec-tt-row"><span class="spec-tt-lbl">VGA</span><span class="spec-tt-val no">No</span></div>
+        </div>
+      </div>
+      <div class="dev-count" id="dev-l14">–</div>
+      <div class="dev-name">Laptop 14"</div>
+      <div class="dev-unit">฿30,500 / เครื่อง</div>
+      <div class="dev-total" id="tot-l14">–</div>
+    </div>
+
+    <div class="dev-card">
+      <div class="dev-icon-wrap">
+        <div class="dev-icon">💻</div>
+        <div class="spec-tt">
+          <div class="spec-tt-title">Laptop 16" — Spec</div>
+          <div class="spec-tt-row"><span class="spec-tt-lbl">CPU</span><span class="spec-tt-val">225H</span></div>
+          <div class="spec-tt-row"><span class="spec-tt-lbl">RAM</span><span class="spec-tt-val">16 GB</span></div>
+          <div class="spec-tt-row"><span class="spec-tt-lbl">VGA</span><span class="spec-tt-val no">No</span></div>
+        </div>
+      </div>
+      <div class="dev-count" id="dev-l16">–</div>
+      <div class="dev-name">Laptop 16"</div>
+      <div class="dev-unit">฿28,500 / เครื่อง</div>
+      <div class="dev-total" id="tot-l16">–</div>
+    </div>
+
+    <div class="dev-card">
+      <div class="dev-icon-wrap">
+        <div class="dev-icon">🖥️</div>
+        <div class="spec-tt">
+          <div class="spec-tt-title">Laptop Pro — Spec</div>
+          <div class="spec-tt-row"><span class="spec-tt-lbl">CPU</span><span class="spec-tt-val">258V</span></div>
+          <div class="spec-tt-row"><span class="spec-tt-lbl">RAM</span><span class="spec-tt-val">32 GB</span></div>
+          <div class="spec-tt-row"><span class="spec-tt-lbl">VGA</span><span class="spec-tt-val no">No</span></div>
+        </div>
+      </div>
+      <div class="dev-count" id="dev-pro">–</div>
+      <div class="dev-name">Laptop Pro</div>
+      <div class="dev-unit">฿42,500 / เครื่อง</div>
+      <div class="dev-total" id="tot-pro">–</div>
+    </div>
+
+    <div class="dev-card">
+      <div class="dev-icon-wrap">
+        <div class="dev-icon">🖥</div>
+        <div class="spec-tt">
+          <div class="spec-tt-title">Desktop Graphic — Spec</div>
+          <div class="spec-tt-row"><span class="spec-tt-lbl">CPU</span><span class="spec-tt-val">I7-14700F</span></div>
+          <div class="spec-tt-row"><span class="spec-tt-lbl">RAM</span><span class="spec-tt-val">64 GB</span></div>
+          <div class="spec-tt-row"><span class="spec-tt-lbl">VGA</span><span class="spec-tt-val yes">Yes</span></div>
+          <div class="spec-tt-row"><span class="spec-tt-lbl">Monitor</span><span class="spec-tt-val">ใช้ของเดิม</span></div>
+        </div>
+      </div>
+      <div class="dev-count" id="dev-desk">–</div>
+      <div class="dev-name">Desktop Graphic</div>
+      <div class="dev-unit">฿83,555 / เครื่อง</div>
+      <div class="dev-total" id="tot-desk">–</div>
+    </div>
+
+    <div class="dev-card">
+      <div class="dev-icon-wrap">
+        <div class="dev-icon">📺</div>
+        <div class="spec-tt">
+          <div class="spec-tt-title">Monitor 24" — Info</div>
+          <div class="spec-tt-row"><span class="spec-tt-lbl">ยี่ห้อ</span><span class="spec-tt-val">Lenovo</span></div>
+          <div class="spec-tt-row"><span class="spec-tt-lbl">ขนาด</span><span class="spec-tt-val">24"</span></div>
+        </div>
+      </div>
+      <div class="dev-count" id="dev-mon">–</div>
+      <div class="dev-name">Monitor 24"</div>
+      <div class="dev-unit">฿2,300 / จอ</div>
+      <div class="dev-total" id="tot-mon">–</div>
+    </div>
+
+  </div>
+
+  <!-- LEASING DIVIDER -->
+  <div class="section-divider">
+    <div class="sd-line"></div>
+    <div class="sd-label">แผนการชำระค่าเช่า · Leasing Schedule</div>
+    <div class="sd-line"></div>
+  </div>
+
+  <!-- Leasing overview banner -->
+  <div class="lease-overview">
+    <div class="lease-ov-icon">📋</div>
+    <div class="lease-ov-main">
+      <div class="lease-ov-title">Leasing 36 เดือน — ก.ย. 2026 ถึง ส.ค. 2029</div>
+      <div class="lease-ov-sub">ชำระเป็นรายเดือน · ตลอด 3 ปี · SS &amp; SC รวมกัน</div>
+    </div>
+    <div class="lease-insurance-badge">
+      <div class="ins-icon">🛡️</div>
+      <div>
+        <div class="ins-text">รวมประกันอุบัติเหตุ</div>
+        <div class="ins-sub">Accidental Damage Insurance</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Leasing KPI cards -->
+  <div class="lease-kpi-row">
+    <div class="lease-kpi monthly">
+      <div class="lkpi-lbl">ค่างวดต่อเดือน</div>
+      <div class="lkpi-val" id="lkpi-monthly">–</div>
+      <div class="lkpi-meta">ทุกเดือน · Sep 2026 — Aug 2029</div>
+    </div>
+    <div class="lease-kpi total">
+      <div class="lkpi-lbl">มูลค่ารวม 36 งวด</div>
+      <div class="lkpi-val" id="lkpi-total">–</div>
+      <div class="lkpi-meta" id="lkpi-total-meta">–</div>
+    </div>
+    <div class="lease-kpi period">
+      <div class="lkpi-lbl">ระยะเวลาสัญญา</div>
+      <div class="lkpi-val">36 เดือน</div>
+      <div class="lkpi-meta">Sep 2026 — Aug 2029 (FY2026–2029)</div>
+    </div>
+  </div>
+
+  <!-- Year summary cards (CE years only) -->
+  <div class="year-cards">
+    <div class="yr-card y26">
+      <div class="yr-card-year">ปี 2026</div>
+      <div class="yr-card-months">Sep — Dec · 4 เดือน</div>
+      <div class="yr-card-amount" id="yr-2026">–</div>
+      <div class="yr-card-installments">4 งวด</div>
+    </div>
+    <div class="yr-card y27">
+      <div class="yr-card-year">ปี 2027</div>
+      <div class="yr-card-months">Jan — Dec · 12 เดือน</div>
+      <div class="yr-card-amount" id="yr-2027">–</div>
+      <div class="yr-card-installments">12 งวด</div>
+    </div>
+    <div class="yr-card y28">
+      <div class="yr-card-year">ปี 2028</div>
+      <div class="yr-card-months">Jan — Dec · 12 เดือน</div>
+      <div class="yr-card-amount" id="yr-2028">–</div>
+      <div class="yr-card-installments">12 งวด</div>
+    </div>
+    <div class="yr-card y29">
+      <div class="yr-card-year">ปี 2029</div>
+      <div class="yr-card-months">Jan — Aug · 8 เดือน</div>
+      <div class="yr-card-amount" id="yr-2029">–</div>
+      <div class="yr-card-installments">8 งวด · ครบสัญญา Aug 2029</div>
+    </div>
+  </div>
+
+  <!-- Annual bar chart -->
+  <div class="card">
+    <div class="card-hdr">
+      <div>
+        <div class="card-title">ค่าใช้จ่าย Leasing แยกตามปี</div>
+        <div class="card-sub">จำนวนงวดและยอดรวมต่อปีงบประมาณ · รวมประกันอุบัติเหตุ</div>
+      </div>
+    </div>
+    <div class="card-body"><canvas id="annualChart" height="140"></canvas></div>
+  </div>
+
+  <!-- Monthly timeline chart -->
+  <div class="timeline-card">
+    <div class="card-hdr" style="padding-bottom:14px;">
+      <div style="flex:1;">
+        <div class="card-title">กระแสการจ่ายเงิน รายเดือน 36 งวด</div>
+        <div class="card-sub">ทุกงวด = ค่างวดคงที่ · สีแยกตามปี · วางเมาส์เพื่อดูรายละเอียด</div>
+      </div>
+      <div style="background:#fef3c7;border:1px solid #f59e0b;border-radius:20px;padding:4px 14px;font-size:12px;font-weight:700;color:#92400e;white-space:nowrap;">
+        🛡️ รวมประกันอุบัติเหตุ
+      </div>
+    </div>
+    <div class="timeline-legend">
+      <div class="tl-leg-item"><div class="tl-leg-dot y26"></div>2026 (4 งวด)</div>
+      <div class="tl-leg-item"><div class="tl-leg-dot y27"></div>2027 (12 งวด)</div>
+      <div class="tl-leg-item"><div class="tl-leg-dot y28"></div>2028 (12 งวด)</div>
+      <div class="tl-leg-item"><div class="tl-leg-dot y29"></div>2029 (8 งวด)</div>
+    </div>
+    <div class="timeline-chart-wrap">
+      <canvas id="monthlyChart" height="200"></canvas>
+    </div>
+  </div>
+
+</div>
+<div class="footer" id="footer-txt">–</div>
+
+<script>
+// ---- DATA ----
+const BASE_PRICES = {
+  'Laptop - Standard 14"': 30500,
+  'Laptop - Standard 16"': 28500,
+  'Desktop - Graphic':     83555,
+  'Monitor 24"':           2300,
+  'Laptop - Pro':          42500,
+  'Laptop - Engineering':  36700
+};
+
+const ALL_PEOPLE = [
+  {"company":"SC","dept":"SCM","type":"Laptop - Standard 14\"","hasMonitor":false},
+  {"company":"SC","dept":"Manu","type":"Laptop - Standard 16\"","hasMonitor":true},
+  {"company":"SC","dept":"Manu","type":"Laptop - Standard 14\"","hasMonitor":true},
+  {"company":"SC","dept":"Manu","type":"Laptop - Standard 14\"","hasMonitor":true},
+  {"company":"SC","dept":"SCM","type":"Laptop - Standard 14\"","hasMonitor":true},
+  {"company":"SC","dept":"Manu","type":"Laptop - Standard 14\"","hasMonitor":true},
+  {"company":"SC","dept":"FA","type":"Laptop - Standard 14\"","hasMonitor":true},
+  {"company":"SC","dept":"Manu","type":"Laptop - Standard 14\"","hasMonitor":true},
+  {"company":"SC","dept":"SCM","type":"Laptop - Standard 14\"","hasMonitor":true},
+  {"company":"SC","dept":"SCM","type":"Laptop - Standard 14\"","hasMonitor":true},
+  {"company":"SC","dept":"FA","type":"Laptop - Standard 14\"","hasMonitor":true},
+  {"company":"SC","dept":"SCM","type":"Laptop - Standard 14\"","hasMonitor":true},
+  {"company":"SS","dept":"CD","type":"Laptop - Standard 14\"","hasMonitor":false},
+  {"company":"SS","dept":"CD","type":"Laptop - Standard 14\"","hasMonitor":false},
+  {"company":"SS","dept":"CHMBD","type":"Laptop - Standard 14\"","hasMonitor":true},
+  {"company":"SS","dept":"CD","type":"Laptop - Standard 14\"","hasMonitor":false},
+  {"company":"SS","dept":"CD","type":"Laptop - Standard 14\"","hasMonitor":false},
+  {"company":"SS","dept":"CD","type":"Laptop - Standard 14\"","hasMonitor":false},
+  {"company":"SS","dept":"CD","type":"Laptop - Standard 14\"","hasMonitor":false},
+  {"company":"SS","dept":"MKT","type":"Laptop - Standard 14\"","hasMonitor":false},
+  {"company":"SC","dept":"SCM","type":"Laptop - Standard 14\"","hasMonitor":true},
+  {"company":"SS","dept":"CD","type":"Laptop - Standard 14\"","hasMonitor":false},
+  {"company":"SS","dept":"CHMBD","type":"Laptop - Standard 14\"","hasMonitor":true},
+  {"company":"SS","dept":"CD","type":"Laptop - Standard 14\"","hasMonitor":false},
+  {"company":"SS","dept":"CD","type":"Laptop - Pro","hasMonitor":false},
+  {"company":"SS","dept":"MKT","type":"Laptop - Standard 14\"","hasMonitor":false},
+  {"company":"SS","dept":"MKT","type":"Laptop - Standard 14\"","hasMonitor":true},
+  {"company":"SS","dept":"FA","type":"Laptop - Standard 14\"","hasMonitor":true},
+  {"company":"SC","dept":"FA","type":"Laptop - Standard 14\"","hasMonitor":true},
+  {"company":"SS","dept":"FA","type":"Laptop - Standard 14\"","hasMonitor":true},
+  {"company":"SS","dept":"CD","type":"Laptop - Standard 14\"","hasMonitor":true},
+  {"company":"SS","dept":"FA","type":"Laptop - Standard 14\"","hasMonitor":true},
+  {"company":"SC","dept":"SCM","type":"Laptop - Standard 14\"","hasMonitor":true},
+  {"company":"SS","dept":"CD","type":"Laptop - Standard 14\"","hasMonitor":true},
+  {"company":"SS","dept":"FA","type":"Laptop - Standard 14\"","hasMonitor":true},
+  {"company":"SS","dept":"FA","type":"Laptop - Standard 14\"","hasMonitor":true},
+  {"company":"SS","dept":"FA","type":"Laptop - Standard 14\"","hasMonitor":true},
+  {"company":"SS","dept":"FA","type":"Laptop - Standard 14\"","hasMonitor":true},
+  {"company":"SS","dept":"FA","type":"Laptop - Standard 14\"","hasMonitor":true},
+  {"company":"SS","dept":"FA","type":"Laptop - Standard 14\"","hasMonitor":true},
+  {"company":"SS","dept":"FA","type":"Laptop - Standard 14\"","hasMonitor":true},
+  {"company":"SS","dept":"FA","type":"Laptop - Standard 14\"","hasMonitor":true},
+  {"company":"SS","dept":"SCM","type":"Laptop - Standard 14\"","hasMonitor":true},
+  {"company":"SS","dept":"SCM","type":"Laptop - Standard 14\"","hasMonitor":true},
+  {"company":"SS","dept":"HR&IT","type":"Laptop - Pro","hasMonitor":true},
+  {"company":"SS","dept":"HR&IT","type":"Laptop - Pro","hasMonitor":true},
+  {"company":"SS","dept":"FA","type":"Laptop - Standard 14\"","hasMonitor":true},
+  {"company":"SS","dept":"FA","type":"Laptop - Standard 14\"","hasMonitor":true},
+  {"company":"SS","dept":"CD","type":"Laptop - Standard 14\"","hasMonitor":true},
+  {"company":"SS","dept":"CD","type":"Laptop - Standard 14\"","hasMonitor":false},
+  {"company":"SS","dept":"HR&IT","type":"Laptop - Standard 14\"","hasMonitor":true},
+  {"company":"SS","dept":"HR&IT","type":"Laptop - Standard 14\"","hasMonitor":true},
+  {"company":"SS","dept":"HR&IT","type":"Laptop - Standard 14\"","hasMonitor":true},
+  {"company":"SS","dept":"CHMBD","type":"Desktop - Graphic","hasMonitor":false}
+];
+
+// ---- HELPERS ----
+const fmt  = n => '฿' + Math.round(n).toLocaleString('th-TH');
+const fmtK = n => n >= 1000000 ? '฿' + (n/1000000).toFixed(2) + 'M' : fmt(n);
+
+function personCost(p) {
+  return (BASE_PRICES[p.type] || 0) + (p.hasMonitor ? BASE_PRICES['Monitor 24"'] : 0);
+}
+
+function shortType(t) {
+  const m = {
+    'Laptop - Standard 14"': 'Laptop 14"',
+    'Laptop - Standard 16"': 'Laptop 16"',
+    'Laptop - Pro':          'Laptop Pro',
+    'Laptop - Engineering':  'Laptop Eng',
+    'Desktop - Graphic':     'Desktop Graphic'
+  };
+  return m[t] || t;
+}
+
+// CE date string with Thai month name
+function ceDateStr(d) {
+  const thM = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน',
+               'กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+  return `${d.getDate()} ${thM[d.getMonth()]} ${d.getFullYear()}`;
+}
+function thMonthShort(d) {
+  const s = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  return s[d.getMonth()];
+}
+function thMonthLong(d) {
+  const l = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน',
+             'กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+  return l[d.getMonth()];
+}
+
+// ---- COMPUTE BUDGET ----
+const ssP = ALL_PEOPLE.filter(p => p.company === 'SS');
+const scP = ALL_PEOPLE.filter(p => p.company === 'SC');
+const ssMonCount = ssP.filter(p => p.hasMonitor).length;
+const scMonCount = scP.filter(p => p.hasMonitor).length;
+const ssTotal = ssP.reduce((s,p) => s + personCost(p), 0);
+const scTotal = scP.reduce((s,p) => s + personCost(p), 0);
+const grand   = ssTotal + scTotal;
+const ssPct   = Math.round(ssTotal / grand * 100);
+const scPct   = 100 - ssPct;
+
+// Dept DETAILED breakdown (devices + monitors + total)
+const deptBreakdown = {};
+ALL_PEOPLE.forEach(p => {
+  if (!p.dept) return;
+  if (!deptBreakdown[p.dept]) deptBreakdown[p.dept] = { devices: {}, monitors: 0, total: 0 };
+  const bd = deptBreakdown[p.dept];
+  bd.devices[p.type] = (bd.devices[p.type] || 0) + 1;
+  if (p.hasMonitor) bd.monitors++;
+  bd.total += personCost(p);
+});
+const deptSorted = Object.entries(deptBreakdown)
+  .map(([k, v]) => [k, v.total])
+  .sort((a, b) => b[1] - a[1]);
+
+// Per-company dept map (for SS/SC bar tooltip)
+const companyDeptMap = { SS: {}, SC: {} };
+ALL_PEOPLE.forEach(p => {
+  if (!p.dept || !companyDeptMap[p.company]) return;
+  companyDeptMap[p.company][p.dept] = (companyDeptMap[p.company][p.dept] || 0) + personCost(p);
+});
+
+// Device type
+const typeCountMap = {}, typeCostMap = {};
+ALL_PEOPLE.forEach(p => {
+  typeCountMap[p.type] = (typeCountMap[p.type] || 0) + 1;
+  typeCostMap[p.type]  = (typeCostMap[p.type]  || 0) + (BASE_PRICES[p.type] || 0);
+});
+const totalMonCount = ALL_PEOPLE.filter(p => p.hasMonitor).length;
+typeCountMap['Monitor 24"'] = totalMonCount;
+typeCostMap['Monitor 24"']  = totalMonCount * BASE_PRICES['Monitor 24"'];
+const totalUnits = ALL_PEOPLE.length;
+
+// ---- LEASING ----
+const LEASE_MONTHS = 36;
+const monthly = grand / LEASE_MONTHS;
+const yearBreakdown = { 2026: 4, 2027: 12, 2028: 12, 2029: 8 };
+const yearColors = { 2026: '#1a3a5c', 2027: '#2563a8', 2028: '#0ea5e9', 2029: '#1d6f42' };
+
+// Generate 36 months Sep 2026 → Aug 2029
+const leaseBarColors = [];
+for (let i = 0; i < LEASE_MONTHS; i++) {
+  const d = new Date(2026, 8 + i, 1);
+  leaseBarColors.push(yearColors[d.getFullYear()] || '#64748b');
+}
+
+// ---- RENDER ----
+const today = new Date();
+const dateStr = ceDateStr(today);
+
+document.getElementById('kpi-grand').textContent     = fmtK(grand);
+document.getElementById('kpi-grand-meta').textContent = 'รวมทั้ง SS และ SC Company';
+document.getElementById('kpi-units').textContent      = totalUnits;
+document.getElementById('kpi-units-meta').textContent = `${ssP.length} SS · ${scP.length} SC`;
+document.getElementById('kpi-ss').textContent         = fmtK(ssTotal);
+document.getElementById('kpi-ss-meta').textContent    = `${ssP.length} เครื่อง / ${ssMonCount} จอ · ${ssPct}% ของงบรวม`;
+document.getElementById('kpi-sc').textContent         = fmtK(scTotal);
+document.getElementById('kpi-sc-meta').textContent    = `${scP.length} เครื่อง / ${scMonCount} จอ · ${scPct}% ของงบรวม`;
+
+document.getElementById('hdr-total').textContent = `งบรวม ${fmtK(grand)}`;
+document.getElementById('hdr-date').textContent  = dateStr;
+document.getElementById('footer-txt').textContent = `SCOTCH Group IT Budget Review FY2026 · IT Infrastructure Team · ${dateStr}`;
+
+// Comparison bar
+document.getElementById('bar-ss').style.width    = ssPct + '%';
+document.getElementById('bar-sc').style.width    = scPct + '%';
+document.getElementById('bar-ss-pct').textContent = ssPct + '%';
+document.getElementById('bar-sc-pct').textContent = scPct + '%';
+document.getElementById('cn-ss').textContent      = fmt(ssTotal);
+document.getElementById('cn-sc').textContent      = fmt(scTotal);
+document.getElementById('cn-ss-meta').textContent = `${ssP.length} เครื่อง / ${ssMonCount} จอ`;
+document.getElementById('cn-sc-meta').textContent = `${scP.length} เครื่อง / ${scMonCount} จอ`;
+
+// Devices
+const devKeys = {
+  'Laptop - Standard 14"': ['dev-l14','tot-l14'],
+  'Laptop - Standard 16"': ['dev-l16','tot-l16'],
+  'Laptop - Pro':          ['dev-pro','tot-pro'],
+  'Desktop - Graphic':     ['dev-desk','tot-desk'],
+  'Monitor 24"':           ['dev-mon','tot-mon']
+};
+Object.entries(devKeys).forEach(([k,[cntId, totId]]) => {
+  document.getElementById(cntId).textContent = typeCountMap[k] || 0;
+  document.getElementById(totId).textContent = fmt((typeCountMap[k]||0) * (BASE_PRICES[k]||0));
+});
+
+// Leasing KPIs
+document.getElementById('lkpi-monthly').textContent    = fmt(monthly);
+document.getElementById('lkpi-total').textContent      = fmt(grand);
+document.getElementById('lkpi-total-meta').textContent = `36 งวด × ${fmt(monthly)}/งวด`;
+
+// Year cards
+Object.entries(yearBreakdown).forEach(([yr, mo]) => {
+  document.getElementById(`yr-${yr}`).textContent = fmt(mo * monthly);
+});
+
+// ---- SS/SC BAR CUSTOM TOOLTIP ----
+const cmpTt = document.getElementById('cmp-tt');
+
+function showCmpTooltip(company, e) {
+  const color = company === 'SS' ? '#1d6f42' : '#b45309';
+  const depts = Object.entries(companyDeptMap[company]).sort((a,b) => b[1]-a[1]);
+  const monCnt = company === 'SS' ? ssMonCount : scMonCount;
+  const devCnt = company === 'SS' ? ssP.length : scP.length;
+  let html = `<div style="font-size:13px;font-weight:800;color:${color};margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #e2e8f0;">
+    ${company} Company &nbsp;·&nbsp; <span style="font-weight:600;color:#475569;">${devCnt} เครื่อง / ${monCnt} จอ</span>
+  </div>`;
+  depts.forEach(([dept, amt]) => {
+    html += `<div style="display:flex;justify-content:space-between;gap:28px;padding:3px 0;">
+      <span style="color:#475569;font-weight:600;">${dept}</span>
+      <span style="font-weight:700;color:#1e293b;">${fmt(amt)}</span>
+    </div>`;
+  });
+  cmpTt.innerHTML = html;
+  cmpTt.style.display = 'block';
+  moveCmpTooltip(e);
+}
+
+function moveCmpTooltip(e) {
+  const x = Math.min(e.clientX + 16, window.innerWidth - 260);
+  const y = Math.max(e.clientY - 10, 8);
+  cmpTt.style.left = x + 'px';
+  cmpTt.style.top  = y + 'px';
+}
+
+['bar-ss','bar-sc'].forEach(id => {
+  const el = document.getElementById(id);
+  const co = id === 'bar-ss' ? 'SS' : 'SC';
+  el.addEventListener('mousemove', e => { showCmpTooltip(co, e); });
+  el.addEventListener('mouseenter', e => { showCmpTooltip(co, e); });
+  el.addEventListener('mouseleave', () => { cmpTt.style.display = 'none'; });
+});
+document.addEventListener('scroll', () => { cmpTt.style.display = 'none'; }, true);
+
+// ---- CHART.JS ----
+Chart.defaults.font.family = "'Segoe UI', Arial, sans-serif";
+
+// 1. Dept horizontal bar — with device breakdown tooltip
+new Chart(document.getElementById('deptChart'), {
+  type: 'bar',
+  data: {
+    labels: deptSorted.map(([d]) => d),
+    datasets: [{
+      data: deptSorted.map(([,v]) => v),
+      backgroundColor: ['#1a3a5c','#2563a8','#1d6f42','#0ea5e9','#b45309','#7c3aed','#dc2626','#0891b2'],
+      borderRadius: 6, borderSkipped: false,
+    }]
+  },
+  options: {
+    indexAxis: 'y', responsive: true, maintainAspectRatio: true, aspectRatio: 1.6,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          title: items => `${items[0].label} — รายละเอียด`,
+          label: ctx => {
+            const dept = ctx.label;
+            const bd = deptBreakdown[dept];
+            const lines = [`  งบรวม: ${fmt(ctx.raw)}`];
+            Object.entries(bd.devices)
+              .sort((a,b) => b[1]-a[1])
+              .forEach(([type, cnt]) => {
+                const price = BASE_PRICES[type] || 0;
+                lines.push(`  ${shortType(type)}: ${cnt} เครื่อง  (${fmt(cnt * price)})`);
+              });
+            if (bd.monitors > 0) {
+              lines.push(`  Monitor 24": ${bd.monitors} จอ  (${fmt(bd.monitors * BASE_PRICES['Monitor 24"'])})`);
+            }
+            return lines;
+          }
+        }
+      }
+    },
+    scales: {
+      x: { grid: { color: '#f1f5f9' }, ticks: { callback: v => '฿' + (v/1000).toFixed(0) + 'K', font: { size: 11 } }, border: { display: false } },
+      y: { grid: { display: false }, ticks: { font: { size: 13, weight: '600' } }, border: { display: false } }
+    }
+  }
+});
+
+// 2. Device type donut
+const donutLabels = ['Laptop 14"', 'Laptop Pro', 'Monitor 24"', 'Desktop Graphic', 'Laptop 16"'];
+const donutKeys   = ['Laptop - Standard 14"', 'Laptop - Pro', 'Monitor 24"', 'Desktop - Graphic', 'Laptop - Standard 16"'];
+new Chart(document.getElementById('typeChart'), {
+  type: 'doughnut',
+  data: {
+    labels: donutLabels,
+    datasets: [{
+      data: donutKeys.map(k => typeCostMap[k] || 0),
+      backgroundColor: ['#1a3a5c','#7c3aed','#0ea5e9','#b45309','#2563a8'],
+      borderWidth: 3, borderColor: '#fff', hoverOffset: 6
+    }]
+  },
+  options: {
+    cutout: '60%', responsive: true, maintainAspectRatio: true,
+    plugins: {
+      legend: { position: 'bottom', labels: { font: { size: 12 }, padding: 14, usePointStyle: true, pointStyleWidth: 10 } },
+      tooltip: { callbacks: { label: ctx => `  ${ctx.label}: ${fmt(ctx.raw)}  (${Math.round(ctx.raw/grand*100)}%)` } }
+    }
+  }
+});
+
+// 3. Annual bar chart (CE years only)
+new Chart(document.getElementById('annualChart'), {
+  type: 'bar',
+  data: {
+    labels: Object.keys(yearBreakdown),
+    datasets: [{
+      data: Object.entries(yearBreakdown).map(([,mo]) => mo * monthly),
+      backgroundColor: Object.keys(yearBreakdown).map(yr => yearColors[yr]),
+      borderRadius: 8, borderSkipped: false,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => {
+            const yr = Object.keys(yearBreakdown)[ctx.dataIndex];
+            const mo = yearBreakdown[yr];
+            return `  ${fmt(ctx.raw)}  (${mo} งวด × ${fmt(monthly)}/งวด)`;
+          }
+        }
+      }
+    },
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 13, weight: '700' } }, border: { display: false } },
+      y: { grid: { color: '#f1f5f9' }, ticks: { callback: v => '฿' + (v/1000).toFixed(0) + 'K', font: { size: 11 } }, border: { display: false } }
+    }
+  }
+});
+
+// 4. Monthly timeline (36 bars) — CE year in all labels
+const leaseValues = Array(LEASE_MONTHS).fill(monthly);
+
+// X-axis: show month abbrev + year at year boundary
+function makeTickLabel(idx) {
+  const d = new Date(2026, 8 + idx, 1);
+  const mo = thMonthShort(d);
+  if (idx === 0 || d.getMonth() === 0) return [mo, String(d.getFullYear())];
+  return mo;
+}
+
+new Chart(document.getElementById('monthlyChart'), {
+  type: 'bar',
+  data: {
+    labels: Array.from({ length: LEASE_MONTHS }, (_, i) => i),
+    datasets: [{
+      data: leaseValues,
+      backgroundColor: leaseBarColors,
+      borderRadius: 4, borderSkipped: false,
+      barPercentage: 0.75,
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          title: items => {
+            const i = items[0].dataIndex;
+            const d = new Date(2026, 8 + i, 1);
+            return `${thMonthLong(d)} ${d.getFullYear()}`;
+          },
+          label: ctx => `  ค่างวด: ${fmt(ctx.raw)}  🛡️ รวมประกันอุบัติเหตุ`
+        }
+      }
+    },
+    scales: {
+      x: {
+        grid: { display: false },
+        ticks: {
+          callback: (_, idx) => makeTickLabel(idx),
+          font: { size: 10 },
+          maxRotation: 45, minRotation: 45,
+          color: (ctx) => {
+            const d = new Date(2026, 8 + ctx.index, 1);
+            return yearColors[d.getFullYear()] || '#64748b';
+          }
+        },
+        border: { display: false }
+      },
+      y: {
+        grid: { color: '#f1f5f9' },
+        ticks: { callback: v => '฿' + (v/1000).toFixed(0) + 'K', font: { size: 11 } },
+        border: { display: false },
+        min: 0, max: monthly * 1.4
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>
