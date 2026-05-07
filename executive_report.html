@@ -165,6 +165,145 @@
 
   .footer { text-align: center; padding: 20px; font-size: 11px; color: #94a3b8; }
 
+  /* ═══ STICKY HEADER ═══ */
+  .hdr { position: sticky; top: 0; z-index: 500; }
+
+  /* ═══ SCROLL FADE-IN ═══ */
+  .fade-up { opacity: 0; transform: translateY(18px); transition: opacity 0.45s ease, transform 0.45s ease; }
+  .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+  /* ═══ TABLET ≤ 960px ═══ */
+  @media (max-width: 960px) {
+    .hdr { padding: 20px 28px; }
+    .hdr-text h1 { font-size: 18px; }
+    .body { padding: 20px 16px; gap: 18px; }
+    .kpi-row { grid-template-columns: repeat(2, 1fr); }
+    .charts-row { grid-template-columns: 1fr; }
+    .dev-row { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .lease-kpi-row { grid-template-columns: repeat(2, 1fr); }
+    .year-cards { grid-template-columns: repeat(2, 1fr); }
+    .lease-overview { flex-wrap: wrap; }
+  }
+
+  /* ═══ MOBILE ≤ 640px ═══ */
+  @media (max-width: 640px) {
+
+    /* Header — 2-row: [logo][badge] / [title] */
+    .hdr {
+      padding: 12px 16px; flex-wrap: wrap; gap: 8px;
+    }
+    .hdr img { height: 34px; order: 1; flex-shrink: 0; }
+    .hdr-badge {
+      order: 2; margin-left: auto; min-width: unset;
+      padding: 6px 12px; border-radius: 12px;
+    }
+    .hdr-badge .b1 { font-size: 15px; }
+    .hdr-badge .b2 { font-size: 10px; margin-top: 2px; }
+    .hdr-text { order: 3; width: 100%; flex-basis: 100%; }
+    .hdr-text h1 { font-size: 14px; line-height: 1.35; font-weight: 800; }
+    .hdr-text p { font-size: 11px; margin-top: 3px; }
+
+    /* Body */
+    .body { padding: 12px 10px; gap: 12px; }
+
+    /* KPI 2×2 */
+    .kpi-row { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .kpi { padding: 14px 14px; border-top-width: 4px; }
+    .kpi-lbl { font-size: 9px; letter-spacing: 0.7px; margin-bottom: 6px; }
+    .kpi-val { font-size: 21px; }
+    .kpi-meta { font-size: 10px; margin-top: 5px; }
+
+    /* Charts — single col */
+    .charts-row { grid-template-columns: 1fr; gap: 12px; }
+    .card-hdr { padding: 12px 14px 8px; }
+    .card-title { font-size: 13px; }
+    .card-sub { font-size: 10px; }
+    .card-body { padding: 10px 12px 16px; }
+
+    /* SS vs SC */
+    .cmp-card { padding: 14px 16px; }
+    .cmp-title { font-size: 12px; margin-bottom: 10px; }
+    .cmp-bar-track { height: 18px; margin-bottom: 10px; }
+    .cmp-bar-lbl { font-size: 11px; }
+    .cn-lbl { font-size: 11px; }
+    .cn-amount { font-size: 18px; }
+    .cn-meta { font-size: 11px; }
+
+    /* Devices — 3 per row × 2 rows */
+    .dev-row { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .dev-card { padding: 12px 6px; border-radius: 10px; }
+    .dev-icon { font-size: 22px; }
+    .dev-count { font-size: 30px; }
+    .dev-name { font-size: 9px; letter-spacing: 0.3px; margin-top: 4px; }
+    .dev-unit { font-size: 10px; margin-top: 3px; }
+    .dev-total { font-size: 9px; margin-top: 2px; }
+
+    /* Spec tooltip — show BELOW icon on mobile */
+    .dev-icon-wrap .spec-tt {
+      bottom: auto; top: calc(100% + 8px); left: 50%;
+      transform: translateX(-50%); font-size: 11px;
+      padding: 10px 12px; min-width: 140px;
+    }
+    .dev-icon-wrap .spec-tt::after {
+      top: auto; bottom: 100%;
+      border-top-color: transparent;
+      border-bottom-color: #1e293b;
+    }
+
+    /* Section divider */
+    .section-divider .sd-label { font-size: 9px; letter-spacing: 1px; }
+
+    /* Leasing overview */
+    .lease-overview {
+      flex-direction: column; align-items: flex-start;
+      padding: 14px 16px; gap: 12px;
+    }
+    .lease-ov-icon { font-size: 30px; }
+    .lease-ov-title { font-size: 13px; }
+    .lease-ov-sub { font-size: 11px; }
+    .lease-insurance-badge { align-self: flex-start; padding: 5px 14px; }
+    .lease-insurance-badge .ins-text { font-size: 12px; }
+
+    /* Leasing KPIs — single col */
+    .lease-kpi-row { grid-template-columns: 1fr; gap: 10px; }
+    .lease-kpi { padding: 14px 16px; }
+    .lkpi-lbl { font-size: 10px; }
+    .lkpi-val { font-size: 22px; }
+    .lkpi-meta { font-size: 11px; }
+
+    /* Year cards — 2×2 */
+    .year-cards { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .yr-card { padding: 14px 14px; border-radius: 10px; }
+    .yr-card-year { font-size: 12px; }
+    .yr-card-months { font-size: 10px; }
+    .yr-card-amount { font-size: 19px; margin-top: 8px; }
+    .yr-card-installments { font-size: 10px; }
+
+    /* Annual chart */
+    .card-body canvas { max-height: 180px; }
+
+    /* Timeline */
+    .timeline-legend { padding: 8px 12px 0; gap: 10px; flex-wrap: wrap; }
+    .tl-leg-item { font-size: 10px; }
+    .tl-leg-dot { width: 12px; height: 12px; }
+    .timeline-chart-wrap { padding: 6px 10px 14px; }
+    .timeline-chart-wrap canvas { min-width: 660px; }
+
+    /* Footer */
+    .footer { font-size: 10px; padding: 14px; }
+  }
+
+  /* ═══ VERY SMALL ≤ 380px ═══ */
+  @media (max-width: 380px) {
+    .hdr-text h1 { font-size: 12px; }
+    .kpi-val { font-size: 18px; }
+    .dev-row { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    .dev-count { font-size: 26px; }
+    .dev-name { font-size: 8px; }
+    .cn-amount { font-size: 16px; }
+    .yr-card-amount { font-size: 16px; }
+  }
+
   @media print {
     body { background: white; }
     * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
@@ -857,6 +996,34 @@ new Chart(document.getElementById('monthlyChart'), {
     }
   }
 });
+
+// ═══ SCROLL FADE-IN ANIMATION ═══
+const fadeObserver = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 60);
+      fadeObserver.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08 });
+
+document.querySelectorAll(
+  '.kpi, .card, .cmp-card, .dev-card, .lease-kpi, .yr-card, .lease-overview, .timeline-card'
+).forEach(el => {
+  el.classList.add('fade-up');
+  fadeObserver.observe(el);
+});
+
+// ═══ STICKY HEADER SHRINK ON SCROLL ═══
+const hdr = document.querySelector('.hdr');
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 40) {
+    hdr.style.padding = window.innerWidth <= 640 ? '8px 16px' : '14px 48px';
+    hdr.style.transition = 'padding 0.3s ease';
+  } else {
+    hdr.style.padding = '';
+  }
+}, { passive: true });
 </script>
 </body>
 </html>
