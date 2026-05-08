@@ -163,6 +163,32 @@
   .timeline-chart-wrap { padding: 8px 20px 20px; overflow-x: auto; }
   .timeline-chart-wrap canvas { min-width: 900px; }
 
+  /* CTA Buttons */
+  .cta-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .cta-btn {
+    display: flex; align-items: center; gap: 16px;
+    padding: 20px 24px; border-radius: var(--r);
+    text-decoration: none; box-shadow: var(--sh);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+    cursor: pointer;
+  }
+  .cta-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(0,0,0,.14); }
+  .cta-btn:active { transform: translateY(0); }
+  .cta-report { background: linear-gradient(135deg, var(--navy-dk), var(--navy)); color: white; }
+  .cta-game   { background: linear-gradient(135deg, #7c3aed, #5b21b6); color: white; }
+  .cta-icon   { font-size: 32px; flex-shrink: 0; }
+  .cta-label  { font-size: 16px; font-weight: 800; line-height: 1.2; }
+  .cta-sub    { font-size: 12px; opacity: 0.75; margin-top: 3px; }
+  .cta-arrow  { margin-left: auto; font-size: 22px; opacity: 0.6; flex-shrink: 0; }
+
+  @media (max-width: 640px) {
+    .cta-row { grid-template-columns: 1fr; gap: 12px; }
+    .cta-btn { padding: 16px 18px; gap: 12px; }
+    .cta-icon { font-size: 26px; }
+    .cta-label { font-size: 14px; }
+    .cta-sub { font-size: 11px; }
+  }
+
   .footer { text-align: center; padding: 20px; font-size: 11px; color: #94a3b8; }
 
   /* ═══ STICKY HEADER ═══ */
@@ -587,6 +613,27 @@
   </div>
 
 </div>
+
+  <!-- Bottom CTA buttons -->
+  <div class="cta-row">
+    <a href="index.html" class="cta-btn cta-report">
+      <span class="cta-icon">📄</span>
+      <div>
+        <div class="cta-label">Full Report</div>
+        <div class="cta-sub">รายละเอียดทุกรายการ · Interactive</div>
+      </div>
+      <span class="cta-arrow">→</span>
+    </a>
+    <a href="budget_game.html" class="cta-btn cta-game">
+      <span class="cta-icon">🎮</span>
+      <div>
+        <div class="cta-label">Mini IT Budget Game</div>
+        <div class="cta-sub">ลองบริหารงบประมาณ IT ด้วยตัวเอง</div>
+      </div>
+      <span class="cta-arrow">→</span>
+    </a>
+  </div>
+
 <div class="footer" id="footer-txt">–</div>
 
 <script>
