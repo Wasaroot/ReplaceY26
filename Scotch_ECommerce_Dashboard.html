@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>E-Commerce Executive Report · Scotch</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@500;600&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  /* Scotch corporate palette - น้ำตาลทอง + cream + white */
+  --bg-0: #fbf9f5;          /* ครีมอ่อนนวล */
+  --bg-1: #ffffff;          /* ขาว */
+  --bg-2: #f6f2ea;          /* card background */
+  --bg-3: #efe8d8;          /* divider */
+  --border: #e8dfc9;
+  --border-strong: #d4c5a0;
+  --text-0: #1a1410;        /* น้ำตาลเข้มเกือบดำ */
+  --text-1: #4a3f2f;        /* น้ำตาลกลาง */
+  --text-2: #8a7e68;        /* น้ำตาลอ่อน */
+  --brand: #8b6914;         /* น้ำตาลทอง Scotch */
+  --brand-light: #b89548;
+  --brand-dim: #6b5010;
+  --gold: #c9a55a;
+  --gold-soft: #e6d4a8;
+  /* channel colors */
+  --c-shopee: #ee4d2d;
+  --c-lazada: #2d4cb8;
+  --c-tiktok: #00b8a9;
+  --c-line: #06c755;
+  --c-amaze: #8b5cf6;
+  --c-ofm: #d97706;
+  --c-linegift: #db2777;
+  --pos: #16a34a;
+  --neg: #dc2626;
+  --shadow-sm: 0 1px 2px rgba(74,63,47,0.04);
+  --shadow-md: 0 4px 16px rgba(74,63,47,0.06);
+  --shadow-lg: 0 10px 32px rgba(74,63,47,0.08);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { background: var(--bg-0); color: var(--text-0); font-family: 'IBM Plex Sans Thai', sans-serif; min-height: 100vh; -webkit-font-smoothing: antialiased; }
+body {
+  background:
+    radial-gradient(ellipse 900px 600px at 90% -5%, rgba(201,165,90,0.10), transparent 70%),
+    radial-gradient(ellipse 700px 500px at -5% 100%, rgba(139,105,20,0.05), transparent 70%),
+    var(--bg-0);
+  background-attachment: fixed;
+}
+.container { max-width: 1600px; margin: 0 auto; padding: 28px 24px; }
+
+/* HEADER */
+.header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  gap: 24px; flex-wrap: wrap;
+  padding-bottom: 22px; margin-bottom: 26px;
+  border-bottom: 2px solid var(--brand);
+  position: relative;
+}
+.header::after {
+  content: ''; position: absolute; bottom: -2px; left: 0; width: 80px; height: 2px;
+  background: linear-gradient(90deg, var(--brand), var(--gold));
+}
+.brand { display: flex; align-items: center; gap: 18px; }
+.brand-logo {
+  height: 64px; width: auto;
+  filter: drop-shadow(0 2px 4px rgba(139,105,20,0.15));
+}
+.brand-text h1 {
+  font-family: 'Playfair Display', 'IBM Plex Sans Thai', serif;
+  font-size: 30px; font-weight: 700; line-height: 1.1;
+  color: var(--text-0);
+  letter-spacing: -0.5px;
+}
+.brand-text .subtitle {
+  font-size: 13px; color: var(--text-2);
+  margin-top: 4px; font-weight: 400;
+}
+.brand-text .tag {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 3px 10px;
+  background: var(--brand);
+  color: white;
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 2px; text-transform: uppercase;
+  border-radius: 3px;
+}
+.header-meta { text-align: right; font-size: 12px; color: var(--text-2); }
+.header-meta .meta-row { display: flex; justify-content: flex-end; gap: 8px; margin-bottom: 4px; }
+.header-meta strong { color: var(--brand); font-family: 'IBM Plex Mono', monospace; font-weight: 600; font-size: 13px; }
+.header-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 12px;
+  background: rgba(22,163,74,0.08);
+  color: var(--pos);
+  border-radius: 6px;
+  font-size: 11px; font-weight: 600; letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.header-badge::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--pos);
+}
+
+/* FILTERS */
+.filter-bar {
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 22px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-sm);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 20px;
+  align-items: center;
+}
+.filter-groups { display: flex; gap: 28px; flex-wrap: wrap; }
+.filter-group { display: flex; flex-direction: column; gap: 8px; }
+.filter-label {
+  font-size: 10px; letter-spacing: 1.8px;
+  color: var(--text-2); text-transform: uppercase; font-weight: 600;
+}
+.filter-row { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip {
+  padding: 6px 13px;
+  background: var(--bg-2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 12px; font-weight: 500;
+  color: var(--text-1);
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+  white-space: nowrap;
+  position: relative;
+}
+.chip:hover { border-color: var(--border-strong); color: var(--text-0); background: var(--bg-3); }
+.chip.active {
+  background: var(--brand);
+  color: white;
+  border-color: var(--brand);
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(139,105,20,0.20);
+}
+.chip-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+.filter-actions { display: flex; gap: 8px; }
+.btn-reset {
+  padding: 9px 16px;
+  background: var(--bg-1);
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  color: var(--text-1);
+  font-size: 12px; font-weight: 600;
+  cursor: pointer; font-family: inherit;
+  transition: all 0.15s;
+}
+.btn-reset:hover { background: var(--brand); color: white; border-color: var(--brand); }
+
+/* KPI */
+.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+.kpi-card {
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 22px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s;
+}
+.kpi-card::before {
+  content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+  background: var(--brand);
+  opacity: 0.85;
+}
+.kpi-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.kpi-card:nth-child(2)::before { background: var(--c-shopee); }
+.kpi-card:nth-child(3)::before { background: var(--gold); }
+.kpi-card:nth-child(4)::before { background: var(--c-tiktok); }
+.kpi-label {
+  font-size: 10px; letter-spacing: 1.8px; color: var(--text-2);
+  text-transform: uppercase; font-weight: 600; margin-bottom: 12px;
+}
+.kpi-value {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 30px; font-weight: 600; line-height: 1;
+  color: var(--text-0);
+  letter-spacing: -1px;
+}
+.kpi-suffix { font-family: 'IBM Plex Sans Thai', sans-serif; font-size: 14px; color: var(--text-2); font-weight: 400; margin-left: 4px; letter-spacing: 0; }
+.kpi-sub { margin-top: 12px; font-size: 12px; color: var(--text-2); display: flex; align-items: center; gap: 6px; }
+.kpi-delta { font-family: 'IBM Plex Mono', monospace; font-weight: 600; }
+.kpi-delta.pos { color: var(--pos); }
+.kpi-delta.neg { color: var(--neg); }
+
+/* GRID */
+.dashboard-grid {
+  display: grid; grid-template-columns: 2fr 1fr;
+  gap: 16px; margin-bottom: 16px;
+}
+.dashboard-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.panel {
+  background: var(--bg-1);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 22px;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+}
+.panel-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+.panel-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px; font-weight: 700; color: var(--text-0);
+  letter-spacing: 0;
+}
+.panel-subtitle { font-size: 11px; color: var(--text-2); margin-top: 3px; }
+.chart-container { position: relative; height: 280px; }
+.chart-container.tall { height: 360px; }
+
+/* TABLE LIST (TOP SKU) */
+.table-list { display: flex; flex-direction: column; gap: 8px; max-height: 380px; overflow-y: auto; padding-right: 4px; }
+.table-list::-webkit-scrollbar { width: 6px; }
+.table-list::-webkit-scrollbar-track { background: var(--bg-2); border-radius: 3px; }
+.table-list::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+.list-row {
+  display: grid; grid-template-columns: 28px 1fr auto; gap: 12px; align-items: center;
+  padding: 12px 14px;
+  background: var(--bg-2);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  transition: all 0.15s;
+  position: relative;
+  overflow: hidden;
+}
+.list-row:hover { border-color: var(--border-strong); background: var(--bg-3); }
+.list-rank {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px; font-weight: 700; color: var(--brand);
+  text-align: center;
+}
+.list-name { font-size: 13px; font-weight: 500; color: var(--text-0); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.list-meta { font-size: 11px; color: var(--text-2); margin-top: 2px; }
+.list-value { font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; color: var(--brand); }
+.list-bar { grid-column: 1 / -1; height: 3px; background: var(--bg-3); border-radius: 2px; margin-top: 6px; overflow: hidden; }
+.list-bar-fill { height: 100%; background: linear-gradient(90deg, var(--gold-soft), var(--brand)); border-radius: 2px; transition: width 0.6s; }
+
+/* HEATMAP */
+.heatmap-grid { display: grid; gap: 6px; font-size: 11px; }
+.heatmap-row { display: grid; grid-template-columns: 90px repeat(6, 1fr); gap: 4px; align-items: center; }
+.heatmap-header { color: var(--text-2); font-size: 10px; letter-spacing: 1px; text-transform: uppercase; text-align: center; padding: 4px 0; font-weight: 600; }
+.heatmap-label { color: var(--text-1); font-size: 11px; font-weight: 600; padding-right: 8px; text-align: right; }
+.heatmap-cell {
+  aspect-ratio: 2 / 1;
+  border-radius: 6px;
+  display: grid; place-items: center;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px; font-weight: 700;
+  transition: all 0.2s;
+  cursor: default;
+  border: 1px solid transparent;
+}
+.heatmap-cell:hover { transform: scale(1.05); border-color: var(--brand); z-index: 2; box-shadow: var(--shadow-md); }
+.heatmap-cell[data-intensity="0"] { background: var(--bg-2); color: var(--text-2); }
+.heatmap-cell[data-intensity="1"] { background: rgba(201,165,90,0.15); color: var(--text-1); }
+.heatmap-cell[data-intensity="2"] { background: rgba(201,165,90,0.32); color: var(--text-0); }
+.heatmap-cell[data-intensity="3"] { background: rgba(201,165,90,0.52); color: white; }
+.heatmap-cell[data-intensity="4"] { background: rgba(184,149,72,0.78); color: white; }
+.heatmap-cell[data-intensity="5"] { background: var(--brand); color: white; }
+
+/* CITY BARS */
+.city-list { display: flex; flex-direction: column; gap: 10px; }
+.city-row { display: grid; grid-template-columns: 120px 1fr 100px; gap: 12px; align-items: center; font-size: 12px; }
+.city-name { color: var(--text-1); font-weight: 500; }
+.city-bar { height: 10px; background: var(--bg-2); border-radius: 5px; overflow: hidden; border: 1px solid var(--border); }
+.city-bar-fill { height: 100%; background: linear-gradient(90deg, var(--gold-soft), var(--brand)); border-radius: 5px; transition: width 0.8s ease-out; }
+.city-value { font-family: 'IBM Plex Mono', monospace; color: var(--brand); text-align: right; font-size: 11px; font-weight: 600; }
+
+/* TIME TABS */
+.time-tabs { display: flex; gap: 4px; background: var(--bg-2); padding: 3px; border-radius: 8px; border: 1px solid var(--border); }
+.time-tab { padding: 6px 12px; font-size: 11px; font-weight: 600; color: var(--text-2); background: transparent; border: none; border-radius: 5px; cursor: pointer; font-family: inherit; transition: all 0.15s; }
+.time-tab.active { background: var(--bg-1); color: var(--brand); box-shadow: var(--shadow-sm); }
+.time-tab:hover:not(.active) { color: var(--text-0); }
+
+/* FOOTER */
+.footer { margin-top: 32px; padding: 20px 0; border-top: 1px solid var(--border); text-align: center; font-size: 11px; color: var(--text-2); letter-spacing: 1px; }
+.footer strong { color: var(--brand); font-family: 'IBM Plex Mono', monospace; }
+
+/* RESPONSIVE */
+@media (max-width: 1100px) {
+  .dashboard-grid, .dashboard-grid-2 { grid-template-columns: 1fr; }
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+  .container { padding: 18px 14px; }
+  .header { padding-bottom: 16px; margin-bottom: 18px; }
+  .header-meta { text-align: left; width: 100%; }
+  .header-meta .meta-row { justify-content: flex-start; }
+  .brand-logo { height: 48px; }
+  .brand-text h1 { font-size: 22px; }
+  .brand-text .subtitle { font-size: 11px; }
+  .filter-bar { grid-template-columns: 1fr; padding: 14px; }
+  .filter-groups { gap: 14px; }
+  .kpi-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .kpi-card { padding: 16px; }
+  .kpi-value { font-size: 24px; }
+  .panel { padding: 16px; }
+  .panel-title { font-size: 14px; }
+  .chart-container { height: 240px; }
+  .chart-container.tall { height: 280px; }
+  .heatmap-row { grid-template-columns: 64px repeat(6, 1fr); }
+  .heatmap-label { font-size: 9px; }
+  .heatmap-cell { font-size: 8px; border-radius: 4px; }
+  .city-row { grid-template-columns: 90px 1fr 80px; font-size: 11px; }
+  .list-row { padding: 10px 12px; }
+}
+
+/* ANIMATIONS */
+.panel, .kpi-card { animation: fadeUp 0.5s ease-out backwards; }
+.kpi-card:nth-child(1) { animation-delay: 0.05s; }
+.kpi-card:nth-child(2) { animation-delay: 0.10s; }
+.kpi-card:nth-child(3) { animation-delay: 0.15s; }
+.kpi-card:nth-child(4) { animation-delay: 0.20s; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* PRINT */
+@media print {
+  body { background: white; }
+  .filter-bar { display: none; }
+  .panel, .kpi-card { box-shadow: none; border-color: #ddd; }
+  .dashboard-grid, .dashboard-grid-2 { page-break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="brand">
+      <img class="brand-logo" src="https://itp1.itopfile.com/ImageServer/z_itp_12052024va2c/0/0/logoz-z1176349371245.png" alt="SCOTCH">
+      <div class="brand-text">
+        <h1>E-Commerce Executive Report</h1>
+        <div class="subtitle">รายงานยอดขาย E-Commerce รายเดือน · เพื่อการรายงานผู้บริหาร</div>
+        <div class="tag">Sales Intelligence</div>
+      </div>
+    </div>
+    <div class="header-meta">
+      <div class="header-badge">DATA SNAPSHOT</div>
+      <div class="meta-row">รอบข้อมูล: <strong id="meta-period">—</strong></div>
+      <div class="meta-row">Generated: <strong id="meta-generated">—</strong></div>
+    </div>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filter-bar">
+    <div class="filter-groups">
+      <div class="filter-group">
+        <div class="filter-label">เดือน · Month</div>
+        <div class="filter-row" id="filter-months"></div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-label">ช่องทาง · Channel</div>
+        <div class="filter-row" id="filter-channels"></div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-label">หมวดสินค้า · Category</div>
+        <div class="filter-row" id="filter-categories"></div>
+      </div>
+    </div>
+    <div class="filter-actions">
+      <button class="btn-reset" id="btn-reset">↻ รีเซ็ต</button>
+    </div>
+  </div>
+
+  <!-- KPI -->
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Net Sales · ยอดขายสุทธิ (ex VAT)</div>
+      <div class="kpi-value">฿<span id="kpi-sales">0</span><span class="kpi-suffix" id="kpi-sales-unit">M</span></div>
+      <div class="kpi-sub">หลังหัก Credit Note · <span class="kpi-delta" id="kpi-sales-rate">—</span></div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Orders · จำนวนออเดอร์</div>
+      <div class="kpi-value"><span id="kpi-orders">0</span></div>
+      <div class="kpi-sub">ออเดอร์ทั้งหมดในช่วงที่เลือก</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">AOV · มูลค่าเฉลี่ย/ออเดอร์</div>
+      <div class="kpi-value">฿<span id="kpi-aov">0</span></div>
+      <div class="kpi-sub">Average Order Value</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Top Channel · ช่องทางอันดับ 1</div>
+      <div class="kpi-value" style="font-size:22px;" id="kpi-topch">—</div>
+      <div class="kpi-sub">ครองสัดส่วน <span class="kpi-delta pos" id="kpi-topch-share">—</span></div>
+    </div>
+  </div>
+
+  <!-- ROW 1: Trend + Channel mix -->
+  <div class="dashboard-grid">
+    <div class="panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">Sales Trend</div>
+          <div class="panel-subtitle">ยอดขายรายวัน · Net Amount</div>
+        </div>
+        <div class="time-tabs">
+          <button class="time-tab active" data-view="line">เส้น</button>
+          <button class="time-tab" data-view="bar">แท่ง</button>
+        </div>
+      </div>
+      <div class="chart-container"><canvas id="chartTrend"></canvas></div>
+    </div>
+    <div class="panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">Channel Mix</div>
+          <div class="panel-subtitle">สัดส่วนยอดขายแยกช่องทาง</div>
+        </div>
+      </div>
+      <div class="chart-container"><canvas id="chartChannel"></canvas></div>
+    </div>
+  </div>
+
+  <!-- ROW 2: Stacked + Heatmap -->
+  <div class="dashboard-grid-2">
+    <div class="panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">Channel × Category</div>
+          <div class="panel-subtitle">เปรียบเทียบยอดขายช่องทาง × หมวดสินค้า</div>
+        </div>
+      </div>
+      <div class="chart-container tall"><canvas id="chartStacked"></canvas></div>
+    </div>
+    <div class="panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">Category Heatmap</div>
+          <div class="panel-subtitle">ความหนาแน่นต่อช่องทาง · % ของยอดช่องทางนั้น</div>
+        </div>
+      </div>
+      <div id="heatmap"></div>
+    </div>
+  </div>
+
+  <!-- ROW 3: SKU + City -->
+  <div class="dashboard-grid-2">
+    <div class="panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">Top SKU</div>
+          <div class="panel-subtitle">สินค้าขายดี · Top 10</div>
+        </div>
+      </div>
+      <div class="table-list" id="top-sku"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-header">
+        <div>
+          <div class="panel-title">Top Cities</div>
+          <div class="panel-subtitle">ยอดขายรายจังหวัด · Top 10</div>
+        </div>
+      </div>
+      <div class="city-list" id="top-cities"></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    SCOTCH Group · IT Infrastructure · <strong id="footer-rows">—</strong> rows processed · For executive review only
+  </div>
+</div>
+
+<script>
+const DATA = {"dcc":{"cols":["d","ch","cat","amt","qty","orders","ret"],"rows":[["2026-04-01","AMAZE","รังนก",2387.85,4,1,0.0],["2026-04-01","Lazada","Herbal",12159.59,78,9,0.0],["2026-04-01","Lazada","กิ๊ฟวิ่ง",997.74,2,2,0.0],["2026-04-01","Lazada","ซุปไก่",16818.9,66,10,0.0],["2026-04-01","Lazada","รังนก",47598.34,90,20,0.0],["2026-04-01","Lazada","เพียวเร่",3627.81,20,8,0.0],["2026-04-01","Shopee","Herbal",6685.99,49,12,0.0],["2026-04-01","Shopee","กิ๊ฟวิ่ง",23919.61,47,27,0.0],["2026-04-01","Shopee","ซุปไก่",66235.95,218,89,0.0],["2026-04-01","Shopee","รังนก",117566.92,195,56,0.0],["2026-04-01","Shopee","สกินแคร์",2935.51,9,5,0.0],["2026-04-01","Shopee","เพียวเร่",37476.5,143,88,0.0],["2026-04-01","TikTok","Herbal",13888.23,109,58,0.0],["2026-04-01","TikTok","กิ๊ฟวิ่ง",40189.93,136,66,0.0],["2026-04-01","TikTok","ซุปไก่",40622.63,173,76,0.0],["2026-04-01","TikTok","รังนก",53534.57,116,45,0.0],["2026-04-01","TikTok","สกินแคร์",5690.41,18,10,0.0],["2026-04-01","TikTok","เพียวเร่",43745.95,212,141,0.0],["2026-04-02","AMAZE","Herbal",126.17,1,1,0.0],["2026-04-02","Lazada","ซุปไก่",1878.42,6,2,0.0],["2026-04-02","Lazada","รังนก",7604.67,16,3,0.0],["2026-04-02","Line","เพียวเร่",2847.66,13,1,0.0],["2026-04-02","Shopee","Herbal",11640.24,92,26,0.0],["2026-04-02","Shopee","กิ๊ฟวิ่ง",38785.15,112,31,0.0],["2026-04-02","Shopee","ซุปไก่",73195.04,265,110,0.0],["2026-04-02","Shopee","รังนก",120077.1,201,58,0.0],["2026-04-02","Shopee","สกินแคร์",1495.33,3,2,0.0],["2026-04-02","Shopee","เพียวเร่",46019.21,176,93,0.0],["2026-04-02","TikTok","Herbal",13347.36,85,44,0.0],["2026-04-02","TikTok","กิ๊ฟวิ่ง",53080.85,215,92,0.0],["2026-04-02","TikTok","ซุปไก่",46183.23,175,88,0.0],["2026-04-02","TikTok","รังนก",64737.37,134,69,0.0],["2026-04-02","TikTok","สกินแคร์",2809.34,8,4,0.0],["2026-04-02","TikTok","เพียวเร่",40281.79,171,112,0.0],["2026-04-03","AMAZE","ซุปไก่",635.51,2,1,0.0],["2026-04-03","Lazada","Herbal",3327.68,13,3,0.0],["2026-04-03","Lazada","กิ๊ฟวิ่ง",2589.34,6,1,0.0],["2026-04-03","Lazada","ซุปไก่",2075.1,7,2,0.0],["2026-04-03","Lazada","รังนก",9709.01,24,5,0.0],["2026-04-03","Lazada","เพียวเร่",167.71,1,1,0.0],["2026-04-03","Shopee","Herbal",9787.57,83,21,0.0],["2026-04-03","Shopee","กิ๊ฟวิ่ง",24536.41,44,23,0.0],["2026-04-03","Shopee","ซุปไก่",52050.38,176,91,0.0],["2026-04-03","Shopee","รังนก",110424.6,172,54,0.0],["2026-04-03","Shopee","สกินแคร์",2426.16,8,3,0.0],["2026-04-03","Shopee","เพียวเร่",39887.86,148,92,0.0],["2026-04-03","TikTok","Herbal",10770.47,62,38,0.0],["2026-04-03","TikTok","กิ๊ฟวิ่ง",36225.72,132,74,0.0],["2026-04-03","TikTok","ซุปไก่",38786.68,151,85,0.0],["2026-04-03","TikTok","รังนก",59948.52,122,70,0.0],["2026-04-03","TikTok","สกินแคร์",606.54,2,1,0.0],["2026-04-03","TikTok","เพียวเร่",36488.89,153,90,0.0],["2026-04-04","Lazada","Herbal",529033.83,964,426,0.0],["2026-04-04","Lazada","กิ๊ฟวิ่ง",59663.0,93,19,0.0],["2026-04-04","Lazada","ซุปไก่",75184.1,328,52,0.0],["2026-04-04","Lazada","รังนก",382925.61,743,145,0.0],["2026-04-04","Lazada","สกินแคร์",1080.47,4,2,0.0],["2026-04-04","Lazada","เพียวเร่",25066.68,117,29,0.0],["2026-04-04","Shopee","Herbal",97341.79,936,223,0.0],["2026-04-04","Shopee","กิ๊ฟวิ่ง",131753.6,318,118,0.0],["2026-04-04","Shopee","ซุปไก่",301222.76,1146,491,0.0],["2026-04-04","Shopee","รังนก",886691.57,1583,449,0.0],["2026-04-04","Shopee","สกินแคร์",15003.15,50,25,0.0],["2026-04-04","Shopee","เพียวเร่",205334.09,993,654,0.0],["2026-04-04","TikTok","Herbal",16840.96,116,45,0.0],["2026-04-04","TikTok","กิ๊ฟวิ่ง",82857.95,333,146,0.0],["2026-04-04","TikTok","ซุปไก่",62721.32,241,109,0.0],["2026-04-04","TikTok","รังนก",89158.43,169,84,0.0],["2026-04-04","TikTok","สกินแคร์",13519.82,44,21,0.0],["2026-04-04","TikTok","เพียวเร่",47078.7,208,114,0.0],["2026-04-06","Lazada","Herbal",71847.97,279,56,0.0],["2026-04-06","Lazada","กิ๊ฟวิ่ง",68655.17,137,33,0.0],["2026-04-06","Lazada","ซุปไก่",91554.18,357,64,0.0],["2026-04-06","Lazada","รังนก",363837.06,729,161,0.0],["2026-04-06","Lazada","สกินแคร์",5410.48,19,6,0.0],["2026-04-06","Lazada","เพียวเร่",26941.45,145,35,0.0],["2026-04-06","Shopee","Herbal",71129.02,662,186,0.0],["2026-04-06","Shopee","กิ๊ฟวิ่ง",205699.63,472,174,0.0],["2026-04-06","Shopee","ซุปไก่",239022.08,905,409,0.0],["2026-04-06","Shopee","รังนก",779637.6,1350,394,0.0],["2026-04-06","Shopee","สกินแคร์",10192.05,32,15,0.0],["2026-04-06","Shopee","เพียวเร่",197132.21,958,630,0.0],["2026-04-06","TikTok","Herbal",28664.99,183,69,0.0],["2026-04-06","TikTok","กิ๊ฟวิ่ง",66432.36,266,154,0.0],["2026-04-06","TikTok","ซุปไก่",60536.01,225,135,0.0],["2026-04-06","TikTok","รังนก",90794.04,181,93,0.0],["2026-04-06","TikTok","สกินแคร์",1011.68,3,2,0.0],["2026-04-06","TikTok","เพียวเร่",39890.28,176,98,0.0],["2026-04-07","Lazada","Herbal",25679.74,116,26,0.0],["2026-04-07","Lazada","กิ๊ฟวิ่ง",12729.24,14,6,0.0],["2026-04-07","Lazada","ซุปไก่",12882.5,50,8,0.0],["2026-04-07","Lazada","รังนก",90313.91,198,39,0.0],["2026-04-07","Lazada","สกินแคร์",2042.39,6,3,0.0],["2026-04-07","Lazada","เพียวเร่",4134.42,16,3,0.0],["2026-04-07","Line Gift","กิ๊ฟวิ่ง",349.54,1,1,0.0],["2026-04-07","Shopee","Herbal",17108.99,142,39,0.0],["2026-04-07","Shopee","กิ๊ฟวิ่ง",102440.54,211,81,0.0],["2026-04-07","Shopee","ซุปไก่",54564.49,219,82,0.0],["2026-04-07","Shopee","รังนก",134537.02,211,72,0.0],["2026-04-07","Shopee","สกินแคร์",8039.25,28,7,0.0],["2026-04-07","Shopee","เพียวเร่",52685.58,227,118,0.0],["2026-04-07","TikTok","Herbal",4839.11,32,11,0.0],["2026-04-07","TikTok","กิ๊ฟวิ่ง",26982.46,99,70,0.0],["2026-04-07","TikTok","ซุปไก่",12723.15,43,26,0.0],["2026-04-07","TikTok","รังนก",13261.3,22,10,0.0],["2026-04-07","TikTok","เพียวเร่",8797.62,46,25,0.0],["2026-04-08","Lazada","Herbal",1506.87,6,2,0.0],["2026-04-08","Lazada","กิ๊ฟวิ่ง",3920.77,6,6,0.0],["2026-04-08","Lazada","ซุปไก่",4202.33,17,5,0.0],["2026-04-08","Lazada","รังนก",30648.86,85,9,0.0],["2026-04-08","Lazada","สกินแคร์",944.93,2,1,0.0],["2026-04-08","Lazada","เพียวเร่",1083.6,5,1,0.0],["2026-04-08","Line","Herbal",616.82,4,1,0.0],["2026-04-08","Line","รังนก",63743.1,156,1,0.0],["2026-04-08","Shopee","Herbal",6219.62,46,11,0.0],["2026-04-08","Shopee","กิ๊ฟวิ่ง",76635.66,186,74,0.0],["2026-04-08","Shopee","ซุปไก่",49965.17,177,68,0.0],["2026-04-08","Shopee","รังนก",118270.93,204,64,0.0],["2026-04-08","Shopee","สกินแคร์",1971.96,4,1,0.0],["2026-04-08","Shopee","เพียวเร่",32228.0,137,51,0.0],["2026-04-08","TikTok","Herbal",2174.75,13,6,0.0],["2026-04-08","TikTok","กิ๊ฟวิ่ง",24460.92,109,60,0.0],["2026-04-08","TikTok","ซุปไก่",6801.86,22,17,0.0],["2026-04-08","TikTok","รังนก",14742.98,28,12,0.0],["2026-04-08","TikTok","สกินแคร์",527.1,1,1,0.0],["2026-04-08","TikTok","เพียวเร่",4885.06,20,7,0.0],["2026-04-09","Lazada","Herbal",3429.61,19,4,0.0],["2026-04-09","Lazada","กิ๊ฟวิ่ง",7889.3,16,5,0.0],["2026-04-09","Lazada","ซุปไก่",6883.83,26,5,0.0],["2026-04-09","Lazada","รังนก",17913.92,40,9,0.0],["2026-04-09","Lazada","เพียวเร่",501.88,2,2,0.0],["2026-04-09","Shopee","Herbal",7651.72,56,13,0.0],["2026-04-09","Shopee","กิ๊ฟวิ่ง",72994.59,166,71,0.0],["2026-04-09","Shopee","ซุปไก่",30535.35,112,45,0.0],["2026-04-09","Shopee","รังนก",121936.3,211,60,0.0],["2026-04-09","Shopee","เพียวเร่",25069.96,103,43,0.0],["2026-04-09","TikTok","Herbal",1980.37,8,7,0.0],["2026-04-09","TikTok","กิ๊ฟวิ่ง",26519.91,108,70,0.0],["2026-04-09","TikTok","ซุปไก่",4636.68,15,10,0.0],["2026-04-09","TikTok","รังนก",12689.94,27,7,0.0],["2026-04-09","TikTok","สกินแคร์",559.81,1,1,0.0],["2026-04-09","TikTok","เพียวเร่",9604.41,50,15,0.0],["2026-04-10","Lazada","Herbal",6392.57,14,1,0.0],["2026-04-10","Lazada","กิ๊ฟวิ่ง",9334.67,13,6,0.0],["2026-04-10","Lazada","ซุปไก่",12521.18,51,8,0.0],["2026-04-10","Lazada","รังนก",20025.61,28,10,0.0],["2026-04-10","Lazada","เพียวเร่",335.94,2,2,0.0],["2026-04-10","Line","Herbal",933.65,4,1,0.0],["2026-04-10","Line","รังนก",2912.15,4,1,0.0],["2026-04-10","Shopee","Herbal",7136.14,53,13,0.0],["2026-04-10","Shopee","กิ๊ฟวิ่ง",49505.11,123,57,0.0],["2026-04-10","Shopee","ซุปไก่",44843.87,175,56,0.0],["2026-04-10","Shopee","รังนก",106486.43,165,57,0.0],["2026-04-10","Shopee","สกินแคร์",1115.89,3,1,0.0],["2026-04-10","Shopee","เพียวเร่",23363.1,104,62,0.0],["2026-04-10","TikTok","Herbal",5382.28,31,24,0.0],["2026-04-10","TikTok","กิ๊ฟวิ่ง",61183.42,331,264,0.0],["2026-04-10","TikTok","ซุปไก่",10407.29,41,26,0.0],["2026-04-10","TikTok","รังนก",5829.91,11,8,0.0],["2026-04-10","TikTok","เพียวเร่",17670.9,113,82,0.0],["2026-04-11","Lazada","Herbal",1394.77,6,1,0.0],["2026-04-11","Lazada","กิ๊ฟวิ่ง",1918.64,3,3,0.0],["2026-04-11","Lazada","ซุปไก่",2436.17,9,3,0.0],["2026-04-11","Lazada","รังนก",23188.14,49,12,0.0],["2026-04-11","Lazada","สกินแคร์",1700.02,4,1,0.0],["2026-04-11","Lazada","เพียวเร่",4124.46,18,5,0.0],["2026-04-11","Shopee","Herbal",4950.48,39,8,0.0],["2026-04-11","Shopee","กิ๊ฟวิ่ง",74351.81,127,59,0.0],["2026-04-11","Shopee","ซุปไก่",27352.72,103,42,0.0],["2026-04-11","Shopee","รังนก",100853.18,165,51,0.0],["2026-04-11","Shopee","สกินแคร์",509.35,1,1,0.0],["2026-04-11","Shopee","เพียวเร่",31761.21,146,52,0.0],["2026-04-11","TikTok","Herbal",6541.03,49,29,0.0],["2026-04-11","TikTok","กิ๊ฟวิ่ง",22296.18,103,70,0.0],["2026-04-11","TikTok","ซุปไก่",5014.95,19,15,0.0],["2026-04-11","TikTok","รังนก",14494.99,28,12,0.0],["2026-04-11","TikTok","สกินแคร์",559.81,1,1,0.0],["2026-04-11","TikTok","เพียวเร่",15312.87,108,91,0.0],["2026-04-14","Lazada","Herbal",6714.01,11,0,0.0],["2026-04-14","Lazada","ซุปไก่",2168.23,8,0,0.0],["2026-04-14","Lazada","รังนก",1547.36,4,0,0.0],["2026-04-14","Shopee","กิ๊ฟวิ่ง",1804.68,5,0,0.0],["2026-04-14","Shopee","ซุปไก่",565.42,2,0,0.0],["2026-04-14","Shopee","รังนก",7547.66,12,0,0.0],["2026-04-14","TikTok","Herbal",456.08,2,0,0.0],["2026-04-14","TikTok","กิ๊ฟวิ่ง",1115.59,8,0,0.0],["2026-04-14","TikTok","ซุปไก่",300.77,1,0,0.0],["2026-04-14","TikTok","รังนก",1627.8,2,0,0.0],["2026-04-14","TikTok","เพียวเร่",1084.61,6,0,0.0],["2026-04-15","TikTok","Herbal",11064.02,62,27,0.0],["2026-04-15","TikTok","กิ๊ฟวิ่ง",45789.97,192,126,0.0],["2026-04-15","TikTok","ซุปไก่",18647.37,65,47,0.0],["2026-04-15","TikTok","รังนก",45915.85,83,30,0.0],["2026-04-15","TikTok","สกินแคร์",1055.14,2,1,0.0],["2026-04-15","TikTok","เพียวเร่",14881.58,76,46,0.0],["2026-04-16","AMAZE","รังนก",443.92,1,1,0.0],["2026-04-16","Lazada","Herbal",24859.24,152,24,0.0],["2026-04-16","Lazada","กิ๊ฟวิ่ง",36642.63,91,13,0.0],["2026-04-16","Lazada","ซุปไก่",44398.78,165,33,0.0],["2026-04-16","Lazada","รังนก",198716.09,410,90,0.0],["2026-04-16","Lazada","สกินแคร์",884.62,2,1,0.0],["2026-04-16","Lazada","เพียวเร่",23980.1,121,25,0.0],["2026-04-16","Line Gift","กิ๊ฟวิ่ง",305.61,1,1,0.0],["2026-04-16","Shopee","Herbal",33551.95,280,77,0.0],["2026-04-16","Shopee","กิ๊ฟวิ่ง",64140.86,213,93,0.0],["2026-04-16","Shopee","ซุปไก่",178993.85,688,309,0.0],["2026-04-16","Shopee","รังนก",513029.94,842,270,0.0],["2026-04-16","Shopee","สกินแคร์",1457.95,3,2,0.0],["2026-04-16","Shopee","เพียวเร่",133137.93,544,324,0.0],["2026-04-16","TikTok","Herbal",3677.55,22,11,0.0],["2026-04-16","TikTok","กิ๊ฟวิ่ง",12640.17,65,41,0.0],["2026-04-16","TikTok","ซุปไก่",5978.49,20,13,0.0],["2026-04-16","TikTok","รังนก",5446.72,9,6,0.0],["2026-04-16","TikTok","สกินแคร์",989.72,2,1,0.0],["2026-04-16","TikTok","เพียวเร่",3744.45,21,13,0.0],["2026-04-17","AMAZE","Herbal",126.17,1,1,0.0],["2026-04-17","Lazada","Herbal",6997.47,49,6,0.0],["2026-04-17","Lazada","กิ๊ฟวิ่ง",6514.7,10,4,0.0],["2026-04-17","Lazada","ซุปไก่",32766.26,153,24,0.0],["2026-04-17","Lazada","รังนก",63312.9,135,27,0.0],["2026-04-17","Lazada","สกินแคร์",816.21,2,1,0.0],["2026-04-17","Lazada","เพียวเร่",4779.16,31,6,0.0],["2026-04-17","OFM","กิ๊ฟวิ่ง",1486.26,2,1,0.0],["2026-04-17","Shopee","Herbal",4579.74,35,8,0.0],["2026-04-17","Shopee","กิ๊ฟวิ่ง",19885.24,45,16,0.0],["2026-04-17","Shopee","ซุปไก่",26803.47,99,43,0.0],["2026-04-17","Shopee","รังนก",66632.54,98,37,0.0],["2026-04-17","Shopee","สกินแคร์",559.81,1,1,0.0],["2026-04-17","Shopee","เพียวเร่",14940.14,63,36,0.0],["2026-04-17","TikTok","Herbal",8182.66,48,21,0.0],["2026-04-17","TikTok","กิ๊ฟวิ่ง",25679.72,92,51,0.0],["2026-04-17","TikTok","ซุปไก่",20153.62,84,33,0.0],["2026-04-17","TikTok","รังนก",36177.02,68,20,0.0],["2026-04-17","TikTok","สกินแคร์",1040.28,3,1,0.0],["2026-04-17","TikTok","เพียวเร่",12125.32,62,32,0.0],["2026-04-18","AMAZE","รังนก",429.91,1,1,0.0],["2026-04-18","AMAZE","เพียวเร่",261.68,2,1,0.0],["2026-04-18","Lazada","Herbal",2377.57,11,3,0.0],["2026-04-18","Lazada","กิ๊ฟวิ่ง",13569.09,17,3,0.0],["2026-04-18","Lazada","ซุปไก่",12830.43,45,13,0.0],["2026-04-18","Lazada","รังนก",47210.5,99,20,0.0],["2026-04-18","Lazada","สกินแคร์",4106.72,10,2,0.0],["2026-04-18","Lazada","เพียวเร่",3327.09,14,6,0.0],["2026-04-18","Shopee","Herbal",6904.68,51,10,0.0],["2026-04-18","Shopee","กิ๊ฟวิ่ง",14913.1,59,18,0.0],["2026-04-18","Shopee","ซุปไก่",36172.93,123,50,0.0],["2026-04-18","Shopee","รังนก",67267.81,125,29,0.0],["2026-04-18","Shopee","สกินแคร์",2004.68,4,3,0.0],["2026-04-18","Shopee","เพียวเร่",10463.01,36,25,0.0],["2026-04-18","TikTok","Herbal",7758.06,45,18,0.0],["2026-04-18","TikTok","กิ๊ฟวิ่ง",42043.82,137,54,0.0],["2026-04-18","TikTok","ซุปไก่",20303.02,80,41,0.0],["2026-04-18","TikTok","รังนก",34990.31,75,29,0.0],["2026-04-18","TikTok","สกินแคร์",3138.0,7,5,0.0],["2026-04-18","TikTok","เพียวเร่",19043.38,100,37,0.0],["2026-04-20","Lazada","Herbal",9544.78,42,5,0.0],["2026-04-20","Lazada","กิ๊ฟวิ่ง",3382.65,4,2,0.0],["2026-04-20","Lazada","ซุปไก่",2234.84,10,3,0.0],["2026-04-20","Lazada","รังนก",23865.62,44,10,0.0],["2026-04-20","Lazada","สกินแคร์",980.37,2,1,0.0],["2026-04-20","Lazada","เพียวเร่",5736.12,22,8,0.0],["2026-04-20","Line","กิ๊ฟวิ่ง",718.69,1,1,0.0],["2026-04-20","Line Gift","กิ๊ฟวิ่ง",359.81,1,1,0.0],["2026-04-20","Shopee","Herbal",10788.78,82,12,0.0],["2026-04-20","Shopee","กิ๊ฟวิ่ง",34701.59,80,34,0.0],["2026-04-20","Shopee","ซุปไก่",77196.61,299,100,0.0],["2026-04-20","Shopee","รังนก",167490.6,287,70,0.0],["2026-04-20","Shopee","เพียวเร่",43235.46,156,61,0.0],["2026-04-20","TikTok","Herbal",15822.43,105,43,0.0],["2026-04-20","TikTok","กิ๊ฟวิ่ง",31027.43,136,66,0.0],["2026-04-20","TikTok","ซุปไก่",48309.01,186,96,0.0],["2026-04-20","TikTok","รังนก",84896.15,199,92,0.0],["2026-04-20","TikTok","สกินแคร์",3463.98,8,6,0.0],["2026-04-20","TikTok","เพียวเร่",63363.25,258,180,0.0],["2026-04-21","Lazada","Herbal",5191.67,24,7,0.0],["2026-04-21","Lazada","กิ๊ฟวิ่ง",1789.27,5,2,0.0],["2026-04-21","Lazada","ซุปไก่",4784.6,22,3,0.0],["2026-04-21","Lazada","รังนก",15075.75,31,6,0.0],["2026-04-21","Lazada","เพียวเร่",2344.64,8,2,0.0],["2026-04-21","Shopee","Herbal",6002.81,44,11,0.0],["2026-04-21","Shopee","กิ๊ฟวิ่ง",19098.13,44,20,0.0],["2026-04-21","Shopee","ซุปไก่",39780.3,153,56,0.0],["2026-04-21","Shopee","รังนก",102971.07,144,46,0.0],["2026-04-21","Shopee","สกินแคร์",1490.67,3,3,0.0],["2026-04-21","Shopee","เพียวเร่",27665.56,121,60,0.0],["2026-04-21","TikTok","Herbal",12380.26,68,26,0.0],["2026-04-21","TikTok","กิ๊ฟวิ่ง",18539.97,69,33,0.0],["2026-04-21","TikTok","ซุปไก่",18186.49,65,36,0.0],["2026-04-21","TikTok","รังนก",58689.72,121,53,0.0],["2026-04-21","TikTok","สกินแคร์",1704.07,4,4,0.0],["2026-04-21","TikTok","เพียวเร่",22242.23,90,52,0.0],["2026-04-22","Lazada","Herbal",1209.35,2,1,0.0],["2026-04-22","Lazada","กิ๊ฟวิ่ง",2894.99,5,2,0.0],["2026-04-22","Lazada","ซุปไก่",2537.64,12,2,0.0],["2026-04-22","Lazada","รังนก",11140.29,24,7,0.0],["2026-04-22","Lazada","เพียวเร่",2137.68,9,2,0.0],["2026-04-22","Shopee","Herbal",6229.92,46,14,0.0],["2026-04-22","Shopee","กิ๊ฟวิ่ง",7759.45,17,9,0.0],["2026-04-22","Shopee","ซุปไก่",48781.46,184,55,0.0],["2026-04-22","Shopee","รังนก",144021.38,228,68,0.0],["2026-04-22","Shopee","สกินแคร์",985.98,2,1,0.0],["2026-04-22","Shopee","เพียวเร่",31322.81,118,44,0.0],["2026-04-22","TikTok","Herbal",7883.66,55,23,0.0],["2026-04-22","TikTok","กิ๊ฟวิ่ง",14359.97,49,30,0.0],["2026-04-22","TikTok","ซุปไก่",16870.3,61,28,0.0],["2026-04-22","TikTok","รังนก",22097.99,41,23,0.0],["2026-04-22","TikTok","สกินแคร์",1676.96,4,3,0.0],["2026-04-22","TikTok","เพียวเร่",17800.13,75,43,0.0],["2026-04-23","Lazada","Herbal",3224.09,15,4,0.0],["2026-04-23","Lazada","กิ๊ฟวิ่ง",2129.54,2,1,0.0],["2026-04-23","Lazada","ซุปไก่",6066.41,23,5,0.0],["2026-04-23","Lazada","รังนก",20295.17,42,12,0.0],["2026-04-23","Lazada","เพียวเร่",4105.26,17,5,0.0],["2026-04-23","Line","รังนก",2068.0,6,1,0.0],["2026-04-23","Line","เพียวเร่",1974.98,8,1,0.0],["2026-04-23","Shopee","Herbal",4467.15,33,6,0.0],["2026-04-23","Shopee","กิ๊ฟวิ่ง",34167.65,81,24,0.0],["2026-04-23","Shopee","ซุปไก่",40977.94,140,46,0.0],["2026-04-23","Shopee","รังนก",93641.59,128,50,0.0],["2026-04-23","Shopee","สกินแคร์",4802.81,11,3,0.0],["2026-04-23","Shopee","เพียวเร่",19978.35,72,32,0.0],["2026-04-23","TikTok","Herbal",2736.45,13,9,0.0],["2026-04-23","TikTok","กิ๊ฟวิ่ง",13063.85,47,28,0.0],["2026-04-23","TikTok","ซุปไก่",17279.56,57,31,0.0],["2026-04-23","TikTok","รังนก",19003.19,40,10,0.0],["2026-04-23","TikTok","สกินแคร์",531.77,1,1,0.0],["2026-04-23","TikTok","เพียวเร่",7303.73,32,15,0.0],["2026-04-24","Lazada","Herbal",2661.64,16,4,0.0],["2026-04-24","Lazada","กิ๊ฟวิ่ง",4068.18,6,2,0.0],["2026-04-24","Lazada","ซุปไก่",4102.4,14,3,0.0],["2026-04-24","Lazada","รังนก",14717.69,27,6,0.0],["2026-04-24","Lazada","เพียวเร่",1202.88,4,1,0.0],["2026-04-24","Line","รังนก",17947.81,35,3,0.0],["2026-04-24","Line","เพียวเร่",19803.59,108,1,0.0],["2026-04-24","Shopee","Herbal",3590.67,27,5,0.0],["2026-04-24","Shopee","กิ๊ฟวิ่ง",25114.75,51,19,0.0],["2026-04-24","Shopee","ซุปไก่",28438.25,106,40,0.0],["2026-04-24","Shopee","รังนก",67139.17,104,36,0.0],["2026-04-24","Shopee","สกินแคร์",2985.05,7,2,0.0],["2026-04-24","Shopee","เพียวเร่",14035.92,64,35,0.0],["2026-04-24","TikTok","Herbal",4891.57,26,14,0.0],["2026-04-24","TikTok","กิ๊ฟวิ่ง",13601.94,47,32,0.0],["2026-04-24","TikTok","ซุปไก่",5928.03,19,13,0.0],["2026-04-24","TikTok","รังนก",10050.46,21,10,0.0],["2026-04-24","TikTok","เพียวเร่",6141.13,22,15,0.0],["2026-04-25","AMAZE","Herbal",146.73,1,1,0.0],["2026-04-25","Lazada","Herbal",7629.59,46,9,0.0],["2026-04-25","Lazada","กิ๊ฟวิ่ง",4911.32,9,4,0.0],["2026-04-25","Lazada","ซุปไก่",15481.75,58,14,0.0],["2026-04-25","Lazada","รังนก",119104.26,265,50,0.0],["2026-04-25","Lazada","เพียวเร่",14469.52,72,15,0.0],["2026-04-25","Shopee","Herbal",15453.25,132,60,0.0],["2026-04-25","Shopee","กิ๊ฟวิ่ง",37924.83,96,43,0.0],["2026-04-25","Shopee","ซุปไก่",78218.74,311,135,0.0],["2026-04-25","Shopee","รังนก",232946.82,369,112,0.0],["2026-04-25","Shopee","สกินแคร์",2009.36,4,4,0.0],["2026-04-25","Shopee","เพียวเร่",53060.56,249,175,0.0],["2026-04-25","TikTok","Herbal",23641.61,170,131,0.0],["2026-04-25","TikTok","กิ๊ฟวิ่ง",28079.25,139,109,0.0],["2026-04-25","TikTok","ซุปไก่",35710.43,154,83,0.0],["2026-04-25","TikTok","รังนก",49512.74,121,49,0.0],["2026-04-25","TikTok","สกินแคร์",2690.22,6,6,0.0],["2026-04-25","TikTok","เพียวเร่",54232.57,295,212,0.0],["2026-04-27","Lazada","Herbal",25007.38,136,26,0.0],["2026-04-27","Lazada","กิ๊ฟวิ่ง",12909.45,42,6,0.0],["2026-04-27","Lazada","ซุปไก่",30711.63,111,22,0.0],["2026-04-27","Lazada","รังนก",225171.53,456,87,0.0],["2026-04-27","Lazada","เพียวเร่",27644.85,132,29,0.0],["2026-04-27","Line Gift","ซุปไก่",202.8,1,1,0.0],["2026-04-27","Shopee","Herbal",27447.29,214,62,0.0],["2026-04-27","Shopee","กิ๊ฟวิ่ง",45893.21,117,36,0.0],["2026-04-27","Shopee","ซุปไก่",127151.02,471,197,0.0],["2026-04-27","Shopee","รังนก",305495.44,525,135,0.0],["2026-04-27","Shopee","สกินแคร์",5075.39,11,5,0.0],["2026-04-27","Shopee","เพียวเร่",85227.15,332,178,0.0],["2026-04-27","TikTok","Herbal",40177.58,286,188,0.0],["2026-04-27","TikTok","กิ๊ฟวิ่ง",67226.25,246,167,0.0],["2026-04-27","TikTok","ซุปไก่",76268.69,294,139,0.0],["2026-04-27","TikTok","รังนก",83113.73,178,91,0.0],["2026-04-27","TikTok","สกินแคร์",1324.77,3,3,0.0],["2026-04-27","TikTok","เพียวเร่",123418.39,739,580,0.0],["2026-04-28","Lazada","Herbal",4176.13,36,2,0.0],["2026-04-28","Lazada","กิ๊ฟวิ่ง",2061.59,6,3,0.0],["2026-04-28","Lazada","ซุปไก่",7900.56,32,13,0.0],["2026-04-28","Lazada","รังนก",94763.59,225,35,0.0],["2026-04-28","Lazada","สกินแคร์",1912.14,5,1,0.0],["2026-04-28","Lazada","เพียวเร่",8736.42,49,10,0.0],["2026-04-28","Line","รังนก",8089.73,14,2,0.0],["2026-04-28","Line","เพียวเร่",7652.34,32,1,0.0],["2026-04-28","Shopee","Herbal",4823.98,36,12,0.0],["2026-04-28","Shopee","กิ๊ฟวิ่ง",16522.58,33,14,0.0],["2026-04-28","Shopee","ซุปไก่",51555.75,186,69,0.0],["2026-04-28","Shopee","รังนก",96529.14,156,50,0.0],["2026-04-28","Shopee","สกินแคร์",2004.68,4,3,0.0],["2026-04-28","Shopee","เพียวเร่",21463.86,88,56,0.0],["2026-04-28","TikTok","Herbal",13746.36,94,27,0.0],["2026-04-28","TikTok","กิ๊ฟวิ่ง",16820.68,58,33,0.0],["2026-04-28","TikTok","ซุปไก่",39209.93,150,64,0.0],["2026-04-28","TikTok","รังนก",46436.2,92,45,0.0],["2026-04-28","TikTok","สกินแคร์",810.28,2,2,0.0],["2026-04-28","TikTok","เพียวเร่",33942.06,140,91,0.0],["2026-04-29","Lazada","Herbal",4159.73,13,4,0.0],["2026-04-29","Lazada","กิ๊ฟวิ่ง",18968.05,51,6,0.0],["2026-04-29","Lazada","ซุปไก่",23872.19,89,15,0.0],["2026-04-29","Lazada","รังนก",36315.45,82,20,0.0],["2026-04-29","Lazada","เพียวเร่",7007.81,31,6,0.0],["2026-04-29","Shopee","Herbal",4940.19,37,16,0.0],["2026-04-29","Shopee","กิ๊ฟวิ่ง",4686.0,21,10,0.0],["2026-04-29","Shopee","ซุปไก่",54318.56,207,99,0.0],["2026-04-29","Shopee","รังนก",107073.48,166,53,0.0],["2026-04-29","Shopee","สกินแคร์",509.35,1,1,0.0],["2026-04-29","Shopee","เพียวเร่",32962.22,144,94,0.0],["2026-04-29","TikTok","Herbal",13923.89,98,35,0.0],["2026-04-29","TikTok","กิ๊ฟวิ่ง",19854.44,79,43,0.0],["2026-04-29","TikTok","ซุปไก่",57269.22,215,99,0.0],["2026-04-29","TikTok","รังนก",55636.61,112,56,0.0],["2026-04-29","TikTok","สกินแคร์",2449.91,6,5,0.0],["2026-04-29","TikTok","เพียวเร่",47301.7,197,119,0.0],["2026-04-30","Lazada","Herbal",1905.0,13,2,0.0],["2026-04-30","Lazada","กิ๊ฟวิ่ง",7268.5,9,2,0.0],["2026-04-30","Lazada","ซุปไก่",19014.89,68,16,0.0],["2026-04-30","Lazada","รังนก",54792.5,111,28,0.0],["2026-04-30","Lazada","เพียวเร่",4241.57,19,6,0.0],["2026-04-30","Line","รังนก",44112.15,128,1,0.0],["2026-04-30","Shopee","Herbal",5905.62,45,7,0.0],["2026-04-30","Shopee","กิ๊ฟวิ่ง",9174.77,25,11,0.0],["2026-04-30","Shopee","ซุปไก่",38196.29,138,63,0.0],["2026-04-30","Shopee","รังนก",75046.75,123,40,0.0],["2026-04-30","Shopee","เพียวเร่",21574.7,85,46,0.0],["2026-04-30","TikTok","Herbal",13572.63,100,30,0.0],["2026-04-30","TikTok","กิ๊ฟวิ่ง",15963.51,61,39,0.0],["2026-04-30","TikTok","ซุปไก่",41227.58,158,65,0.0],["2026-04-30","TikTok","รังนก",42931.22,82,44,0.0],["2026-04-30","TikTok","สกินแคร์",1676.18,4,4,0.0],["2026-04-30","TikTok","เพียวเร่",34354.5,141,83,0.0],["2026-05-02","Lazada","Herbal",8803.29,36,9,0.0],["2026-05-02","Lazada","กิ๊ฟวิ่ง",569.16,1,1,0.0],["2026-05-02","Lazada","ซุปไก่",7579.13,30,13,0.0],["2026-05-02","Lazada","รังนก",49153.99,100,28,0.0],["2026-05-02","Lazada","เพียวเร่",8104.05,35,11,0.0],["2026-05-02","Shopee","Herbal",21858.33,131,85,0.0],["2026-05-02","Shopee","กิ๊ฟวิ่ง",16414.82,44,26,0.0],["2026-05-02","Shopee","ซุปไก่",100881.83,419,259,0.0],["2026-05-02","Shopee","รังนก",219906.79,332,100,0.0],["2026-05-02","Shopee","สกินแคร์",3499.07,7,4,0.0],["2026-05-02","Shopee","เพียวเร่",79680.2,369,269,0.0],["2026-05-02","TikTok","Herbal",18614.59,121,44,0.0],["2026-05-02","TikTok","กิ๊ฟวิ่ง",19046.1,67,44,0.0],["2026-05-02","TikTok","ซุปไก่",46594.63,172,87,0.0],["2026-05-02","TikTok","รังนก",90738.48,157,104,0.0],["2026-05-02","TikTok","สกินแคร์",5147.22,12,8,0.0],["2026-05-02","TikTok","เพียวเร่",33380.72,133,83,0.0],["2026-05-04","AMAZE","รังนก",700.0,1,1,0.0],["2026-05-04","Lazada","Herbal",2474.76,2,2,0.0],["2026-05-04","Lazada","กิ๊ฟวิ่ง",549.42,1,1,0.0],["2026-05-04","Lazada","ซุปไก่",3698.48,12,3,0.0],["2026-05-04","Lazada","รังนก",25915.67,56,14,0.0],["2026-05-04","Lazada","เพียวเร่",2192.86,9,4,0.0],["2026-05-04","Shopee","Herbal",39065.57,219,44,0.0],["2026-05-04","Shopee","กิ๊ฟวิ่ง",18471.96,47,23,0.0],["2026-05-04","Shopee","ซุปไก่",73540.56,260,121,0.0],["2026-05-04","Shopee","รังนก",175013.94,259,88,0.0],["2026-05-04","Shopee","สกินแคร์",509.35,1,1,0.0],["2026-05-04","Shopee","เพียวเร่",50171.46,205,117,0.0],["2026-05-04","TikTok","Herbal",36107.49,245,81,0.0],["2026-05-04","TikTok","กิ๊ฟวิ่ง",42679.75,132,67,0.0],["2026-05-04","TikTok","ซุปไก่",69434.91,264,117,0.0],["2026-05-04","TikTok","รังนก",95535.4,170,90,0.0],["2026-05-04","TikTok","สกินแคร์",3874.21,9,7,0.0],["2026-05-04","TikTok","เพียวเร่",49054.41,195,117,0.0],["2026-05-05","Lazada","Herbal",46784.66,219,43,0.0],["2026-05-05","Lazada","กิ๊ฟวิ่ง",56171.03,184,15,0.0],["2026-05-05","Lazada","ซุปไก่",118391.89,480,81,0.0],["2026-05-05","Lazada","รังนก",557041.72,1249,211,0.0],["2026-05-05","Lazada","สกินแคร์",3195.9,8,2,0.0],["2026-05-05","Lazada","เพียวเร่",23717.6,112,35,0.0],["2026-05-05","Line","Herbal",2775.7,16,2,0.0],["2026-05-05","Line","ซุปไก่",1267.29,4,1,0.0],["2026-05-05","Line","รังนก",3345.79,4,1,0.0],["2026-05-05","Shopee","Herbal",72331.71,472,155,0.0],["2026-05-05","Shopee","กิ๊ฟวิ่ง",43146.81,104,49,0.0],["2026-05-05","Shopee","ซุปไก่",238868.67,930,415,0.0],["2026-05-05","Shopee","รังนก",761228.31,1269,342,0.0],["2026-05-05","Shopee","สกินแคร์",20994.86,70,31,0.0],["2026-05-05","Shopee","เพียวเร่",192206.61,941,636,0.0],["2026-05-05","TikTok","Herbal",16799.94,115,42,0.0],["2026-05-05","TikTok","กิ๊ฟวิ่ง",22443.53,85,45,0.0],["2026-05-05","TikTok","ซุปไก่",46529.65,177,76,0.0],["2026-05-05","TikTok","รังนก",50054.58,99,53,0.0],["2026-05-05","TikTok","สกินแคร์",1652.35,4,3,0.0],["2026-05-05","TikTok","เพียวเร่",36382.71,157,77,0.0],["2026-05-06","Lazada","Herbal",347886.44,1532,284,0.0],["2026-05-06","Lazada","กิ๊ฟวิ่ง",8878.76,19,6,0.0],["2026-05-06","Lazada","ซุปไก่",65549.3,265,53,0.0],["2026-05-06","Lazada","รังนก",216349.3,469,96,0.0],["2026-05-06","Lazada","เพียวเร่",20748.1,95,31,0.0],["2026-05-06","Shopee","Herbal",115003.28,776,227,0.0],["2026-05-06","Shopee","กิ๊ฟวิ่ง",44518.2,117,54,0.0],["2026-05-06","Shopee","ซุปไก่",200098.69,776,368,0.0],["2026-05-06","Shopee","รังนก",487759.39,826,227,0.0],["2026-05-06","Shopee","สกินแคร์",29372.09,96,38,0.0],["2026-05-06","Shopee","เพียวเร่",150911.92,709,470,0.0],["2026-05-06","TikTok","Herbal",12969.03,89,37,0.0],["2026-05-06","TikTok","กิ๊ฟวิ่ง",22013.57,74,36,0.0],["2026-05-06","TikTok","ซุปไก่",40008.94,155,64,0.0],["2026-05-06","TikTok","รังนก",67835.34,143,71,0.0],["2026-05-06","TikTok","สกินแคร์",5236.98,14,8,0.0],["2026-05-06","TikTok","เพียวเร่",36757.16,166,81,0.0],["2026-05-07","AMAZE","Herbal",265.42,2,1,0.0],["2026-05-07","Lazada","Herbal",102738.66,484,85,0.0],["2026-05-07","Lazada","กิ๊ฟวิ่ง",34015.86,46,11,0.0],["2026-05-07","Lazada","ซุปไก่",35063.57,132,25,0.0],["2026-05-07","Lazada","รังนก",98992.97,169,36,0.0],["2026-05-07","Lazada","เพียวเร่",15031.49,66,13,0.0],["2026-05-07","Shopee","Herbal",36770.11,239,74,0.0],["2026-05-07","Shopee","กิ๊ฟวิ่ง",21921.29,47,21,0.0],["2026-05-07","Shopee","ซุปไก่",71796.26,253,111,0.0],["2026-05-07","Shopee","รังนก",141661.02,230,74,0.0],["2026-05-07","Shopee","สกินแคร์",6397.91,20,11,0.0],["2026-05-07","Shopee","เพียวเร่",70315.18,286,169,0.0],["2026-05-07","TikTok","Herbal",6265.58,37,16,0.0],["2026-05-07","TikTok","กิ๊ฟวิ่ง",10909.03,28,19,0.0],["2026-05-07","TikTok","ซุปไก่",23870.45,94,40,0.0],["2026-05-07","TikTok","รังนก",42072.17,86,39,0.0],["2026-05-07","TikTok","สกินแคร์",527.1,1,1,0.0],["2026-05-07","TikTok","เพียวเร่",18885.56,86,45,0.0],["2026-05-08","Lazada","Herbal",13468.71,74,13,0.0],["2026-05-08","Lazada","กิ๊ฟวิ่ง",803.98,1,1,0.0],["2026-05-08","Lazada","ซุปไก่",11928.38,50,14,0.0],["2026-05-08","Lazada","รังนก",61332.21,110,25,0.0],["2026-05-08","Lazada","เพียวเร่",8866.7,37,14,0.0],["2026-05-08","Line","Herbal",1009.35,4,1,0.0],["2026-05-08","Shopee","Herbal",22325.27,113,30,0.0],["2026-05-08","Shopee","กิ๊ฟวิ่ง",22093.44,47,15,0.0],["2026-05-08","Shopee","ซุปไก่",42377.17,149,69,0.0],["2026-05-08","Shopee","รังนก",83501.07,147,43,0.0],["2026-05-08","Shopee","สกินแคร์",509.35,1,0,0.0],["2026-05-08","Shopee","เพียวเร่",32228.34,130,76,0.0],["2026-05-08","TikTok","Herbal",4880.37,30,10,0.0],["2026-05-08","TikTok","กิ๊ฟวิ่ง",9222.52,29,19,0.0],["2026-05-08","TikTok","ซุปไก่",8986.41,29,15,0.0],["2026-05-08","TikTok","รังนก",29049.67,38,15,0.0],["2026-05-08","TikTok","สกินแคร์",992.76,2,1,0.0],["2026-05-08","TikTok","เพียวเร่",8398.82,34,17,0.0],["2026-05-09","Lazada","Herbal",2708.41,2,1,0.0],["2026-05-09","Lazada","กิ๊ฟวิ่ง",2755.3,5,2,0.0],["2026-05-09","Lazada","ซุปไก่",2830.44,11,5,0.0],["2026-05-09","Lazada","รังนก",22163.65,46,8,0.0],["2026-05-09","Lazada","เพียวเร่",569.44,4,4,0.0],["2026-05-09","Shopee","Herbal",12474.77,49,12,0.0],["2026-05-09","Shopee","กิ๊ฟวิ่ง",6684.11,23,11,0.0],["2026-05-09","Shopee","ซุปไก่",43000.04,143,57,0.0],["2026-05-09","Shopee","รังนก",78256.04,123,37,0.0],["2026-05-09","Shopee","สกินแคร์",985.98,2,1,0.0],["2026-05-09","Shopee","เพียวเร่",17427.05,71,46,0.0],["2026-05-09","TikTok","Herbal",5705.01,31,12,0.0],["2026-05-09","TikTok","กิ๊ฟวิ่ง",3319.75,11,8,0.0],["2026-05-09","TikTok","ซุปไก่",12781.77,41,25,0.0],["2026-05-09","TikTok","รังนก",27731.42,48,20,0.0],["2026-05-09","TikTok","เพียวเร่",5218.87,22,16,0.0],["2026-05-11","Lazada","Herbal",7500.72,28,6,0.0],["2026-05-11","Lazada","กิ๊ฟวิ่ง",990.66,3,2,0.0],["2026-05-11","Lazada","ซุปไก่",7557.6,31,8,0.0],["2026-05-11","Lazada","รังนก",48226.92,120,21,0.0],["2026-05-11","Lazada","สกินแคร์",1941.46,4,1,0.0],["2026-05-11","Lazada","เพียวเร่",7155.71,32,11,0.0],["2026-05-11","Shopee","Herbal",27557.91,126,28,0.0],["2026-05-11","Shopee","กิ๊ฟวิ่ง",37546.74,56,20,0.0],["2026-05-11","Shopee","ซุปไก่",79391.01,275,107,0.0],["2026-05-11","Shopee","รังนก",133230.52,203,72,0.0],["2026-05-11","Shopee","สกินแคร์",1971.96,4,2,0.0],["2026-05-11","Shopee","เพียวเร่",36863.44,141,67,0.0],["2026-05-11","TikTok","Herbal",8888.75,42,24,0.0],["2026-05-11","TikTok","กิ๊ฟวิ่ง",15524.05,40,25,0.0],["2026-05-11","TikTok","ซุปไก่",20969.36,66,36,0.0],["2026-05-11","TikTok","รังนก",19830.09,37,18,0.0],["2026-05-11","TikTok","สกินแคร์",1647.45,3,2,0.0],["2026-05-11","TikTok","เพียวเร่",8475.07,41,27,0.0],["2026-05-12","Lazada","Herbal",6353.62,29,4,0.0],["2026-05-12","Lazada","ซุปไก่",4052.91,15,6,0.0],["2026-05-12","Lazada","รังนก",48132.2,128,12,0.0],["2026-05-12","Lazada","สกินแคร์",2451.42,6,1,0.0],["2026-05-12","Lazada","เพียวเร่",2322.66,12,3,0.0],["2026-05-12","Line","ซุปไก่",354.21,1,1,0.0],["2026-05-12","Shopee","Herbal",10766.61,59,12,0.0],["2026-05-12","Shopee","กิ๊ฟวิ่ง",19728.97,38,11,0.0],["2026-05-12","Shopee","ซุปไก่",63463.03,237,69,0.0],["2026-05-12","Shopee","รังนก",86363.27,152,33,0.0],["2026-05-12","Shopee","สกินแคร์",985.98,2,1,0.0],["2026-05-12","Shopee","เพียวเร่",29134.04,105,51,0.0],["2026-05-12","TikTok","Herbal",6093.51,32,14,0.0],["2026-05-12","TikTok","กิ๊ฟวิ่ง",2906.05,12,8,0.0],["2026-05-12","TikTok","ซุปไก่",8182.45,28,15,0.0],["2026-05-12","TikTok","รังนก",19800.32,39,13,0.0],["2026-05-12","TikTok","สกินแคร์",1058.87,2,1,0.0],["2026-05-12","TikTok","เพียวเร่",3230.1,20,13,0.0],["2026-05-13","AMAZE","รังนก",425.23,1,1,0.0],["2026-05-13","Lazada","Herbal",5172.9,36,0,0.0],["2026-05-13","Lazada","ซุปไก่",3469.51,11,5,0.0],["2026-05-13","Lazada","รังนก",14526.07,36,6,0.0],["2026-05-13","Lazada","เพียวเร่",4594.86,17,4,0.0],["2026-05-13","Line","รังนก",3124.29,3,2,0.0],["2026-05-13","Shopee","Herbal",30254.23,160,30,0.0],["2026-05-13","Shopee","กิ๊ฟวิ่ง",11678.5,29,12,0.0],["2026-05-13","Shopee","ซุปไก่",48440.06,184,71,0.0],["2026-05-13","Shopee","รังนก",123210.65,196,59,0.0],["2026-05-13","Shopee","เพียวเร่",35843.31,146,68,0.0],["2026-05-13","TikTok","Herbal",4539.56,26,8,0.0],["2026-05-13","TikTok","กิ๊ฟวิ่ง",12216.08,34,18,0.0],["2026-05-13","TikTok","ซุปไก่",14815.83,53,30,0.0],["2026-05-13","TikTok","รังนก",31732.67,51,10,0.0],["2026-05-13","TikTok","เพียวเร่",5965.42,28,16,0.0],["2026-05-14","AMAZE","ซุปไก่",313.08,1,1,0.0],["2026-05-14","Lazada","Herbal",812.38,6,1,0.0],["2026-05-14","Lazada","กิ๊ฟวิ่ง",4280.21,10,3,0.0],["2026-05-14","Lazada","ซุปไก่",5788.1,29,6,0.0],["2026-05-14","Lazada","รังนก",42284.34,100,16,0.0],["2026-05-14","Lazada","เพียวเร่",1151.97,5,4,0.0],["2026-05-14","Shopee","Herbal",9275.5,54,15,0.0],["2026-05-14","Shopee","กิ๊ฟวิ่ง",15876.14,38,17,0.0],["2026-05-14","Shopee","ซุปไก่",47200.4,173,60,0.0],["2026-05-14","Shopee","รังนก",94219.15,148,50,0.0],["2026-05-14","Shopee","เพียวเร่",27315.55,104,51,0.0],["2026-05-14","TikTok","Herbal",3435.58,19,8,0.0],["2026-05-14","TikTok","กิ๊ฟวิ่ง",7355.45,18,10,0.0],["2026-05-14","TikTok","ซุปไก่",15529.63,52,32,0.0],["2026-05-14","TikTok","รังนก",25434.35,45,14,0.0],["2026-05-14","TikTok","เพียวเร่",7017.32,31,15,0.0],["2026-05-15","Lazada","Herbal",4424.14,14,5,0.0],["2026-05-15","Lazada","กิ๊ฟวิ่ง",6335.3,8,6,0.0],["2026-05-15","Lazada","ซุปไก่",23470.97,92,21,0.0],["2026-05-15","Lazada","รังนก",115648.44,255,47,0.0],["2026-05-15","Lazada","เพียวเร่",14232.54,66,15,0.0],["2026-05-15","Line","Herbal",616.82,4,1,0.0],["2026-05-15","Shopee","Herbal",38140.2,239,87,0.0],["2026-05-15","Shopee","กิ๊ฟวิ่ง",13094.19,23,10,0.0],["2026-05-15","Shopee","ซุปไก่",77778.68,283,134,0.0],["2026-05-15","Shopee","รังนก",263655.82,491,112,0.0],["2026-05-15","Shopee","สกินแคร์",1435.57,3,2,0.0],["2026-05-15","Shopee","เพียวเร่",69320.69,271,169,0.0],["2026-05-15","TikTok","Herbal",11693.41,61,20,0.0],["2026-05-15","TikTok","กิ๊ฟวิ่ง",4252.76,10,7,0.0],["2026-05-15","TikTok","ซุปไก่",12582.44,46,19,0.0],["2026-05-15","TikTok","รังนก",21598.41,36,12,0.0],["2026-05-15","TikTok","สกินแคร์",531.77,1,1,0.0],["2026-05-15","TikTok","เพียวเร่",5169.86,26,16,0.0]]},"cc":{"cols":["ch","cat","city","amt","orders"],"rows":[["AMAZE","Herbal","กรุงเทพฯ",126.17,1],["AMAZE","Herbal","นนทบุรี",538.32,3],["AMAZE","ซุปไก่","กรุงเทพฯ",313.08,1],["AMAZE","ซุปไก่","นครปฐม",635.51,1],["AMAZE","รังนก","ฉะเชิงเทรา",429.91,1],["AMAZE","รังนก","นนทบุรี",425.23,1],["AMAZE","รังนก","พะเยา",443.92,1],["AMAZE","รังนก","พัทลุง",2387.85,1],["AMAZE","รังนก","เพชรบูรณ์",700.0,1],["AMAZE","เพียวเร่","กรุงเทพฯ",261.68,1],["Lazada","Herbal","กระบี่",1298.13,1],["Lazada","Herbal","กรุงเทพฯ",1158497.22,955],["Lazada","Herbal","ขอนแก่น",3734.56,3],["Lazada","Herbal","ฉะเชิงเทรา",7630.65,4],["Lazada","Herbal","ชลบุรี",5313.65,4],["Lazada","Herbal","ชัยนาท",1866.73,2],["Lazada","Herbal","ชัยภูมิ",1119.63,1],["Lazada","Herbal","ชุมพร",2673.09,1],["Lazada","Herbal","ตาก",2483.07,2],["Lazada","Herbal","นครปฐม",5137.4,3],["Lazada","Herbal","นครราชสีมา",3044.86,2],["Lazada","Herbal","นครศรีธรรมราช",2960.75,2],["Lazada","Herbal","นนทบุรี",36561.41,30],["Lazada","Herbal","บุรีรัมย์",271.03,1],["Lazada","Herbal","ปทุมธานี",8431.13,9],["Lazada","Herbal","พระนครศรีอยุธยา",2890.96,3],["Lazada","Herbal","พะเยา",1634.79,1],["Lazada","Herbal","พังงา",1073.83,1],["Lazada","Herbal","ภูเก็ต",4439.54,2],["Lazada","Herbal","มหาสารคาม",821.49,1],["Lazada","Herbal","ระยอง",5880.29,7],["Lazada","Herbal","ราชบุรี",2390.94,2],["Lazada","Herbal","ลพบุรี",1073.83,1],["Lazada","Herbal","ลำปาง",1041.62,1],["Lazada","Herbal","ลำพูน",1617.23,1],["Lazada","Herbal","ศรีสะเกษ",2678.41,3],["Lazada","Herbal","สงขลา",5495.16,5],["Lazada","Herbal","สมุทรปราการ",16976.83,12],["Lazada","Herbal","สมุทรสาคร",3691.6,3],["Lazada","Herbal","สระบุรี",1298.13,1],["Lazada","Herbal","สุราษฎร์ธานี",2933.69,2],["Lazada","Herbal","สุรินทร์",1119.63,1],["Lazada","Herbal","เชียงราย",4730.05,4],["Lazada","Herbal","เชียงใหม่",3702.2,3],["Lazada","Herbal","เพชรบุรี",378.86,1],["Lazada","Herbal","เพชรบูรณ์",1546.94,2],["Lazada","Herbal","แม่ฮ่องสอน",1119.63,1],["Lazada","กิ๊ฟวิ่ง","กรุงเทพฯ",355073.26,155],["Lazada","กิ๊ฟวิ่ง","ขอนแก่น",2641.71,1],["Lazada","กิ๊ฟวิ่ง","ฉะเชิงเทรา",1545.94,1],["Lazada","กิ๊ฟวิ่ง","ชลบุรี",2389.92,2],["Lazada","กิ๊ฟวิ่ง","ตราด",8002.92,1],["Lazada","กิ๊ฟวิ่ง","นครศรีธรรมราช",392.42,2],["Lazada","กิ๊ฟวิ่ง","นนทบุรี",5865.94,5],["Lazada","กิ๊ฟวิ่ง","นราธิวาส",1210.56,1],["Lazada","กิ๊ฟวิ่ง","ปราจีนบุรี",811.68,1],["Lazada","กิ๊ฟวิ่ง","พะเยา",4266.48,2],["Lazada","กิ๊ฟวิ่ง","พิษณุโลก",626.08,1],["Lazada","กิ๊ฟวิ่ง","ระยอง",830.86,1],["Lazada","กิ๊ฟวิ่ง","ลำพูน",9028.59,2],["Lazada","กิ๊ฟวิ่ง","สมุทรปราการ",2069.89,2],["Lazada","กิ๊ฟวิ่ง","สมุทรสาคร",2401.86,1],["Lazada","กิ๊ฟวิ่ง","อ่างทอง",2999.4,1],["Lazada","ซุปไก่","กรุงเทพฯ",552773.42,453],["Lazada","ซุปไก่","กาญจนบุรี",1942.52,2],["Lazada","ซุปไก่","กำแพงเพชร",1080.48,1],["Lazada","ซุปไก่","ขอนแก่น",171.07,1],["Lazada","ซุปไก่","ฉะเชิงเทรา",1201.5,1],["Lazada","ซุปไก่","ชลบุรี",3627.21,2],["Lazada","ซุปไก่","ตราด",659.53,1],["Lazada","ซุปไก่","นครปฐม",18493.43,10],["Lazada","ซุปไก่","นครราชสีมา",1295.32,1],["Lazada","ซุปไก่","นครศรีธรรมราช",2347.12,2],["Lazada","ซุปไก่","นนทบุรี",20150.51,14],["Lazada","ซุปไก่","ปทุมธานี",13106.69,9],["Lazada","ซุปไก่","ปราจีนบุรี",3293.95,3],["Lazada","ซุปไก่","พระนครศรีอยุธยา",1646.08,1],["Lazada","ซุปไก่","พะเยา",2669.27,2],["Lazada","ซุปไก่","พิษณุโลก",1540.33,1],["Lazada","ซุปไก่","ภูเก็ต",2902.64,2],["Lazada","ซุปไก่","ระยอง",5206.79,3],["Lazada","ซุปไก่","ราชบุรี",33180.75,18],["Lazada","ซุปไก่","ลพบุรี",1169.53,1],["Lazada","ซุปไก่","ลำพูน",3578.13,5],["Lazada","ซุปไก่","ศรีสะเกษ",248.46,1],["Lazada","ซุปไก่","สงขลา",3426.83,2],["Lazada","ซุปไก่","สมุทรปราการ",26302.23,12],["Lazada","ซุปไก่","สมุทรสงคราม",1242.11,1],["Lazada","ซุปไก่","สมุทรสาคร",4092.72,3],["Lazada","ซุปไก่","สุราษฎร์ธานี",1247.66,1],["Lazada","ซุปไก่","หนองคาย",4965.57,3],["Lazada","ซุปไก่","อุดรธานี",1138.41,1],["Lazada","ซุปไก่","อุตรดิตถ์",664.55,1],["Lazada","ซุปไก่","อุบลราชธานี",1255.86,1],["Lazada","ซุปไก่","เชียงราย",330.84,1],["Lazada","ซุปไก่","เชียงใหม่",5281.39,3],["Lazada","ซุปไก่","เพชรบูรณ์",626.45,1],["Lazada","ซุปไก่","แพร่",1828.25,1],["Lazada","รังนก","กรุงเทพฯ",2752819.43,1123],["Lazada","รังนก","กาญจนบุรี",16824.39,7],["Lazada","รังนก","กำแพงเพชร",4156.06,2],["Lazada","รังนก","ขอนแก่น",20905.55,10],["Lazada","รังนก","จันทบุรี",13296.29,6],["Lazada","รังนก","ฉะเชิงเทรา",10061.6,4],["Lazada","รังนก","ชลบุรี",15526.52,10],["Lazada","รังนก","ชัยนาท",2611.38,1],["Lazada","รังนก","ชัยภูมิ",4310.9,1],["Lazada","รังนก","ตรัง",1503.09,1],["Lazada","รังนก","ตาก",13088.11,3],["Lazada","รังนก","นครปฐม",4094.34,2],["Lazada","รังนก","นครพนม",2611.38,1],["Lazada","รังนก","นครราชสีมา",5647.42,3],["Lazada","รังนก","นครศรีธรรมราช",10648.91,5],["Lazada","รังนก","นครสวรรค์",6529.28,3],["Lazada","รังนก","นนทบุรี",70906.64,32],["Lazada","รังนก","น่าน",1259.08,1],["Lazada","รังนก","บุรีรัมย์",3087.61,2],["Lazada","รังนก","ปทุมธานี",23914.48,12],["Lazada","รังนก","ประจวบคีรีขันธ์",813.09,1],["Lazada","รังนก","พระนครศรีอยุธยา",11001.64,5],["Lazada","รังนก","พังงา",7082.69,3],["Lazada","รังนก","พิษณุโลก",4171.41,2],["Lazada","รังนก","ระยอง",6493.48,5],["Lazada","รังนก","ราชบุรี",19859.65,7],["Lazada","รังนก","ลพบุรี",1535.95,1],["Lazada","รังนก","ลำปาง",6998.45,3],["Lazada","รังนก","ลำพูน",7802.65,3],["Lazada","รังนก","ศรีสะเกษ",7647.2,4],["Lazada","รังนก","สกลนคร",1532.19,1],["Lazada","รังนก","สงขลา",5958.17,3],["Lazada","รังนก","สมุทรปราการ",50930.53,19],["Lazada","รังนก","สมุทรสาคร",33547.43,11],["Lazada","รังนก","สระบุรี",6622.52,2],["Lazada","รังนก","สระแก้ว",6082.67,2],["Lazada","รังนก","สุพรรณบุรี",1498.88,1],["Lazada","รังนก","สุราษฎร์ธานี",9583.67,3],["Lazada","รังนก","สุรินทร์",790.19,1],["Lazada","รังนก","สุโขทัย",1582.18,1],["Lazada","รังนก","หนองคาย",1482.22,1],["Lazada","รังนก","อำนาจเจริญ",1508.75,1],["Lazada","รังนก","อุดรธานี",2610.58,1],["Lazada","รังนก","อุตรดิตถ์",1384.04,1],["Lazada","รังนก","อุบลราชธานี",5794.14,3],["Lazada","รังนก","อ่างทอง",1632.79,1],["Lazada","รังนก","เชียงราย",4522.17,3],["Lazada","รังนก","เชียงใหม่",9141.71,6],["Lazada","รังนก","เพชรบุรี",1491.92,1],["Lazada","รังนก","เพชรบูรณ์",11268.38,4],["Lazada","รังนก","แพร่",3387.53,2],["Lazada","สกินแคร์","กรุงเทพฯ",19021.8,17],["Lazada","สกินแคร์","ระยอง",1619.46,1],["Lazada","สกินแคร์","ราชบุรี",1121.64,1],["Lazada","สกินแคร์","สมุทรปราการ",816.21,1],["Lazada","สกินแคร์","สมุทรสาคร",1700.02,1],["Lazada","สกินแคร์","เชียงราย",3188.0,2],["Lazada","เพียวเร่","กรุงเทพฯ",235830.92,296],["Lazada","เพียวเร่","กาญจนบุรี",170.69,1],["Lazada","เพียวเร่","จันทบุรี",2681.78,2],["Lazada","เพียวเร่","ฉะเชิงเทรา",132.19,1],["Lazada","เพียวเร่","ชลบุรี",307.38,1],["Lazada","เพียวเร่","ตราด",443.16,1],["Lazada","เพียวเร่","นครปฐม",2094.74,2],["Lazada","เพียวเร่","นครสวรรค์",150.06,1],["Lazada","เพียวเร่","นนทบุรี",6179.39,10],["Lazada","เพียวเร่","น่าน",581.11,1],["Lazada","เพียวเร่","ปทุมธานี",4962.98,7],["Lazada","เพียวเร่","พระนครศรีอยุธยา",4468.61,4],["Lazada","เพียวเร่","พะเยา",497.88,1],["Lazada","เพียวเร่","มหาสารคาม",134.01,1],["Lazada","เพียวเร่","ยโสธร",1657.01,1],["Lazada","เพียวเร่","ระยอง",570.44,3],["Lazada","เพียวเร่","ลำพูน",1134.95,1],["Lazada","เพียวเร่","ศรีสะเกษ",1663.85,1],["Lazada","เพียวเร่","สกลนคร",153.05,1],["Lazada","เพียวเร่","สงขลา",1369.24,2],["Lazada","เพียวเร่","สมุทรปราการ",7461.03,8],["Lazada","เพียวเร่","สมุทรสาคร",620.56,2],["Lazada","เพียวเร่","สระบุรี",1679.37,1],["Lazada","เพียวเร่","สุพรรณบุรี",865.04,1],["Lazada","เพียวเร่","สุราษฎร์ธานี",2634.62,2],["Lazada","เพียวเร่","เชียงราย",612.2,1],["Lazada","เพียวเร่","เชียงใหม่",3690.19,2],["Lazada","เพียวเร่","เพชรบูรณ์",1638.6,1],["Line","Herbal","กรุงเทพฯ",1233.64,2],["Line","Herbal","นครราชสีมา",1009.35,1],["Line","Herbal","ระนอง",1775.7,1],["Line","Herbal","เชียงใหม่",1933.65,2],["Line","กิ๊ฟวิ่ง","สงขลา",718.69,1],["Line","ซุปไก่","กรุงเทพฯ",354.21,1],["Line","ซุปไก่","สุราษฎร์ธานี",1267.29,1],["Line","รังนก","กรุงเทพฯ",7087.84,3],["Line","รังนก","ตราด",2068.0,1],["Line","รังนก","นครศรีธรรมราช",4478.51,1],["Line","รังนก","ปทุมธานี",44112.15,1],["Line","รังนก","ภูเก็ต",761.68,1],["Line","รังนก","สุพรรณบุรี",2912.15,1],["Line","รังนก","สุราษฎร์ธานี",3345.79,1],["Line","รังนก","เชียงราย",76965.68,2],["Line","รังนก","เพชรบูรณ์",3611.22,1],["Line","เพียวเร่","ตราด",1974.98,1],["Line","เพียวเร่","นนทบุรี",7652.34,1],["Line","เพียวเร่","พิจิตร",2847.66,1],["Line","เพียวเร่","เชียงราย",19803.59,1],["Line Gift","กิ๊ฟวิ่ง","น่าน",359.81,1],["Line Gift","กิ๊ฟวิ่ง","สมุทรปราการ",305.61,1],["Line Gift","กิ๊ฟวิ่ง","เชียงใหม่",349.54,1],["Line Gift","ซุปไก่","ชลบุรี",202.8,1],["OFM","กิ๊ฟวิ่ง","กรุงเทพฯ",1486.26,1],["Shopee","Herbal","กระบี่",1938.32,3],["Shopee","Herbal","กรุงเทพฯ",254416.96,446],["Shopee","Herbal","กาญจนบุรี",3781.31,7],["Shopee","Herbal","กำแพงเพชร",4144.91,14],["Shopee","Herbal","ขอนแก่น",6917.83,26],["Shopee","Herbal","จันทบุรี",7108.06,13],["Shopee","Herbal","ฉะเชิงเทรา",38219.57,38],["Shopee","Herbal","ชลบุรี",49642.95,76],["Shopee","Herbal","ชัยนาท",2210.29,7],["Shopee","Herbal","ชัยภูมิ",2588.83,17],["Shopee","Herbal","ชุมพร",252.34,2],["Shopee","Herbal","ตรัง",3337.39,6],["Shopee","Herbal","ตราด",1394.4,3],["Shopee","Herbal","ตาก",2837.38,5],["Shopee","Herbal","นครนายก",1516.82,3],["Shopee","Herbal","นครปฐม",14893.31,27],["Shopee","Herbal","นครพนม",1802.82,6],["Shopee","Herbal","นครราชสีมา",11527.18,35],["Shopee","Herbal","นครศรีธรรมราช",10569.25,22],["Shopee","Herbal","นครสวรรค์",2546.74,7],["Shopee","Herbal","นนทบุรี",58034.66,109],["Shopee","Herbal","นราธิวาส",88.79,1],["Shopee","Herbal","น่าน",2868.23,3],["Shopee","Herbal","บึงกาฬ",1381.32,4],["Shopee","Herbal","บุรีรัมย์",2931.79,10],["Shopee","Herbal","ปทุมธานี",30174.04,66],["Shopee","Herbal","ประจวบคีรีขันธ์",5064.52,8],["Shopee","Herbal","ปราจีนบุรี",3095.35,13],["Shopee","Herbal","ปัตตานี",581.31,4],["Shopee","Herbal","พระนครศรีอยุธยา",24982.35,64],["Shopee","Herbal","พะเยา",2035.53,8],["Shopee","Herbal","พังงา",3680.39,9],["Shopee","Herbal","พัทลุง",1834.59,8],["Shopee","Herbal","พิจิตร",3857.02,8],["Shopee","Herbal","พิษณุโลก",6175.46,10],["Shopee","Herbal","ภูเก็ต",13170.13,26],["Shopee","Herbal","มหาสารคาม",1295.34,7],["Shopee","Herbal","มุกดาหาร",2274.78,3],["Shopee","Herbal","ยะลา",7010.28,8],["Shopee","Herbal","ยโสธร",1076.64,2],["Shopee","Herbal","ระนอง",946.74,3],["Shopee","Herbal","ระยอง",15365.58,34],["Shopee","Herbal","ราชบุรี",11142.26,30],["Shopee","Herbal","ร้อยเอ็ด",1410.35,9],["Shopee","Herbal","ลพบุรี",7822.44,20],["Shopee","Herbal","ลำปาง",5209.15,18],["Shopee","Herbal","ลำพูน",6386.93,14],["Shopee","Herbal","ศรีสะเกษ",4429.93,11],["Shopee","Herbal","สกลนคร",3902.82,5],["Shopee","Herbal","สงขลา",10201.91,26],["Shopee","Herbal","สมุทรปราการ",43695.01,88],["Shopee","Herbal","สมุทรสงคราม",1624.31,10],["Shopee","Herbal","สมุทรสาคร",8077.04,19],["Shopee","Herbal","สระบุรี",6102.32,13],["Shopee","Herbal","สระแก้ว",2255.15,4],["Shopee","Herbal","สิงห์บุรี",2968.24,8],["Shopee","Herbal","สุพรรณบุรี",3780.39,10],["Shopee","Herbal","สุราษฎร์ธานี",10521.35,22],["Shopee","Herbal","สุรินทร์",1401.73,7],["Shopee","Herbal","สุโขทัย",2077.58,3],["Shopee","Herbal","หนองคาย",3198.01,8],["Shopee","Herbal","หนองบัวลำภู",1962.61,2],["Shopee","Herbal","อำนาจเจริญ",242.06,1],["Shopee","Herbal","อุดรธานี",3845.82,11],["Shopee","Herbal","อุตรดิตถ์",1946.73,2],["Shopee","Herbal","อุทัยธานี",1543.0,9],["Shopee","Herbal","อุบลราชธานี",5583.21,13],["Shopee","Herbal","อ่างทอง",3403.74,5],["Shopee","Herbal","เชียงราย",12256.01,30],["Shopee","Herbal","เชียงใหม่",23887.63,60],["Shopee","Herbal","เพชรบุรี",4956.11,9],["Shopee","Herbal","เพชรบูรณ์",2548.28,7],["Shopee","Herbal","เลย",1026.13,2],["Shopee","Herbal","แพร่",1181.31,4],["Shopee","กิ๊ฟวิ่ง","กระบี่",5037.38,3],["Shopee","กิ๊ฟวิ่ง","กรุงเทพฯ",219859.74,221],["Shopee","กิ๊ฟวิ่ง","กาญจนบุรี",8087.86,10],["Shopee","กิ๊ฟวิ่ง","กาฬสินธุ์",8100.0,8],["Shopee","กิ๊ฟวิ่ง","กำแพงเพชร",1036.46,3],["Shopee","กิ๊ฟวิ่ง","ขอนแก่น",16829.89,13],["Shopee","กิ๊ฟวิ่ง","จันทบุรี",6938.31,8],["Shopee","กิ๊ฟวิ่ง","ฉะเชิงเทรา",6978.94,13],["Shopee","กิ๊ฟวิ่ง","ชลบุรี",69739.33,40],["Shopee","กิ๊ฟวิ่ง","ชัยนาท",933.64,1],["Shopee","กิ๊ฟวิ่ง","ชัยภูมิ",13185.05,16],["Shopee","กิ๊ฟวิ่ง","ชุมพร",862.63,3],["Shopee","กิ๊ฟวิ่ง","ตรัง",1958.88,2],["Shopee","กิ๊ฟวิ่ง","ตราด",4394.38,6],["Shopee","กิ๊ฟวิ่ง","ตาก",1933.65,5],["Shopee","กิ๊ฟวิ่ง","นครนายก",5299.07,4],["Shopee","กิ๊ฟวิ่ง","นครปฐม",22119.0,29],["Shopee","กิ๊ฟวิ่ง","นครพนม",2658.88,3],["Shopee","กิ๊ฟวิ่ง","นครราชสีมา",36160.83,48],["Shopee","กิ๊ฟวิ่ง","นครศรีธรรมราช",12805.64,14],["Shopee","กิ๊ฟวิ่ง","นครสวรรค์",14043.95,18],["Shopee","กิ๊ฟวิ่ง","นนทบุรี",40584.56,50],["Shopee","กิ๊ฟวิ่ง","นราธิวาส",5330.83,3],["Shopee","กิ๊ฟวิ่ง","น่าน",630.85,4],["Shopee","กิ๊ฟวิ่ง","บึงกาฬ",11710.1,5],["Shopee","กิ๊ฟวิ่ง","บุรีรัมย์",8909.77,12],["Shopee","กิ๊ฟวิ่ง","ปทุมธานี",82319.85,70],["Shopee","กิ๊ฟวิ่ง","ประจวบคีรีขันธ์",2880.37,7],["Shopee","กิ๊ฟวิ่ง","ปราจีนบุรี",8127.1,6],["Shopee","กิ๊ฟวิ่ง","ปัตตานี",1403.74,2],["Shopee","กิ๊ฟวิ่ง","พระนครศรีอยุธยา",7122.44,17],["Shopee","กิ๊ฟวิ่ง","พะเยา",36342.05,26],["Shopee","กิ๊ฟวิ่ง","พังงา",840.19,3],["Shopee","กิ๊ฟวิ่ง","พัทลุง",350.47,1],["Shopee","กิ๊ฟวิ่ง","พิจิตร",6753.77,6],["Shopee","กิ๊ฟวิ่ง","พิษณุโลก",2700.0,5],["Shopee","กิ๊ฟวิ่ง","ภูเก็ต",7581.31,10],["Shopee","กิ๊ฟวิ่ง","มหาสารคาม",6628.02,7],["Shopee","กิ๊ฟวิ่ง","มุกดาหาร",38565.4,13],["Shopee","กิ๊ฟวิ่ง","ยะลา",109.35,1],["Shopee","กิ๊ฟวิ่ง","ยโสธร",4844.86,5],["Shopee","กิ๊ฟวิ่ง","ระนอง",372.9,1],["Shopee","กิ๊ฟวิ่ง","ระยอง",10302.18,12],["Shopee","กิ๊ฟวิ่ง","ราชบุรี",18277.55,16],["Shopee","กิ๊ฟวิ่ง","ร้อยเอ็ด",19215.75,15],["Shopee","กิ๊ฟวิ่ง","ลพบุรี",14028.35,13],["Shopee","กิ๊ฟวิ่ง","ลำปาง",37551.32,39],["Shopee","กิ๊ฟวิ่ง","ลำพูน",29522.18,28],["Shopee","กิ๊ฟวิ่ง","ศรีสะเกษ",18252.34,15],["Shopee","กิ๊ฟวิ่ง","สกลนคร",10062.61,8],["Shopee","กิ๊ฟวิ่ง","สงขลา",13673.81,13],["Shopee","กิ๊ฟวิ่ง","สมุทรปราการ",78521.52,65],["Shopee","กิ๊ฟวิ่ง","สมุทรสงคราม",7774.1,4],["Shopee","กิ๊ฟวิ่ง","สมุทรสาคร",21571.06,17],["Shopee","กิ๊ฟวิ่ง","สระบุรี",14502.75,14],["Shopee","กิ๊ฟวิ่ง","สระแก้ว",3569.16,5],["Shopee","กิ๊ฟวิ่ง","สิงห์บุรี",322.43,1],["Shopee","กิ๊ฟวิ่ง","สุพรรณบุรี",32418.71,20],["Shopee","กิ๊ฟวิ่ง","สุราษฎร์ธานี",4896.85,11],["Shopee","กิ๊ฟวิ่ง","สุรินทร์",4216.84,9],["Shopee","กิ๊ฟวิ่ง","สุโขทัย",1350.48,3],["Shopee","กิ๊ฟวิ่ง","หนองคาย",7086.42,10],["Shopee","กิ๊ฟวิ่ง","หนองบัวลำภู",2296.16,2],["Shopee","กิ๊ฟวิ่ง","อำนาจเจริญ",4070.06,3],["Shopee","กิ๊ฟวิ่ง","อุดรธานี",9192.92,12],["Shopee","กิ๊ฟวิ่ง","อุตรดิตถ์",13085.03,11],["Shopee","กิ๊ฟวิ่ง","อุทัยธานี",1457.02,3],["Shopee","กิ๊ฟวิ่ง","อุบลราชธานี",13526.18,17],["Shopee","กิ๊ฟวิ่ง","อ่างทอง",13473.82,10],["Shopee","กิ๊ฟวิ่ง","เชียงราย",162759.0,96],["Shopee","กิ๊ฟวิ่ง","เชียงใหม่",72475.7,86],["Shopee","กิ๊ฟวิ่ง","เพชรบุรี",2593.48,8],["Shopee","กิ๊ฟวิ่ง","เพชรบูรณ์",5600.04,13],["Shopee","กิ๊ฟวิ่ง","เลย",4285.99,7],["Shopee","กิ๊ฟวิ่ง","แพร่",19220.16,21],["Shopee","กิ๊ฟวิ่ง","แม่ฮ่องสอน",3360.75,2],["Shopee","ซุปไก่","กระบี่",6536.13,15],["Shopee","ซุปไก่","กรุงเทพฯ",714011.74,1030],["Shopee","ซุปไก่","กาญจนบุรี",30943.93,37],["Shopee","ซุปไก่","กาฬสินธุ์",18459.81,32],["Shopee","ซุปไก่","กำแพงเพชร",19418.72,38],["Shopee","ซุปไก่","ขอนแก่น",41507.02,72],["Shopee","ซุปไก่","จันทบุรี",14699.93,35],["Shopee","ซุปไก่","ฉะเชิงเทรา",43959.43,67],["Shopee","ซุปไก่","ชลบุรี",144807.24,241],["Shopee","ซุปไก่","ชัยนาท",10992.02,20],["Shopee","ซุปไก่","ชัยภูมิ",12968.64,26],["Shopee","ซุปไก่","ชุมพร",18346.7,18],["Shopee","ซุปไก่","ตรัง",15867.67,34],["Shopee","ซุปไก่","ตราด",9441.12,14],["Shopee","ซุปไก่","ตาก",12528.06,25],["Shopee","ซุปไก่","นครนายก",9983.2,17],["Shopee","ซุปไก่","นครปฐม",61173.6,98],["Shopee","ซุปไก่","นครพนม",20729.2,35],["Shopee","ซุปไก่","นครราชสีมา",58824.17,130],["Shopee","ซุปไก่","นครศรีธรรมราช",37072.9,72],["Shopee","ซุปไก่","นครสวรรค์",33327.84,58],["Shopee","ซุปไก่","นนทบุรี",151123.68,239],["Shopee","ซุปไก่","นราธิวาส",9284.37,12],["Shopee","ซุปไก่","น่าน",5819.63,8],["Shopee","ซุปไก่","บึงกาฬ",2412.14,5],["Shopee","ซุปไก่","บุรีรัมย์",26935.78,39],["Shopee","ซุปไก่","ปทุมธานี",134101.55,217],["Shopee","ซุปไก่","ประจวบคีรีขันธ์",18252.08,28],["Shopee","ซุปไก่","ปราจีนบุรี",17954.15,32],["Shopee","ซุปไก่","ปัตตานี",5175.68,12],["Shopee","ซุปไก่","พระนครศรีอยุธยา",31101.2,74],["Shopee","ซุปไก่","พะเยา",24511.29,35],["Shopee","ซุปไก่","พังงา",4240.38,8],["Shopee","ซุปไก่","พัทลุง",10661.47,21],["Shopee","ซุปไก่","พิจิตร",6656.67,11],["Shopee","ซุปไก่","พิษณุโลก",32277.89,69],["Shopee","ซุปไก่","ภูเก็ต",16005.84,21],["Shopee","ซุปไก่","มหาสารคาม",21024.23,31],["Shopee","ซุปไก่","มุกดาหาร",6986.94,20],["Shopee","ซุปไก่","ยะลา",5730.84,12],["Shopee","ซุปไก่","ยโสธร",8204.68,15],["Shopee","ซุปไก่","ระนอง",8482.23,14],["Shopee","ซุปไก่","ระยอง",42310.68,64],["Shopee","ซุปไก่","ราชบุรี",21114.92,52],["Shopee","ซุปไก่","ร้อยเอ็ด",31851.71,53],["Shopee","ซุปไก่","ลพบุรี",31772.3,58],["Shopee","ซุปไก่","ลำปาง",47508.51,70],["Shopee","ซุปไก่","ลำพูน",20346.0,32],["Shopee","ซุปไก่","ศรีสะเกษ",25914.8,43],["Shopee","ซุปไก่","สกลนคร",19498.84,33],["Shopee","ซุปไก่","สงขลา",43232.26,80],["Shopee","ซุปไก่","สตูล",5097.2,9],["Shopee","ซุปไก่","สมุทรปราการ",162950.98,287],["Shopee","ซุปไก่","สมุทรสงคราม",8563.86,12],["Shopee","ซุปไก่","สมุทรสาคร",40372.29,65],["Shopee","ซุปไก่","สระบุรี",36025.21,54],["Shopee","ซุปไก่","สระแก้ว",20801.68,26],["Shopee","ซุปไก่","สิงห์บุรี",7146.73,13],["Shopee","ซุปไก่","สุพรรณบุรี",23834.58,39],["Shopee","ซุปไก่","สุราษฎร์ธานี",27153.19,43],["Shopee","ซุปไก่","สุรินทร์",14336.64,26],["Shopee","ซุปไก่","สุโขทัย",9119.16,15],["Shopee","ซุปไก่","หนองคาย",16344.03,26],["Shopee","ซุปไก่","หนองบัวลำภู",3753.27,3],["Shopee","ซุปไก่","อำนาจเจริญ",5923.35,8],["Shopee","ซุปไก่","อุดรธานี",46919.0,53],["Shopee","ซุปไก่","อุตรดิตถ์",6331.76,10],["Shopee","ซุปไก่","อุทัยธานี",10495.97,20],["Shopee","ซุปไก่","อุบลราชธานี",42815.39,61],["Shopee","ซุปไก่","อ่างทอง",9163.16,8],["Shopee","ซุปไก่","เชียงราย",33799.14,61],["Shopee","ซุปไก่","เชียงใหม่",84327.34,117],["Shopee","ซุปไก่","เพชรบุรี",18686.92,27],["Shopee","ซุปไก่","เพชรบูรณ์",11266.56,19],["Shopee","ซุปไก่","เลย",19508.62,23],["Shopee","ซุปไก่","แพร่",20446.94,38],["Shopee","ซุปไก่","แม่ฮ่องสอน",1700.0,1],["Shopee","รังนก","กระบี่",16198.46,10],["Shopee","รังนก","กรุงเทพฯ",2033053.88,916],["Shopee","รังนก","กาญจนบุรี",79101.85,28],["Shopee","รังนก","กาฬสินธุ์",35388.11,18],["Shopee","รังนก","กำแพงเพชร",26826.17,19],["Shopee","รังนก","ขอนแก่น",97477.1,49],["Shopee","รังนก","จันทบุรี",56122.32,29],["Shopee","รังนก","ฉะเชิงเทรา",70151.95,38],["Shopee","รังนก","ชลบุรี",241169.27,112],["Shopee","รังนก","ชัยนาท",39019.18,20],["Shopee","รังนก","ชัยภูมิ",49000.72,26],["Shopee","รังนก","ชุมพร",18551.41,13],["Shopee","รังนก","ตรัง",50898.7,29],["Shopee","รังนก","ตราด",27662.67,13],["Shopee","รังนก","ตาก",34685.06,19],["Shopee","รังนก","นครนายก",25738.35,12],["Shopee","รังนก","นครปฐม",105602.7,54],["Shopee","รังนก","นครพนม",40453.92,21],["Shopee","รังนก","นครราชสีมา",227432.25,114],["Shopee","รังนก","นครศรีธรรมราช",171231.01,95],["Shopee","รังนก","นครสวรรค์",78175.04,42],["Shopee","รังนก","นนทบุรี",364125.16,183],["Shopee","รังนก","นราธิวาส",8903.49,3],["Shopee","รังนก","น่าน",38074.77,16],["Shopee","รังนก","บึงกาฬ",7916.98,4],["Shopee","รังนก","บุรีรัมย์",33821.74,18],["Shopee","รังนก","ปทุมธานี",318048.31,152],["Shopee","รังนก","ประจวบคีรีขันธ์",38004.02,19],["Shopee","รังนก","ปราจีนบุรี",47110.13,29],["Shopee","รังนก","ปัตตานี",14796.29,12],["Shopee","รังนก","พระนครศรีอยุธยา",110662.87,58],["Shopee","รังนก","พะเยา",38205.41,19],["Shopee","รังนก","พังงา",31997.93,18],["Shopee","รังนก","พัทลุง",30419.82,20],["Shopee","รังนก","พิจิตร",36404.16,18],["Shopee","รังนก","พิษณุโลก",69923.1,31],["Shopee","รังนก","ภูเก็ต",54863.01,27],["Shopee","รังนก","มหาสารคาม",56703.79,28],["Shopee","รังนก","มุกดาหาร",40749.92,13],["Shopee","รังนก","ยะลา",33946.7,10],["Shopee","รังนก","ยโสธร",25050.5,15],["Shopee","รังนก","ระนอง",15139.26,10],["Shopee","รังนก","ระยอง",98112.13,43],["Shopee","รังนก","ราชบุรี",80374.85,41],["Shopee","รังนก","ร้อยเอ็ด",61125.37,35],["Shopee","รังนก","ลพบุรี",44898.88,25],["Shopee","รังนก","ลำปาง",95750.51,58],["Shopee","รังนก","ลำพูน",34839.26,17],["Shopee","รังนก","ศรีสะเกษ",57178.04,32],["Shopee","รังนก","สกลนคร",50797.79,32],["Shopee","รังนก","สงขลา",71454.67,48],["Shopee","รังนก","สตูล",15406.56,5],["Shopee","รังนก","สมุทรปราการ",289010.18,146],["Shopee","รังนก","สมุทรสงคราม",18663.94,8],["Shopee","รังนก","สมุทรสาคร",135047.02,59],["Shopee","รังนก","สระบุรี",49803.93,26],["Shopee","รังนก","สระแก้ว",23291.03,16],["Shopee","รังนก","สิงห์บุรี",8314.96,4],["Shopee","รังนก","สุพรรณบุรี",105518.34,48],["Shopee","รังนก","สุราษฎร์ธานี",101695.31,45],["Shopee","รังนก","สุรินทร์",65310.63,34],["Shopee","รังนก","สุโขทัย",39503.44,20],["Shopee","รังนก","หนองคาย",45640.3,24],["Shopee","รังนก","หนองบัวลำภู",13054.3,7],["Shopee","รังนก","อำนาจเจริญ",16176.64,8],["Shopee","รังนก","อุดรธานี",66010.46,33],["Shopee","รังนก","อุตรดิตถ์",41926.17,21],["Shopee","รังนก","อุทัยธานี",18705.54,11],["Shopee","รังนก","อุบลราชธานี",64312.19,38],["Shopee","รังนก","อ่างทอง",20058.88,8],["Shopee","รังนก","เชียงราย",279499.55,102],["Shopee","รังนก","เชียงใหม่",187274.42,101],["Shopee","รังนก","เพชรบุรี",24774.2,11],["Shopee","รังนก","เพชรบูรณ์",50191.75,27],["Shopee","รังนก","เลย",26708.16,12],["Shopee","รังนก","แพร่",49065.42,22],["Shopee","รังนก","แม่ฮ่องสอน",3018.69,1],["Shopee","สกินแคร์","กรุงเทพฯ",45655.13,57],["Shopee","สกินแคร์","กาญจนบุรี",606.54,1],["Shopee","สกินแคร์","กาฬสินธุ์",1213.08,2],["Shopee","สกินแคร์","กำแพงเพชร",1647.67,3],["Shopee","สกินแคร์","ขอนแก่น",2426.16,2],["Shopee","สกินแคร์","ฉะเชิงเทรา",2426.16,3],["Shopee","สกินแคร์","ชลบุรี",7018.7,9],["Shopee","สกินแคร์","ตรัง",1696.26,3],["Shopee","สกินแคร์","ตราด",509.35,1],["Shopee","สกินแคร์","ตาก",985.98,1],["Shopee","สกินแคร์","นครนายก",606.54,1],["Shopee","สกินแคร์","นครราชสีมา",3050.51,4],["Shopee","สกินแคร์","นครสวรรค์",1078.51,2],["Shopee","สกินแคร์","นนทบุรี",10129.89,16],["Shopee","สกินแคร์","บึงกาฬ",606.54,1],["Shopee","สกินแคร์","บุรีรัมย์",606.54,1],["Shopee","สกินแคร์","ปทุมธานี",5789.93,10],["Shopee","สกินแคร์","ประจวบคีรีขันธ์",1067.29,2],["Shopee","สกินแคร์","ปราจีนบุรี",606.54,1],["Shopee","สกินแคร์","พระนครศรีอยุธยา",1213.08,1],["Shopee","สกินแคร์","พังงา",606.54,1],["Shopee","สกินแคร์","พิจิตร",1625.24,3],["Shopee","สกินแคร์","พิษณุโลก",606.54,1],["Shopee","สกินแคร์","ภูเก็ต",2150.38,3],["Shopee","สกินแคร์","ยะลา",1819.62,2],["Shopee","สกินแคร์","ระยอง",3385.75,5],["Shopee","สกินแคร์","ราชบุรี",1213.08,1],["Shopee","สกินแคร์","ร้อยเอ็ด",1213.08,2],["Shopee","สกินแคร์","ลำพูน",606.54,1],["Shopee","สกินแคร์","ศรีสะเกษ",1115.89,2],["Shopee","สกินแคร์","สกลนคร",606.54,1],["Shopee","สกินแคร์","สงขลา",1819.62,2],["Shopee","สกินแคร์","สมุทรปราการ",13881.29,16],["Shopee","สกินแคร์","สมุทรสงคราม",578.5,1],["Shopee","สกินแคร์","สุพรรณบุรี",606.54,1],["Shopee","สกินแคร์","สุราษฎร์ธานี",1213.08,2],["Shopee","สกินแคร์","หนองคาย",557.89,1],["Shopee","สกินแคร์","อำนาจเจริญ",558.01,1],["Shopee","สกินแคร์","อุดรธานี",606.54,1],["Shopee","สกินแคร์","เชียงราย",4576.63,3],["Shopee","สกินแคร์","เชียงใหม่",4832.91,6],["Shopee","สกินแคร์","เพชรบูรณ์",1115.89,2],["Shopee","เพียวเร่","กระบี่",8035.53,27],["Shopee","เพียวเร่","กรุงเทพฯ",507241.1,1291],["Shopee","เพียวเร่","กาญจนบุรี",20902.84,59],["Shopee","เพียวเร่","กาฬสินธุ์",7232.45,17],["Shopee","เพียวเร่","กำแพงเพชร",8262.62,31],["Shopee","เพียวเร่","ขอนแก่น",25960.69,58],["Shopee","เพียวเร่","จันทบุรี",11471.51,29],["Shopee","เพียวเร่","ฉะเชิงเทรา",24322.91,66],["Shopee","เพียวเร่","ชลบุรี",80589.9,216],["Shopee","เพียวเร่","ชัยนาท",7525.22,21],["Shopee","เพียวเร่","ชัยภูมิ",18208.26,50],["Shopee","เพียวเร่","ชุมพร",5089.72,18],["Shopee","เพียวเร่","ตรัง",7994.38,27],["Shopee","เพียวเร่","ตราด",8796.28,26],["Shopee","เพียวเร่","ตาก",8474.77,23],["Shopee","เพียวเร่","นครนายก",4929.84,10],["Shopee","เพียวเร่","นครปฐม",37084.33,90],["Shopee","เพียวเร่","นครพนม",11500.93,21],["Shopee","เพียวเร่","นครราชสีมา",69220.21,190],["Shopee","เพียวเร่","นครศรีธรรมราช",20806.36,56],["Shopee","เพียวเร่","นครสวรรค์",19783.12,81],["Shopee","เพียวเร่","นนทบุรี",91747.16,234],["Shopee","เพียวเร่","นราธิวาส",3006.56,9],["Shopee","เพียวเร่","น่าน",3262.59,9],["Shopee","เพียวเร่","บึงกาฬ",3632.71,10],["Shopee","เพียวเร่","บุรีรัมย์",13452.29,34],["Shopee","เพียวเร่","ปทุมธานี",103348.6,211],["Shopee","เพียวเร่","ประจวบคีรีขันธ์",14811.25,31],["Shopee","เพียวเร่","ปราจีนบุรี",24806.78,76],["Shopee","เพียวเร่","ปัตตานี",7707.47,31],["Shopee","เพียวเร่","พระนครศรีอยุธยา",37420.1,114],["Shopee","เพียวเร่","พะเยา",8741.23,33],["Shopee","เพียวเร่","พังงา",1715.9,10],["Shopee","เพียวเร่","พัทลุง",4924.35,25],["Shopee","เพียวเร่","พิจิตร",5842.38,13],["Shopee","เพียวเร่","พิษณุโลก",22071.28,59],["Shopee","เพียวเร่","ภูเก็ต",20649.91,49],["Shopee","เพียวเร่","มหาสารคาม",14705.6,30],["Shopee","เพียวเร่","มุกดาหาร",18008.94,12],["Shopee","เพียวเร่","ยะลา",12615.87,16],["Shopee","เพียวเร่","ยโสธร",3209.32,14],["Shopee","เพียวเร่","ระนอง",3504.68,6],["Shopee","เพียวเร่","ระยอง",24933.08,70],["Shopee","เพียวเร่","ราชบุรี",34083.05,87],["Shopee","เพียวเร่","ร้อยเอ็ด",18403.35,44],["Shopee","เพียวเร่","ลพบุรี",21911.69,82],["Shopee","เพียวเร่","ลำปาง",33193.59,76],["Shopee","เพียวเร่","ลำพูน",18732.79,51],["Shopee","เพียวเร่","ศรีสะเกษ",11042.72,27],["Shopee","เพียวเร่","สกลนคร",12940.79,37],["Shopee","เพียวเร่","สงขลา",18773.78,77],["Shopee","เพียวเร่","สตูล",7138.32,20],["Shopee","เพียวเร่","สมุทรปราการ",92613.31,271],["Shopee","เพียวเร่","สมุทรสงคราม",7302.8,37],["Shopee","เพียวเร่","สมุทรสาคร",39242.03,72],["Shopee","เพียวเร่","สระบุรี",21667.63,54],["Shopee","เพียวเร่","สระแก้ว",7132.53,20],["Shopee","เพียวเร่","สิงห์บุรี",9474.76,23],["Shopee","เพียวเร่","สุพรรณบุรี",22750.82,64],["Shopee","เพียวเร่","สุราษฎร์ธานี",16006.3,63],["Shopee","เพียวเร่","สุรินทร์",19250.11,48],["Shopee","เพียวเร่","สุโขทัย",12679.27,20],["Shopee","เพียวเร่","หนองคาย",6156.56,17],["Shopee","เพียวเร่","หนองบัวลำภู",1400.93,4],["Shopee","เพียวเร่","อำนาจเจริญ",3014.02,5],["Shopee","เพียวเร่","อุดรธานี",25153.25,48],["Shopee","เพียวเร่","อุตรดิตถ์",5826.16,21],["Shopee","เพียวเร่","อุทัยธานี",5851.74,8],["Shopee","เพียวเร่","อุบลราชธานี",16626.66,59],["Shopee","เพียวเร่","อ่างทอง",5576.08,8],["Shopee","เพียวเร่","เชียงราย",25752.62,71],["Shopee","เพียวเร่","เชียงใหม่",73237.53,204],["Shopee","เพียวเร่","เพชรบุรี",8722.11,29],["Shopee","เพียวเร่","เพชรบูรณ์",14475.7,37],["Shopee","เพียวเร่","เลย",4655.21,14],["Shopee","เพียวเร่","แพร่",12239.44,35],["Shopee","เพียวเร่","แม่ฮ่องสอน",864.49,2],["TikTok","Herbal","กระบี่",271.03,2],["TikTok","Herbal","กรุงเทพฯ",97777.27,295],["TikTok","Herbal","กาญจนบุรี",4273.13,16],["TikTok","Herbal","กาฬสินธุ์",279.44,1],["TikTok","Herbal","กำแพงเพชร",3486.03,11],["TikTok","Herbal","ขอนแก่น",3467.0,14],["TikTok","Herbal","จันทบุรี",1822.91,5],["TikTok","Herbal","ฉะเชิงเทรา",9841.44,30],["TikTok","Herbal","ชลบุรี",24550.9,74],["TikTok","Herbal","ชัยนาท",941.86,5],["TikTok","Herbal","ชัยภูมิ",907.73,4],["TikTok","Herbal","ชุมพร",2144.86,7],["TikTok","Herbal","ตรัง",2961.43,12],["TikTok","Herbal","ตาก",1303.31,3],["TikTok","Herbal","นครนายก",2063.06,6],["TikTok","Herbal","นครปฐม",10702.33,36],["TikTok","Herbal","นครราชสีมา",6252.75,20],["TikTok","Herbal","นครศรีธรรมราช",5032.15,17],["TikTok","Herbal","นครสวรรค์",7580.28,15],["TikTok","Herbal","นนทบุรี",16208.85,41],["TikTok","Herbal","นราธิวาส",315.88,1],["TikTok","Herbal","น่าน",907.84,6],["TikTok","Herbal","บึงกาฬ",850.37,3],["TikTok","Herbal","บุรีรัมย์",4056.94,11],["TikTok","Herbal","ปทุมธานี",16900.43,44],["TikTok","Herbal","ประจวบคีรีขันธ์",2291.81,9],["TikTok","Herbal","ปราจีนบุรี",5791.62,18],["TikTok","Herbal","ปัตตานี",2584.57,8],["TikTok","Herbal","พระนครศรีอยุธยา",13754.02,29],["TikTok","Herbal","พะเยา",1572.9,4],["TikTok","Herbal","พังงา",1454.21,4],["TikTok","Herbal","พัทลุง",7994.55,15],["TikTok","Herbal","พิจิตร",659.9,3],["TikTok","Herbal","พิษณุโลก",2036.45,6],["TikTok","Herbal","ภูเก็ต",12417.73,28],["TikTok","Herbal","มหาสารคาม",800.09,2],["TikTok","Herbal","ยะลา",736.35,2],["TikTok","Herbal","ระนอง",1149.25,4],["TikTok","Herbal","ระยอง",11113.35,26],["TikTok","Herbal","ราชบุรี",7467.02,21],["TikTok","Herbal","ร้อยเอ็ด",1305.69,5],["TikTok","Herbal","ลพบุรี",2941.96,14],["TikTok","Herbal","ลำปาง",2252.34,6],["TikTok","Herbal","ลำพูน",3283.73,10],["TikTok","Herbal","ศรีสะเกษ",6702.46,21],["TikTok","Herbal","สกลนคร",144.86,1],["TikTok","Herbal","สงขลา",15414.91,54],["TikTok","Herbal","สตูล",1140.19,5],["TikTok","Herbal","สมุทรปราการ",15832.0,48],["TikTok","Herbal","สมุทรสงคราม",3503.96,10],["TikTok","Herbal","สมุทรสาคร",5502.89,21],["TikTok","Herbal","สระบุรี",6972.83,21],["TikTok","Herbal","สระแก้ว",3650.39,11],["TikTok","Herbal","สิงห์บุรี",107.48,1],["TikTok","Herbal","สุพรรณบุรี",2554.93,8],["TikTok","Herbal","สุราษฎร์ธานี",6350.91,22],["TikTok","Herbal","สุรินทร์",2241.03,7],["TikTok","Herbal","สุโขทัย",1820.41,7],["TikTok","Herbal","หนองคาย",1985.06,5],["TikTok","Herbal","หนองบัวลำภู",765.43,5],["TikTok","Herbal","อำนาจเจริญ",772.37,2],["TikTok","Herbal","อุดรธานี",3382.92,9],["TikTok","Herbal","อุตรดิตถ์",976.64,4],["TikTok","Herbal","อุทัยธานี",2768.76,6],["TikTok","Herbal","อุบลราชธานี",4764.34,11],["TikTok","Herbal","อ่างทอง",3272.32,9],["TikTok","Herbal","เชียงราย",5738.57,21],["TikTok","Herbal","เชียงใหม่",9612.93,21],["TikTok","Herbal","เพชรบุรี",2036.45,6],["TikTok","Herbal","เพชรบูรณ์",3548.06,13],["TikTok","Herbal","เลย",330.85,1],["TikTok","Herbal","แพร่",1936.46,7],["TikTok","กิ๊ฟวิ่ง","กระบี่",7429.44,15],["TikTok","กิ๊ฟวิ่ง","กรุงเทพฯ",274193.41,699],["TikTok","กิ๊ฟวิ่ง","กาญจนบุรี",8077.59,25],["TikTok","กิ๊ฟวิ่ง","กาฬสินธุ์",4554.62,12],["TikTok","กิ๊ฟวิ่ง","กำแพงเพชร",5181.68,15],["TikTok","กิ๊ฟวิ่ง","ขอนแก่น",4203.15,9],["TikTok","กิ๊ฟวิ่ง","จันทบุรี",12963.17,29],["TikTok","กิ๊ฟวิ่ง","ฉะเชิงเทรา",7477.81,23],["TikTok","กิ๊ฟวิ่ง","ชลบุรี",28977.06,70],["TikTok","กิ๊ฟวิ่ง","ชัยนาท",782.83,2],["TikTok","กิ๊ฟวิ่ง","ชัยภูมิ",9714.94,19],["TikTok","กิ๊ฟวิ่ง","ชุมพร",9662.29,16],["TikTok","กิ๊ฟวิ่ง","ตรัง",2645.08,11],["TikTok","กิ๊ฟวิ่ง","ตราด",1840.79,8],["TikTok","กิ๊ฟวิ่ง","ตาก",6657.2,11],["TikTok","กิ๊ฟวิ่ง","นครนายก",6345.6,14],["TikTok","กิ๊ฟวิ่ง","นครปฐม",15292.26,42],["TikTok","กิ๊ฟวิ่ง","นครพนม",4453.51,16],["TikTok","กิ๊ฟวิ่ง","นครราชสีมา",15095.59,35],["TikTok","กิ๊ฟวิ่ง","นครศรีธรรมราช",19689.32,50],["TikTok","กิ๊ฟวิ่ง","นครสวรรค์",4791.0,20],["TikTok","กิ๊ฟวิ่ง","นนทบุรี",40359.13,58],["TikTok","กิ๊ฟวิ่ง","นราธิวาส",1829.7,5],["TikTok","กิ๊ฟวิ่ง","น่าน",615.82,3],["TikTok","กิ๊ฟวิ่ง","บึงกาฬ",2563.19,4],["TikTok","กิ๊ฟวิ่ง","บุรีรัมย์",6207.98,12],["TikTok","กิ๊ฟวิ่ง","ปทุมธานี",20617.25,54],["TikTok","กิ๊ฟวิ่ง","ประจวบคีรีขันธ์",8189.72,12],["TikTok","กิ๊ฟวิ่ง","ปราจีนบุรี",9600.32,20],["TikTok","กิ๊ฟวิ่ง","ปัตตานี",2847.95,5],["TikTok","กิ๊ฟวิ่ง","พระนครศรีอยุธยา",28381.31,53],["TikTok","กิ๊ฟวิ่ง","พะเยา",7858.63,15],["TikTok","กิ๊ฟวิ่ง","พังงา",1876.92,6],["TikTok","กิ๊ฟวิ่ง","พัทลุง",6699.48,17],["TikTok","กิ๊ฟวิ่ง","พิจิตร",3484.8,7],["TikTok","กิ๊ฟวิ่ง","พิษณุโลก",4940.65,13],["TikTok","กิ๊ฟวิ่ง","ภูเก็ต",5849.48,11],["TikTok","กิ๊ฟวิ่ง","มหาสารคาม",3076.91,8],["TikTok","กิ๊ฟวิ่ง","มุกดาหาร",662.62,3],["TikTok","กิ๊ฟวิ่ง","ยะลา",2695.56,4],["TikTok","กิ๊ฟวิ่ง","ยโสธร",20374.97,18],["TikTok","กิ๊ฟวิ่ง","ระนอง",1202.8,7],["TikTok","กิ๊ฟวิ่ง","ระยอง",11850.6,22],["TikTok","กิ๊ฟวิ่ง","ราชบุรี",19544.65,39],["TikTok","กิ๊ฟวิ่ง","ร้อยเอ็ด",10581.82,27],["TikTok","กิ๊ฟวิ่ง","ลพบุรี",8015.28,20],["TikTok","กิ๊ฟวิ่ง","ลำปาง",6884.77,20],["TikTok","กิ๊ฟวิ่ง","ลำพูน",10815.07,20],["TikTok","กิ๊ฟวิ่ง","ศรีสะเกษ",8845.42,30],["TikTok","กิ๊ฟวิ่ง","สกลนคร",8068.21,17],["TikTok","กิ๊ฟวิ่ง","สงขลา",14141.72,40],["TikTok","กิ๊ฟวิ่ง","สตูล",1003.51,5],["TikTok","กิ๊ฟวิ่ง","สมุทรปราการ",31985.42,72],["TikTok","กิ๊ฟวิ่ง","สมุทรสงคราม",2944.94,8],["TikTok","กิ๊ฟวิ่ง","สมุทรสาคร",21885.3,39],["TikTok","กิ๊ฟวิ่ง","สระบุรี",7403.22,22],["TikTok","กิ๊ฟวิ่ง","สระแก้ว",7357.89,17],["TikTok","กิ๊ฟวิ่ง","สิงห์บุรี",3267.29,6],["TikTok","กิ๊ฟวิ่ง","สุพรรณบุรี",31893.78,33],["TikTok","กิ๊ฟวิ่ง","สุราษฎร์ธานี",17584.59,30],["TikTok","กิ๊ฟวิ่ง","สุรินทร์",2114.03,6],["TikTok","กิ๊ฟวิ่ง","สุโขทัย",4328.94,8],["TikTok","กิ๊ฟวิ่ง","หนองคาย",4976.05,10],["TikTok","กิ๊ฟวิ่ง","หนองบัวลำภู",3277.37,6],["TikTok","กิ๊ฟวิ่ง","อำนาจเจริญ",3107.14,7],["TikTok","กิ๊ฟวิ่ง","อุดรธานี",7452.96,17],["TikTok","กิ๊ฟวิ่ง","อุตรดิตถ์",4681.93,12],["TikTok","กิ๊ฟวิ่ง","อุทัยธานี",151.4,1],["TikTok","กิ๊ฟวิ่ง","อุบลราชธานี",5876.74,18],["TikTok","กิ๊ฟวิ่ง","อ่างทอง",2517.11,10],["TikTok","กิ๊ฟวิ่ง","เชียงราย",19318.66,45],["TikTok","กิ๊ฟวิ่ง","เชียงใหม่",43442.89,90],["TikTok","กิ๊ฟวิ่ง","เพชรบุรี",2873.34,10],["TikTok","กิ๊ฟวิ่ง","เพชรบูรณ์",4998.36,11],["TikTok","กิ๊ฟวิ่ง","เลย",1753.26,6],["TikTok","กิ๊ฟวิ่ง","แพร่",10266.44,17],["TikTok","กิ๊ฟวิ่ง","แม่ฮ่องสอน",2751.26,7],["TikTok","ซุปไก่","กระบี่",3767.48,9],["TikTok","ซุปไก่","กรุงเทพฯ",221184.43,410],["TikTok","ซุปไก่","กาญจนบุรี",10316.16,26],["TikTok","ซุปไก่","กาฬสินธุ์",9722.56,20],["TikTok","ซุปไก่","กำแพงเพชร",7195.52,13],["TikTok","ซุปไก่","ขอนแก่น",17003.83,31],["TikTok","ซุปไก่","จันทบุรี",16179.76,30],["TikTok","ซุปไก่","ฉะเชิงเทรา",19341.93,35],["TikTok","ซุปไก่","ชลบุรี",50719.97,93],["TikTok","ซุปไก่","ชัยนาท",1889.72,4],["TikTok","ซุปไก่","ชัยภูมิ",7306.13,17],["TikTok","ซุปไก่","ชุมพร",21682.55,20],["TikTok","ซุปไก่","ตรัง",2102.34,5],["TikTok","ซุปไก่","ตราด",3340.9,8],["TikTok","ซุปไก่","ตาก",6217.74,8],["TikTok","ซุปไก่","นครนายก",2168.22,4],["TikTok","ซุปไก่","นครปฐม",19633.13,32],["TikTok","ซุปไก่","นครพนม",10624.85,16],["TikTok","ซุปไก่","นครราชสีมา",23528.14,54],["TikTok","ซุปไก่","นครศรีธรรมราช",18375.2,40],["TikTok","ซุปไก่","นครสวรรค์",11847.73,24],["TikTok","ซุปไก่","นนทบุรี",28279.72,57],["TikTok","ซุปไก่","นราธิวาส",3282.81,8],["TikTok","ซุปไก่","น่าน",3184.17,7],["TikTok","ซุปไก่","บึงกาฬ",3928.71,9],["TikTok","ซุปไก่","บุรีรัมย์",9515.45,19],["TikTok","ซุปไก่","ปทุมธานี",31740.6,62],["TikTok","ซุปไก่","ประจวบคีรีขันธ์",6657.83,16],["TikTok","ซุปไก่","ปราจีนบุรี",12965.68,19],["TikTok","ซุปไก่","ปัตตานี",4032.66,9],["TikTok","ซุปไก่","พระนครศรีอยุธยา",16308.6,28],["TikTok","ซุปไก่","พะเยา",4878.27,10],["TikTok","ซุปไก่","พังงา",4121.71,8],["TikTok","ซุปไก่","พัทลุง",2154.49,5],["TikTok","ซุปไก่","พิจิตร",7320.48,9],["TikTok","ซุปไก่","พิษณุโลก",6890.39,15],["TikTok","ซุปไก่","ภูเก็ต",4698.85,9],["TikTok","ซุปไก่","มหาสารคาม",5272.01,8],["TikTok","ซุปไก่","มุกดาหาร",2592.52,4],["TikTok","ซุปไก่","ยะลา",3339.13,6],["TikTok","ซุปไก่","ยโสธร",2840.69,8],["TikTok","ซุปไก่","ระนอง",1105.85,3],["TikTok","ซุปไก่","ระยอง",24543.54,46],["TikTok","ซุปไก่","ราชบุรี",17699.37,25],["TikTok","ซุปไก่","ร้อยเอ็ด",8447.08,16],["TikTok","ซุปไก่","ลพบุรี",11270.92,21],["TikTok","ซุปไก่","ลำปาง",9736.63,16],["TikTok","ซุปไก่","ลำพูน",6578.92,15],["TikTok","ซุปไก่","ศรีสะเกษ",8042.59,21],["TikTok","ซุปไก่","สกลนคร",4706.33,10],["TikTok","ซุปไก่","สงขลา",30574.63,55],["TikTok","ซุปไก่","สตูล",2689.73,7],["TikTok","ซุปไก่","สมุทรปราการ",52493.9,93],["TikTok","ซุปไก่","สมุทรสงคราม",1315.43,3],["TikTok","ซุปไก่","สมุทรสาคร",16910.66,29],["TikTok","ซุปไก่","สระบุรี",13911.23,28],["TikTok","ซุปไก่","สระแก้ว",6313.25,15],["TikTok","ซุปไก่","สิงห์บุรี",1926.83,6],["TikTok","ซุปไก่","สุพรรณบุรี",19822.66,31],["TikTok","ซุปไก่","สุราษฎร์ธานี",11742.36,22],["TikTok","ซุปไก่","สุรินทร์",5804.75,14],["TikTok","ซุปไก่","สุโขทัย",6883.71,12],["TikTok","ซุปไก่","หนองคาย",3488.1,8],["TikTok","ซุปไก่","หนองบัวลำภู",3029.8,5],["TikTok","ซุปไก่","อำนาจเจริญ",1413.51,4],["TikTok","ซุปไก่","อุดรธานี",20714.32,37],["TikTok","ซุปไก่","อุตรดิตถ์",5488.58,10],["TikTok","ซุปไก่","อุทัยธานี",2267.73,4],["TikTok","ซุปไก่","อุบลราชธานี",11621.03,27],["TikTok","ซุปไก่","อ่างทอง",5339.42,10],["TikTok","ซุปไก่","เชียงราย",12473.74,22],["TikTok","ซุปไก่","เชียงใหม่",21470.94,39],["TikTok","ซุปไก่","เพชรบุรี",5354.18,10],["TikTok","ซุปไก่","เพชรบูรณ์",14400.25,25],["TikTok","ซุปไก่","เลย",2084.57,6],["TikTok","ซุปไก่","แพร่",4653.23,11],["TikTok","ซุปไก่","แม่ฮ่องสอน",5889.95,10],["TikTok","รังนก","กระบี่",11599.81,12],["TikTok","รังนก","กรุงเทพฯ",453058.9,460],["TikTok","รังนก","กาญจนบุรี",20479.58,20],["TikTok","รังนก","กาฬสินธุ์",8969.77,7],["TikTok","รังนก","กำแพงเพชร",7036.79,11],["TikTok","รังนก","ขอนแก่น",22674.61,23],["TikTok","รังนก","จันทบุรี",12853.02,13],["TikTok","รังนก","ฉะเชิงเทรา",18074.49,23],["TikTok","รังนก","ชลบุรี",43923.44,40],["TikTok","รังนก","ชัยนาท",3704.89,5],["TikTok","รังนก","ชัยภูมิ",9092.85,9],["TikTok","รังนก","ชุมพร",8768.28,6],["TikTok","รังนก","ตรัง",16815.14,14],["TikTok","รังนก","ตราด",1047.79,2],["TikTok","รังนก","ตาก",4432.69,4],["TikTok","รังนก","นครนายก",443.92,1],["TikTok","รังนก","นครปฐม",14276.29,13],["TikTok","รังนก","นครพนม",10889.45,12],["TikTok","รังนก","นครราชสีมา",29493.62,30],["TikTok","รังนก","นครศรีธรรมราช",47643.05,47],["TikTok","รังนก","นครสวรรค์",16501.14,10],["TikTok","รังนก","นนทบุรี",32828.09,32],["TikTok","รังนก","นราธิวาส",5669.63,4],["TikTok","รังนก","น่าน",373.37,1],["TikTok","รังนก","บึงกาฬ",3895.77,6],["TikTok","รังนก","บุรีรัมย์",9985.9,9],["TikTok","รังนก","ปทุมธานี",40861.35,37],["TikTok","รังนก","ประจวบคีรีขันธ์",10858.67,10],["TikTok","รังนก","ปราจีนบุรี",19115.22,17],["TikTok","รังนก","ปัตตานี",3960.72,3],["TikTok","รังนก","พระนครศรีอยุธยา",57853.39,33],["TikTok","รังนก","พะเยา",7679.16,6],["TikTok","รังนก","พังงา",5259.09,6],["TikTok","รังนก","พัทลุง",4977.78,7],["TikTok","รังนก","พิจิตร",13491.95,15],["TikTok","รังนก","พิษณุโลก",7383.63,11],["TikTok","รังนก","ภูเก็ต",12520.2,11],["TikTok","รังนก","มหาสารคาม",16552.82,16],["TikTok","รังนก","มุกดาหาร",1324.11,1],["TikTok","รังนก","ยะลา",2975.25,3],["TikTok","รังนก","ยโสธร",7452.06,6],["TikTok","รังนก","ระนอง",6841.02,7],["TikTok","รังนก","ระยอง",14289.11,17],["TikTok","รังนก","ราชบุรี",14268.15,14],["TikTok","รังนก","ร้อยเอ็ด",11064.5,8],["TikTok","รังนก","ลพบุรี",9442.51,10],["TikTok","รังนก","ลำปาง",8129.65,9],["TikTok","รังนก","ลำพูน",8173.61,3],["TikTok","รังนก","ศรีสะเกษ",23746.53,23],["TikTok","รังนก","สกลนคร",10568.87,12],["TikTok","รังนก","สงขลา",50853.6,26],["TikTok","รังนก","สตูล",1801.86,1],["TikTok","รังนก","สมุทรปราการ",45242.88,44],["TikTok","รังนก","สมุทรสงคราม",1290.89,1],["TikTok","รังนก","สมุทรสาคร",12827.04,14],["TikTok","รังนก","สระบุรี",14805.24,11],["TikTok","รังนก","สระแก้ว",12260.05,12],["TikTok","รังนก","สิงห์บุรี",1873.83,3],["TikTok","รังนก","สุพรรณบุรี",55782.85,29],["TikTok","รังนก","สุราษฎร์ธานี",16560.78,17],["TikTok","รังนก","สุรินทร์",14755.76,16],["TikTok","รังนก","สุโขทัย",11829.82,12],["TikTok","รังนก","หนองคาย",9163.13,7],["TikTok","รังนก","หนองบัวลำภู",3307.48,5],["TikTok","รังนก","อำนาจเจริญ",10790.37,8],["TikTok","รังนก","อุดรธานี",14986.88,14],["TikTok","รังนก","อุตรดิตถ์",2667.96,1],["TikTok","รังนก","อุทัยธานี",6051.08,3],["TikTok","รังนก","อุบลราชธานี",32623.87,28],["TikTok","รังนก","อ่างทอง",1429.91,2],["TikTok","รังนก","เชียงราย",14932.21,10],["TikTok","รังนก","เชียงใหม่",40366.82,37],["TikTok","รังนก","เพชรบุรี",3918.74,5],["TikTok","รังนก","เพชรบูรณ์",8074.62,10],["TikTok","รังนก","เลย",1815.17,1],["TikTok","รังนก","แพร่",5933.68,7],["TikTok","รังนก","แม่ฮ่องสอน",7862.5,4],["TikTok","สกินแคร์","กรุงเทพฯ",28030.97,49],["TikTok","สกินแคร์","ขอนแก่น",932.24,2],["TikTok","สกินแคร์","จันทบุรี",4134.82,5],["TikTok","สกินแคร์","ชลบุรี",1689.72,3],["TikTok","สกินแคร์","ชุมพร",782.48,1],["TikTok","สกินแคร์","ตรัง",1166.35,2],["TikTok","สกินแคร์","ตาก",559.81,1],["TikTok","สกินแคร์","นครปฐม",405.14,1],["TikTok","สกินแคร์","นครราชสีมา",4694.62,6],["TikTok","สกินแคร์","นนทบุรี",2768.23,5],["TikTok","สกินแคร์","ปทุมธานี",6161.31,9],["TikTok","สกินแคร์","ปราจีนบุรี",527.1,1],["TikTok","สกินแคร์","พระนครศรีอยุธยา",1213.08,2],["TikTok","สกินแคร์","พะเยา",432.95,1],["TikTok","สกินแคร์","ภูเก็ต",1521.03,3],["TikTok","สกินแคร์","ยะลา",405.14,1],["TikTok","สกินแคร์","ระยอง",2369.74,4],["TikTok","สกินแคร์","ราชบุรี",1488.32,3],["TikTok","สกินแคร์","ลพบุรี",606.54,1],["TikTok","สกินแคร์","ศรีสะเกษ",1119.62,1],["TikTok","สกินแคร์","สมุทรปราการ",1229.53,2],["TikTok","สกินแคร์","สมุทรสาคร",838.08,1],["TikTok","สกินแคร์","สระบุรี",448.23,1],["TikTok","สกินแคร์","สุพรรณบุรี",432.95,1],["TikTok","สกินแคร์","สุราษฎร์ธานี",877.11,2],["TikTok","สกินแคร์","อ่างทอง",432.95,1],["TikTok","สกินแคร์","เชียงราย",405.14,1],["TikTok","สกินแคร์","เชียงใหม่",1213.08,2],["TikTok","สกินแคร์","เพชรบุรี",405.14,1],["TikTok","สกินแคร์","เพชรบูรณ์",606.54,1],["TikTok","สกินแคร์","แพร่",606.54,1],["TikTok","เพียวเร่","กระบี่",4823.3,19],["TikTok","เพียวเร่","กรุงเทพฯ",213933.95,641],["TikTok","เพียวเร่","กาญจนบุรี",11347.84,38],["TikTok","เพียวเร่","กาฬสินธุ์",5920.79,18],["TikTok","เพียวเร่","กำแพงเพชร",8258.9,27],["TikTok","เพียวเร่","ขอนแก่น",12285.01,33],["TikTok","เพียวเร่","จันทบุรี",3771.71,12],["TikTok","เพียวเร่","ฉะเชิงเทรา",20199.17,60],["TikTok","เพียวเร่","ชลบุรี",51945.27,140],["TikTok","เพียวเร่","ชัยนาท",3801.74,8],["TikTok","เพียวเร่","ชัยภูมิ",3956.13,13],["TikTok","เพียวเร่","ชุมพร",3488.24,11],["TikTok","เพียวเร่","ตรัง",2123.35,7],["TikTok","เพียวเร่","ตราด",900.93,4],["TikTok","เพียวเร่","ตาก",6050.94,17],["TikTok","เพียวเร่","นครนายก",4404.04,14],["TikTok","เพียวเร่","นครปฐม",21101.37,62],["TikTok","เพียวเร่","นครพนม",4382.44,14],["TikTok","เพียวเร่","นครราชสีมา",29408.65,100],["TikTok","เพียวเร่","นครศรีธรรมราช",13274.19,39],["TikTok","เพียวเร่","นครสวรรค์",9324.53,25],["TikTok","เพียวเร่","นนทบุรี",16288.5,59],["TikTok","เพียวเร่","นราธิวาส",2013.24,8],["TikTok","เพียวเร่","น่าน",1595.3,5],["TikTok","เพียวเร่","บึงกาฬ",1423.5,6],["TikTok","เพียวเร่","บุรีรัมย์",7351.44,28],["TikTok","เพียวเร่","ปทุมธานี",24203.98,84],["TikTok","เพียวเร่","ประจวบคีรีขันธ์",10405.05,25],["TikTok","เพียวเร่","ปราจีนบุรี",18492.24,41],["TikTok","เพียวเร่","ปัตตานี",3660.32,10],["TikTok","เพียวเร่","พระนครศรีอยุธยา",22435.61,65],["TikTok","เพียวเร่","พะเยา",2731.46,8],["TikTok","เพียวเร่","พังงา",3024.78,10],["TikTok","เพียวเร่","พัทลุง",4214.3,12],["TikTok","เพียวเร่","พิจิตร",6775.26,15],["TikTok","เพียวเร่","พิษณุโลก",8215.62,26],["TikTok","เพียวเร่","ภูเก็ต",10683.6,29],["TikTok","เพียวเร่","มหาสารคาม",7685.68,22],["TikTok","เพียวเร่","มุกดาหาร",255.14,1],["TikTok","เพียวเร่","ยะลา",2824.53,11],["TikTok","เพียวเร่","ยโสธร",2516.35,5],["TikTok","เพียวเร่","ระนอง",675.71,3],["TikTok","เพียวเร่","ระยอง",13472.48,45],["TikTok","เพียวเร่","ราชบุรี",15008.51,43],["TikTok","เพียวเร่","ร้อยเอ็ด",7369.08,25],["TikTok","เพียวเร่","ลพบุรี",12289.49,40],["TikTok","เพียวเร่","ลำปาง",5546.7,16],["TikTok","เพียวเร่","ลำพูน",7008.59,24],["TikTok","เพียวเร่","ศรีสะเกษ",12890.91,41],["TikTok","เพียวเร่","สกลนคร",3300.6,13],["TikTok","เพียวเร่","สงขลา",14196.94,46],["TikTok","เพียวเร่","สตูล",3357.69,11],["TikTok","เพียวเร่","สมุทรปราการ",44766.42,136],["TikTok","เพียวเร่","สมุทรสงคราม",1280.95,5],["TikTok","เพียวเร่","สมุทรสาคร",23303.08,62],["TikTok","เพียวเร่","สระบุรี",14673.69,41],["TikTok","เพียวเร่","สระแก้ว",9847.37,27],["TikTok","เพียวเร่","สิงห์บุรี",4547.62,11],["TikTok","เพียวเร่","สุพรรณบุรี",25807.07,55],["TikTok","เพียวเร่","สุราษฎร์ธานี",13267.77,48],["TikTok","เพียวเร่","สุรินทร์",10021.91,33],["TikTok","เพียวเร่","สุโขทัย",7193.09,18],["TikTok","เพียวเร่","หนองคาย",3521.51,11],["TikTok","เพียวเร่","หนองบัวลำภู",4445.17,12],["TikTok","เพียวเร่","อำนาจเจริญ",1439.94,5],["TikTok","เพียวเร่","อุดรธานี",7290.29,24],["TikTok","เพียวเร่","อุตรดิตถ์",4131.61,14],["TikTok","เพียวเร่","อุทัยธานี",985.72,3],["TikTok","เพียวเร่","อุบลราชธานี",9255.05,29],["TikTok","เพียวเร่","อ่างทอง",2357.01,11],["TikTok","เพียวเร่","เชียงราย",10329.53,29],["TikTok","เพียวเร่","เชียงใหม่",31874.78,86],["TikTok","เพียวเร่","เพชรบุรี",3676.01,12],["TikTok","เพียวเร่","เพชรบูรณ์",6775.34,20],["TikTok","เพียวเร่","เลย",4750.46,13],["TikTok","เพียวเร่","แพร่",6892.57,22],["TikTok","เพียวเร่","แม่ฮ่องสอน",3622.47,10]]},"sku":{"cols":["ch","cat","sku","amt","qty"],"rows":[["AMAZE","Herbal","(ไม่ระบุ)",664.49,5],["AMAZE","ซุปไก่","(ไม่ระบุ)",948.59,3],["AMAZE","รังนก","(ไม่ระบุ)",873.83,2],["AMAZE","รังนก","AS(8)",700.0,1],["AMAZE","รังนก","BNB(L)",2387.85,4],["AMAZE","รังนก","BNRX(S)_CVS",425.23,1],["AMAZE","เพียวเร่","PB",261.68,2],["Lazada","Herbal","(ไม่ระบุ)",174562.35,1584],["Lazada","Herbal","DMBX(100ml.)P42",615172.91,563],["Lazada","Herbal","DMBX(100ml.)P8",519823.7,2376],["Lazada","กิ๊ฟวิ่ง","GB_01_Y26",4470.14,25],["Lazada","กิ๊ฟวิ่ง","GB_02_Y25",193.46,1],["Lazada","กิ๊ฟวิ่ง","GB_02_Y26",2667.43,14],["Lazada","กิ๊ฟวิ่ง","GB_03_Y26",21409.8,115],["Lazada","กิ๊ฟวิ่ง","GB_06(C)_Y26",6931.15,23],["Lazada","กิ๊ฟวิ่ง","GB_10(B)_Y26",7971.06,14],["Lazada","กิ๊ฟวิ่ง","GB_BNR9_Less Sweet_Y26",6549.25,10],["Lazada","กิ๊ฟวิ่ง","GB_BNRX(S)(G)",17789.92,36],["Lazada","กิ๊ฟวิ่ง","GB_BNRX9_Y26",4467.54,6],["Lazada","กิ๊ฟวิ่ง","GB_Lighting_EOC_Y26",115.76,1],["Lazada","กิ๊ฟวิ่ง","GB_Lighting_PB_Y26",289.19,2],["Lazada","กิ๊ฟวิ่ง","GB_PB_Y26",4393.02,14],["Lazada","กิ๊ฟวิ่ง","GB_PP_Y26",3909.07,12],["Lazada","กิ๊ฟวิ่ง","HP_A",7738.92,9],["Lazada","กิ๊ฟวิ่ง","HP_A(1x2)",6175.44,7],["Lazada","กิ๊ฟวิ่ง","HP_B",31032.58,51],["Lazada","กิ๊ฟวิ่ง","HP_C",11163.65,36],["Lazada","กิ๊ฟวิ่ง","HP_C(1X2)",3715.34,11],["Lazada","กิ๊ฟวิ่ง","HP_E",123174.29,156],["Lazada","กิ๊ฟวิ่ง","HP_E (1x2)",12258.9,14],["Lazada","กิ๊ฟวิ่ง","HP_Hi3-reuse_Y24",41503.77,28],["Lazada","กิ๊ฟวิ่ง","HP_Hi4 (reuse)",10745.51,8],["Lazada","กิ๊ฟวิ่ง","HP_P",31860.36,104],["Lazada","กิ๊ฟวิ่ง","HP_PB",34544.63,112],["Lazada","กิ๊ฟวิ่ง","HP_PB (1X2)",2290.96,7],["Lazada","กิ๊ฟวิ่ง","HP_PP(1x2)",2796.37,9],["Lazada","ซุปไก่","(ไม่ระบุ)",248512.87,864],["Lazada","ซุปไก่","EOC/T(L)",49896.83,208],["Lazada","ซุปไก่","EOC/T(S)",25639.81,159],["Lazada","ซุปไก่","EOC/T(S)(P12)",31149.22,99],["Lazada","ซุปไก่","EOC/T_100ml.(P4)",15351.11,78],["Lazada","ซุปไก่","EOC_TT(100ml)",3411.67,21],["Lazada","ซุปไก่","Kitz(S)",16266.59,104],["Lazada","ซุปไก่","Kitz(S)(P12)",24910.27,86],["Lazada","ซุปไก่","KitzChocoOrange(40ml.)",9543.91,59],["Lazada","ซุปไก่","Ori(L)",9795.25,41],["Lazada","ซุปไก่","Ori(L)(P12)",14896.6,34],["Lazada","ซุปไก่","Ori(S)",41157.42,270],["Lazada","ซุปไก่","Ori(S)(P12)",143170.52,511],["Lazada","ซุปไก่","Ori_100ml(P6)",86148.05,325],["Lazada","ซุปไก่","Ori_100ml.(P4)",4837.48,26],["Lazada","รังนก","(ไม่ระบุ)",881730.0,2296],["Lazada","รังนก","AN(8)",14257.41,22],["Lazada","รังนก","AS(8)",15888.79,24],["Lazada","รังนก","BL-L",4789.62,8],["Lazada","รังนก","BL-S",25014.38,64],["Lazada","รังนก","BN150",4692.62,4],["Lazada","รังนก","BNB(L)",13035.17,21],["Lazada","รังนก","BNB(S)",43833.4,113],["Lazada","รังนก","BNC_L",3170.18,5],["Lazada","รังนก","BNC_S",17254.11,43],["Lazada","รังนก","BNF90",41204.83,136],["Lazada","รังนก","BNM(S)",2508.39,6],["Lazada","รังนก","BNR(L)",43521.59,71],["Lazada","รังนก","BNR(L)P12",129557.93,115],["Lazada","รังนก","BNR(S)",557100.73,1520],["Lazada","รังนก","BNR(S)P12",318622.24,467],["Lazada","รังนก","BNR(S)_CVS",13456.17,32],["Lazada","รังนก","BNRG(S)",29480.81,76],["Lazada","รังนก","BNRX(L)",180558.14,295],["Lazada","รังนก","BNRX(L)P12",258324.75,233],["Lazada","รังนก","BNRX(S)",250787.9,680],["Lazada","รังนก","BNRX(S)P12",342753.32,498],["Lazada","รังนก","BNRX(S)_CVS",26611.94,65],["Lazada","รังนก","FR150",1406.9,1],["Lazada","สกินแคร์","SFH",27467.13,74],["Lazada","เพียวเร่","(ไม่ระบุ)",26955.34,97],["Lazada","เพียวเร่","PB",38077.19,262],["Lazada","เพียวเร่","PB(P12)",66720.79,248],["Lazada","เพียวเร่","PB_CVS",9131.82,62],["Lazada","เพียวเร่","PP",23495.55,165],["Lazada","เพียวเร่","PP(L)P6",17966.41,72],["Lazada","เพียวเร่","PP(P12)",80394.22,296],["Lazada","เพียวเร่","PP_CVS",21643.73,143],["Line","Herbal","(ไม่ระบุ)",3009.34,20],["Line","Herbal","DMBX(100ml.)P8",2943.0,12],["Line","กิ๊ฟวิ่ง","GB_BNRX9_Y26",718.69,1],["Line","ซุปไก่","(ไม่ระบุ)",1621.5,5],["Line","รังนก","(ไม่ระบุ)",7551.18,20],["Line","รังนก","BL-L",761.68,1],["Line","รังนก","BNR(L)",13222.58,24],["Line","รังนก","BNR(S)",41206.73,120],["Line","รังนก","BNR(S)P12",8037.53,12],["Line","รังนก","BNRG(S)",17247.86,48],["Line","รังนก","BNRX(L)",6758.13,12],["Line","รังนก","BNRX(L)P12",6083.17,5],["Line","รังนก","BNRX(S)",30178.69,88],["Line","รังนก","BNRX(S)P12",14295.47,20],["Line","เพียวเร่","(ไม่ระบุ)",12598.44,52],["Line","เพียวเร่","PB",6425.86,41],["Line","เพียวเร่","PB(P12)",7652.34,32],["Line","เพียวเร่","PP",5601.93,36],["Line Gift","กิ๊ฟวิ่ง","GB_06(C)_Y26",349.54,1],["Line Gift","กิ๊ฟวิ่ง","HP_C(1X2)",359.81,1],["Line Gift","กิ๊ฟวิ่ง","HP_PP(1x2)",305.61,1],["Line Gift","ซุปไก่","EOC/T(S)",202.8,1],["OFM","กิ๊ฟวิ่ง","HP_A(1x2)",1486.26,2],["Shopee","Herbal","(ไม่ระบุ)",624565.39,5297],["Shopee","Herbal","DMBX(100ml.)P42",57548.88,46],["Shopee","Herbal","DMBX(100ml.)P8",128046.82,514],["Shopee","กิ๊ฟวิ่ง","GB_01_Y26",13019.24,73],["Shopee","กิ๊ฟวิ่ง","GB_02_Y25",3296.35,15],["Shopee","กิ๊ฟวิ่ง","GB_02_Y26",41616.46,219],["Shopee","กิ๊ฟวิ่ง","GB_03_Y25",238.32,1],["Shopee","กิ๊ฟวิ่ง","GB_03_Y26",9266.94,47],["Shopee","กิ๊ฟวิ่ง","GB_06(C)_Y26",13512.58,42],["Shopee","กิ๊ฟวิ่ง","GB_10(B)_Y26",73783.35,127],["Shopee","กิ๊ฟวิ่ง","GB_BNR9_Less Sweet_Y26",3448.81,5],["Shopee","กิ๊ฟวิ่ง","GB_BNRX(S)(G)",37497.04,69],["Shopee","กิ๊ฟวิ่ง","GB_BNRX9_Y25",32004.37,44],["Shopee","กิ๊ฟวิ่ง","GB_BNRX9_Y26",23496.73,29],["Shopee","กิ๊ฟวิ่ง","GB_Lighting_PB_Y26",73844.55,550],["Shopee","กิ๊ฟวิ่ง","GB_PB_Y26",14985.43,44],["Shopee","กิ๊ฟวิ่ง","GB_PP_Y25",2263.15,7],["Shopee","กิ๊ฟวิ่ง","GB_PP_Y26",4361.58,13],["Shopee","กิ๊ฟวิ่ง","HP_A",168240.87,203],["Shopee","กิ๊ฟวิ่ง","HP_A(1x2)",26213.68,30],["Shopee","กิ๊ฟวิ่ง","HP_B",128777.66,202],["Shopee","กิ๊ฟวิ่ง","HP_B(1x2)",686.92,1],["Shopee","กิ๊ฟวิ่ง","HP_C",71350.76,205],["Shopee","กิ๊ฟวิ่ง","HP_C(1X2)",8076.11,22],["Shopee","กิ๊ฟวิ่ง","HP_E",102890.63,116],["Shopee","กิ๊ฟวิ่ง","HP_E (1x2)",12039.91,13],["Shopee","กิ๊ฟวิ่ง","HP_Hi3 (reuse)",9747.66,6],["Shopee","กิ๊ฟวิ่ง","HP_Hi3-reuse_Y24",118605.42,74],["Shopee","กิ๊ฟวิ่ง","HP_Hi4 (reuse)",56081.61,40],["Shopee","กิ๊ฟวิ่ง","HP_P",79349.36,256],["Shopee","กิ๊ฟวิ่ง","HP_PB",124746.22,402],["Shopee","กิ๊ฟวิ่ง","HP_PB (1X2)",122213.96,359],["Shopee","กิ๊ฟวิ่ง","HP_PP(1x2)",31928.45,92],["Shopee","ซุปไก่","(ไม่ระบุ)",1203303.62,3855],["Shopee","ซุปไก่","100%(S)",37954.03,239],["Shopee","ซุปไก่","EOC/T(L)",77304.21,303],["Shopee","ซุปไก่","EOC/T(S)",68079.71,389],["Shopee","ซุปไก่","EOC/T(S)(P12)",189380.93,561],["Shopee","ซุปไก่","EOC/T_100ml.(P4)",49269.05,240],["Shopee","ซุปไก่","EOC_TT(100ml)",33133.45,190],["Shopee","ซุปไก่","Kitz(S)",84915.53,516],["Shopee","ซุปไก่","Kitz(S)(P12)",241636.66,768],["Shopee","ซุปไก่","KitzChocoOrange(40ml.)",26887.97,153],["Shopee","ซุปไก่","Ori(L)",23045.34,89],["Shopee","ซุปไก่","Ori(L)(P12)",78045.92,159],["Shopee","ซุปไก่","Ori(S)",233075.42,1453],["Shopee","ซุปไก่","Ori(S)(P12)",262322.54,888],["Shopee","ซุปไก่","Ori_100ml(P6)",238402.66,852],["Shopee","ซุปไก่","Ori_100ml.(P4)",6217.75,30],["Shopee","รังนก","(ไม่ระบุ)",1458641.77,3518],["Shopee","รังนก","AN(8)",73615.35,111],["Shopee","รังนก","AS(8)",202050.72,302],["Shopee","รังนก","BL-L",37655.27,58],["Shopee","รังนก","BL-S",137719.27,327],["Shopee","รังนก","BN150",7402.74,6],["Shopee","รังนก","BNB(L)",109409.93,174],["Shopee","รังนก","BNB(S)",216849.5,515],["Shopee","รังนก","BNC_L",57039.1,90],["Shopee","รังนก","BNC_S",61094.73,149],["Shopee","รังนก","BNF90",11089.5,36],["Shopee","รังนก","BNM(S)",79623.87,205],["Shopee","รังนก","BNR(L)",181702.51,290],["Shopee","รังนก","BNR(L)P12",286447.95,243],["Shopee","รังนก","BNR(S)",250341.99,656],["Shopee","รังนก","BNR(S)P12",1043729.22,1354],["Shopee","รังนก","BNR(S)_CVS",16919.99,38],["Shopee","รังนก","BNRG(S)",119831.19,294],["Shopee","รังนก","BNRX(L)",207844.52,330],["Shopee","รังนก","BNRX(L)P12",693004.32,592],["Shopee","รังนก","BNRX(S)",96826.09,248],["Shopee","รังนก","BNRX(S)P12",1929497.7,2576],["Shopee","รังนก","BNRX(S)_CVS",11606.94,27],["Shopee","รังนก","FR150",1376.81,1],["Shopee","สกินแคร์","SFH",134236.51,395],["Shopee","เพียวเร่","(ไม่ระบุ)",469862.74,1597],["Shopee","เพียวเร่","PB",416727.41,2923],["Shopee","เพียวเร่","PB(P12)",545583.48,1879],["Shopee","เพียวเร่","PB_CVS",728.97,5],["Shopee","เพียวเร่","PP",110069.82,740],["Shopee","เพียวเร่","PP(L)P6",57877.79,216],["Shopee","เพียวเร่","PP(P12)",390285.48,1323],["Shopee","เพียวเร่","PP_CVS",307.48,2],["TikTok","Herbal","(ไม่ระบุ)",243335.34,2027],["TikTok","Herbal","DMBX(100ml.)P8",177001.84,703],["TikTok","กิ๊ฟวิ่ง","GB_01_Y26",1805.9,9],["TikTok","กิ๊ฟวิ่ง","GB_02_Y25",1860.26,10],["TikTok","กิ๊ฟวิ่ง","GB_02_Y26",6998.12,38],["TikTok","กิ๊ฟวิ่ง","GB_03_Y25",2816.27,14],["TikTok","กิ๊ฟวิ่ง","GB_03_Y26",4028.03,21],["TikTok","กิ๊ฟวิ่ง","GB_06(C)_Y26",13906.71,46],["TikTok","กิ๊ฟวิ่ง","GB_10(B)_Y26",27354.23,50],["TikTok","กิ๊ฟวิ่ง","GB_BNRX(S)(G)",11515.24,21],["TikTok","กิ๊ฟวิ่ง","GB_BNRX9_Y25",18112.33,26],["TikTok","กิ๊ฟวิ่ง","GB_BNRX9_Y26",1418.0,2],["TikTok","กิ๊ฟวิ่ง","GB_Happy BN A_Y26",280967.2,802],["TikTok","กิ๊ฟวิ่ง","GB_Lighting_EOC_Y26",237880.23,1774],["TikTok","กิ๊ฟวิ่ง","GB_PB_Y26",15175.73,49],["TikTok","กิ๊ฟวิ่ง","GB_PP_Y26",3034.79,9],["TikTok","กิ๊ฟวิ่ง","GB_Rising Star (E-com)",151690.52,457],["TikTok","กิ๊ฟวิ่ง","HP_A",11403.16,15],["TikTok","กิ๊ฟวิ่ง","HP_A(1x2)",8198.35,11],["TikTok","กิ๊ฟวิ่ง","HP_B",17214.61,29],["TikTok","กิ๊ฟวิ่ง","HP_B(1x2)",3431.79,6],["TikTok","กิ๊ฟวิ่ง","HP_C",4487.09,16],["TikTok","กิ๊ฟวิ่ง","HP_C(1X2)",7917.92,25],["TikTok","กิ๊ฟวิ่ง","HP_E (1x2)",27420.05,35],["TikTok","กิ๊ฟวิ่ง","HP_Happy BN A_Y26",5237.21,7],["TikTok","กิ๊ฟวิ่ง","HP_Happy BN E_Y26",1535.55,2],["TikTok","กิ๊ฟวิ่ง","HP_Hi2 (reuse)",4074.76,4],["TikTok","กิ๊ฟวิ่ง","HP_Hi3 (reuse)",9884.57,7],["TikTok","กิ๊ฟวิ่ง","HP_Hi4 (reuse)",3578.59,3],["TikTok","กิ๊ฟวิ่ง","HP_PB (1X2)",67161.6,215],["TikTok","กิ๊ฟวิ่ง","HP_PP(1x2)",27816.08,94],["TikTok","ซุปไก่","(ไม่ระบุ)",582148.36,2054],["TikTok","ซุปไก่","EOC/GF(S)",2544.61,22],["TikTok","ซุปไก่","EOC/T(L)",5665.97,23],["TikTok","ซุปไก่","EOC/T(S)",19002.05,110],["TikTok","ซุปไก่","EOC/T(S)(P12)",48709.49,155],["TikTok","ซุปไก่","EOC_TT(100ml)",4530.43,28],["TikTok","ซุปไก่","Kitz(S)",10052.2,62],["TikTok","ซุปไก่","Kitz(S)(P12)",89846.9,297],["TikTok","ซุปไก่","KitzCaramel(S)",6413.7,39],["TikTok","ซุปไก่","KitzChocoOrange(40ml.)",14837.41,88],["TikTok","ซุปไก่","Ori(L)",3742.6,14],["TikTok","ซุปไก่","Ori(L)(P12)",7083.24,14],["TikTok","ซุปไก่","Ori(S)",19251.85,116],["TikTok","ซุปไก่","Ori(S)(P12)",92504.93,345],["TikTok","ซุปไก่","Ori_100ml(P6)",117091.05,488],["TikTok","ซุปไก่","Ori_100ml.(P4)",6938.0,36],["TikTok","รังนก","(ไม่ระบุ)",195800.34,429],["TikTok","รังนก","AN(8)",21428.84,36],["TikTok","รังนก","AS(8)",18706.11,30],["TikTok","รังนก","BL-L",4849.06,9],["TikTok","รังนก","BL-S",19300.31,49],["TikTok","รังนก","BNB(L)",10019.44,15],["TikTok","รังนก","BNB(S)",27078.14,71],["TikTok","รังนก","BNC_L",4227.98,8],["TikTok","รังนก","BNC_S",11031.81,28],["TikTok","รังนก","BNM(S)",8592.79,22],["TikTok","รังนก","BNR(L)",9525.44,17],["TikTok","รังนก","BNR(L)P12",25476.87,24],["TikTok","รังนก","BNR(S)",48903.79,144],["TikTok","รังนก","BNR(S)P12",149645.49,221],["TikTok","รังนก","BNR(S)_CVS",166105.56,431],["TikTok","รังนก","BNRG(S)",28467.16,78],["TikTok","รังนก","BNRX(L)",22212.24,38],["TikTok","รังนก","BNRX(L)P12",46825.55,41],["TikTok","รังนก","BNRX(S)",41353.7,120],["TikTok","รังนก","BNRX(S)P12",486094.3,693],["TikTok","รังนก","BNRX(S)_CVS",191485.71,527],["TikTok","สกินแคร์","SFH",68504.5,178],["TikTok","เพียวเร่","(ไม่ระบุ)",320167.96,1191],["TikTok","เพียวเร่","PB",101129.13,683],["TikTok","เพียวเร่","PB(P12)",159500.82,599],["TikTok","เพียวเร่","PB_CVS",15178.95,99],["TikTok","เพียวเร่","PP",171621.57,1208],["TikTok","เพียวเร่","PP(L)P6",25294.81,105],["TikTok","เพียวเร่","PP(P12)",144319.88,529],["TikTok","เพียวเร่","PP_CVS",5458.41,36]]},"odc":{"cols":["d","ch","orders"],"rows":[["2026-04-01","AMAZE",1],["2026-04-01","Lazada",44],["2026-04-01","Shopee",273],["2026-04-01","TikTok",394],["2026-04-02","AMAZE",1],["2026-04-02","Lazada",4],["2026-04-02","Line",1],["2026-04-02","Shopee",314],["2026-04-02","TikTok",402],["2026-04-03","AMAZE",1],["2026-04-03","Lazada",11],["2026-04-03","Shopee",272],["2026-04-03","TikTok",348],["2026-04-04","Lazada",652],["2026-04-04","Shopee",1877],["2026-04-04","TikTok",512],["2026-04-06","Lazada",333],["2026-04-06","Shopee",1731],["2026-04-06","TikTok",544],["2026-04-07","Lazada",79],["2026-04-07","Line Gift",1],["2026-04-07","Shopee",382],["2026-04-07","TikTok",140],["2026-04-08","Lazada",24],["2026-04-08","Line",2],["2026-04-08","Shopee",251],["2026-04-08","TikTok",103],["2026-04-09","Lazada",23],["2026-04-09","Shopee",215],["2026-04-09","TikTok",110],["2026-04-10","Lazada",27],["2026-04-10","Line",2],["2026-04-10","Shopee",234],["2026-04-10","TikTok",404],["2026-04-11","Lazada",22],["2026-04-11","Shopee",204],["2026-04-11","TikTok",215],["2026-04-15","TikTok",272],["2026-04-16","AMAZE",1],["2026-04-16","Lazada",176],["2026-04-16","Line Gift",1],["2026-04-16","Shopee",1037],["2026-04-16","TikTok",85],["2026-04-17","AMAZE",1],["2026-04-17","Lazada",64],["2026-04-17","OFM",1],["2026-04-17","Shopee",135],["2026-04-17","TikTok",158],["2026-04-18","AMAZE",2],["2026-04-18","Lazada",44],["2026-04-18","Shopee",131],["2026-04-18","TikTok",181],["2026-04-20","Lazada",26],["2026-04-20","Line",1],["2026-04-20","Line Gift",1],["2026-04-20","Shopee",270],["2026-04-20","TikTok",479],["2026-04-21","Lazada",20],["2026-04-21","Shopee",191],["2026-04-21","TikTok",200],["2026-04-22","Lazada",13],["2026-04-22","Shopee",176],["2026-04-22","TikTok",150],["2026-04-23","Lazada",25],["2026-04-23","Line",1],["2026-04-23","Shopee",146],["2026-04-23","TikTok",92],["2026-04-24","Lazada",16],["2026-04-24","Line",3],["2026-04-24","Shopee",129],["2026-04-24","TikTok",84],["2026-04-25","AMAZE",1],["2026-04-25","Lazada",91],["2026-04-25","Shopee",509],["2026-04-25","TikTok",588],["2026-04-27","Lazada",159],["2026-04-27","Line Gift",1],["2026-04-27","Shopee",586],["2026-04-27","TikTok",1158],["2026-04-28","Lazada",60],["2026-04-28","Line",3],["2026-04-28","Shopee",195],["2026-04-28","TikTok",258],["2026-04-29","Lazada",50],["2026-04-29","Shopee",262],["2026-04-29","TikTok",356],["2026-04-30","Lazada",53],["2026-04-30","Line",1],["2026-04-30","Shopee",159],["2026-04-30","TikTok",262],["2026-05-02","Lazada",61],["2026-05-02","Shopee",729],["2026-05-02","TikTok",366],["2026-05-04","AMAZE",1],["2026-05-04","Lazada",24],["2026-05-04","Shopee",376],["2026-05-04","TikTok",473],["2026-05-05","Lazada",362],["2026-05-05","Line",3],["2026-05-05","Shopee",1589],["2026-05-05","TikTok",290],["2026-05-06","Lazada",453],["2026-05-06","Shopee",1349],["2026-05-06","TikTok",293],["2026-05-07","AMAZE",1],["2026-05-07","Lazada",163],["2026-05-07","Shopee",441],["2026-05-07","TikTok",160],["2026-05-08","Lazada",63],["2026-05-08","Line",1],["2026-05-08","Shopee",223],["2026-05-08","TikTok",77],["2026-05-09","Lazada",19],["2026-05-09","Shopee",162],["2026-05-09","TikTok",78],["2026-05-11","Lazada",47],["2026-05-11","Shopee",287],["2026-05-11","TikTok",131],["2026-05-12","Lazada",26],["2026-05-12","Line",1],["2026-05-12","Shopee",171],["2026-05-12","TikTok",63],["2026-05-13","AMAZE",1],["2026-05-13","Lazada",15],["2026-05-13","Line",2],["2026-05-13","Shopee",235],["2026-05-13","TikTok",82],["2026-05-14","AMAZE",1],["2026-05-14","Lazada",26],["2026-05-14","Shopee",181],["2026-05-14","TikTok",79],["2026-05-15","Lazada",90],["2026-05-15","Line",1],["2026-05-15","Shopee",487],["2026-05-15","TikTok",73]]},"meta":{"generated_at":"2026-05-15 14:31:48","date_min":"2026-04-01","date_max":"2026-05-15","total_rows":34275,"total_orders":28973,"channels":["AMAZE","Lazada","Line","Line Gift","OFM","Shopee","TikTok"],"categories":["Herbal","กิ๊ฟวิ่ง","ซุปไก่","รังนก","สกินแคร์","เพียวเร่"],"months":["2026-04","2026-05"],"default_month":"2026-04"}};
+
+const CH_COLORS = {
+  'Shopee': '#ee4d2d', 'Lazada': '#2d4cb8', 'TikTok': '#00b8a9',
+  'Line': '#06c755', 'Line Gift': '#db2777', 'AMAZE': '#8b5cf6', 'OFM': '#d97706'
+};
+const CAT_COLORS = {
+  'รังนก':   '#8b6914',
+  'ซุปไก่':  '#c9a55a',
+  'เพียวเร่':'#8b5cf6',
+  'กิ๊ฟวิ่ง':'#db2777',
+  'Herbal':  '#16a34a',
+  'สกินแคร์':'#00b8a9'
+};
+
+function toObjs(set){ return set.rows.map(r => Object.fromEntries(set.cols.map((c,i)=>[c,r[i]]))); }
+const DCC = toObjs(DATA.dcc);
+const CC  = toObjs(DATA.cc);
+const SKU = toObjs(DATA.sku);
+const ODC = toObjs(DATA.odc);
+
+// STATE - default to default_month (April 2026)
+const STATE = {
+  month: DATA.meta.default_month,  // '2026-04' หรือ 'ALL'
+  channels: new Set(DATA.meta.channels),
+  categories: new Set(DATA.meta.categories),
+  trendView: 'line'
+};
+
+const fmtFull = n => '฿' + Math.round(n).toLocaleString('th-TH');
+const fmtShort = n => {
+  const a = Math.abs(n);
+  if (a >= 1e6) return (n/1e6).toFixed(2);
+  if (a >= 1e3) return (n/1e3).toFixed(1);
+  return n.toFixed(0);
+};
+const fmtSuffix = n => Math.abs(n) >= 1e6 ? 'M' : (Math.abs(n) >= 1e3 ? 'K' : '');
+const fmtInt = n => Math.round(n).toLocaleString('th-TH');
+const monthLabel = m => {
+  if (m === 'ALL') return 'ทุกเดือน';
+  const [y, mm] = m.split('-');
+  const names = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  return names[parseInt(mm)-1] + ' ' + y;
+};
+
+function renderFilters(){
+  // Month
+  const mBox = document.getElementById('filter-months');
+  mBox.innerHTML = '';
+  const opts = ['ALL', ...DATA.meta.months];
+  opts.forEach(m => {
+    const b = document.createElement('button');
+    b.className = 'chip' + (STATE.month === m ? ' active' : '');
+    b.textContent = monthLabel(m);
+    b.addEventListener('click', ()=>{ STATE.month = m; renderAll(); });
+    mBox.appendChild(b);
+  });
+
+  // Channels
+  const chBox = document.getElementById('filter-channels');
+  chBox.innerHTML = '';
+  const allCh = document.createElement('button');
+  allCh.className = 'chip' + (STATE.channels.size === DATA.meta.channels.length ? ' active' : '');
+  allCh.textContent = 'ทั้งหมด';
+  allCh.addEventListener('click', ()=>{
+    if (STATE.channels.size === DATA.meta.channels.length) STATE.channels.clear();
+    else STATE.channels = new Set(DATA.meta.channels);
+    renderAll();
+  });
+  chBox.appendChild(allCh);
+  DATA.meta.channels.forEach(ch=>{
+    const b = document.createElement('button');
+    b.className = 'chip' + (STATE.channels.has(ch) ? ' active' : '');
+    b.innerHTML = '<span class="chip-dot" style="background:' + (CH_COLORS[ch]||'#888') + '"></span>' + ch;
+    b.addEventListener('click', ()=>{
+      if (STATE.channels.has(ch)) STATE.channels.delete(ch); else STATE.channels.add(ch);
+      renderAll();
+    });
+    chBox.appendChild(b);
+  });
+
+  // Categories
+  const catBox = document.getElementById('filter-categories');
+  catBox.innerHTML = '';
+  const allCat = document.createElement('button');
+  allCat.className = 'chip' + (STATE.categories.size === DATA.meta.categories.length ? ' active' : '');
+  allCat.textContent = 'ทั้งหมด';
+  allCat.addEventListener('click', ()=>{
+    if (STATE.categories.size === DATA.meta.categories.length) STATE.categories.clear();
+    else STATE.categories = new Set(DATA.meta.categories);
+    renderAll();
+  });
+  catBox.appendChild(allCat);
+  DATA.meta.categories.forEach(cat=>{
+    const b = document.createElement('button');
+    b.className = 'chip' + (STATE.categories.has(cat) ? ' active' : '');
+    b.innerHTML = '<span class="chip-dot" style="background:' + (CAT_COLORS[cat]||'#888') + '"></span>' + cat;
+    b.addEventListener('click', ()=>{
+      if (STATE.categories.has(cat)) STATE.categories.delete(cat); else STATE.categories.add(cat);
+      renderAll();
+    });
+    catBox.appendChild(b);
+  });
+}
+
+// FILTER FUNCTIONS
+function inMonth(d) {
+  return STATE.month === 'ALL' || d.startsWith(STATE.month);
+}
+function filtered(){
+  return DCC.filter(r => inMonth(r.d) && STATE.channels.has(r.ch) && STATE.categories.has(r.cat));
+}
+function filteredOrders(){
+  return ODC.filter(r => inMonth(r.d) && STATE.channels.has(r.ch));
+}
+function filteredSKU(){
+  // SKU table doesn't have date dimension - we need to derive top SKU from DCC where possible
+  // But SKU table doesn't have date - so when month filter is active, top SKU shows overall (across all dates)
+  // Unless we add date dim to SKU agg... For now: filter by ch + cat only
+  return SKU.filter(r => STATE.channels.has(r.ch) && STATE.categories.has(r.cat));
+}
+function filteredCC(){
+  return CC.filter(r => STATE.channels.has(r.ch) && STATE.categories.has(r.cat));
+}
+
+function renderKPI(){
+  const f = filtered();
+  const totalSales = f.reduce((s,r)=>s+r.amt, 0);
+  const totalOrders = filteredOrders().reduce((s,r)=>s+r.orders, 0);
+  const aov = totalOrders > 0 ? totalSales / totalOrders : 0;
+  const returns = f.reduce((s,r)=>s+(r.ret||0), 0);
+  const grossSales = totalSales - returns;
+  const returnRate = grossSales > 0 ? Math.abs(returns)/grossSales*100 : 0;
+
+  document.getElementById('kpi-sales').textContent = fmtShort(totalSales);
+  document.getElementById('kpi-sales-unit').textContent = fmtSuffix(totalSales);
+  document.getElementById('kpi-sales-rate').textContent = 'คืน ' + returnRate.toFixed(2) + '%';
+  document.getElementById('kpi-orders').textContent = fmtInt(totalOrders);
+  document.getElementById('kpi-aov').textContent = fmtInt(aov);
+
+  const byCh = {};
+  f.forEach(r => { byCh[r.ch] = (byCh[r.ch]||0) + r.amt; });
+  const sorted = Object.entries(byCh).sort((a,b)=>b[1]-a[1]);
+  if (sorted.length > 0 && totalSales > 0){
+    const [ch, amt] = sorted[0];
+    document.getElementById('kpi-topch').textContent = ch;
+    document.getElementById('kpi-topch').style.color = CH_COLORS[ch] || 'var(--text-0)';
+    document.getElementById('kpi-topch-share').textContent = (amt/totalSales*100).toFixed(1) + '%';
+  } else {
+    document.getElementById('kpi-topch').textContent = '—';
+    document.getElementById('kpi-topch-share').textContent = '—';
+  }
+}
+
+let chartTrend, chartChannel, chartStacked;
+Chart.defaults.color = '#4a3f2f';
+Chart.defaults.borderColor = '#e8dfc9';
+Chart.defaults.font.family = "'IBM Plex Sans Thai', sans-serif";
+
+function renderTrend(){
+  const f = filtered();
+  const byDate = {};
+  f.forEach(r => { byDate[r.d] = (byDate[r.d]||0) + r.amt; });
+  const dates = Object.keys(byDate).sort();
+  const values = dates.map(d => byDate[d]);
+  const labels = dates.map(d => d.slice(5));
+
+  if (chartTrend) chartTrend.destroy();
+  const ctx = document.getElementById('chartTrend').getContext('2d');
+  const grad = ctx.createLinearGradient(0,0,0,280);
+  grad.addColorStop(0, 'rgba(139,105,20,0.25)');
+  grad.addColorStop(1, 'rgba(139,105,20,0)');
+
+  chartTrend = new Chart(ctx, {
+    type: STATE.trendView === 'bar' ? 'bar' : 'line',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Net Sales',
+        data: values,
+        borderColor: '#8b6914',
+        backgroundColor: STATE.trendView === 'bar' ? 'rgba(139,105,20,0.78)' : grad,
+        borderWidth: 2.5,
+        fill: STATE.trendView === 'line',
+        tension: 0.35,
+        pointRadius: STATE.trendView === 'line' ? 0 : undefined,
+        pointHoverRadius: 6,
+        pointHoverBackgroundColor: '#8b6914',
+        pointHoverBorderColor: '#fff',
+        pointHoverBorderWidth: 2,
+        borderRadius: STATE.trendView === 'bar' ? 4 : undefined
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      interaction: { intersect: false, mode: 'index' },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#fff',
+          borderColor: '#d4c5a0', borderWidth: 1, padding: 12,
+          titleColor: '#8b6914', bodyColor: '#1a1410',
+          titleFont: { weight: '600' },
+          callbacks: { label: c => 'ยอดขาย: ' + fmtFull(c.parsed.y) }
+        }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+        y: { grid: { color: '#f1eadb' }, ticks: { callback: v => '฿' + fmtShort(v) + fmtSuffix(v), font: { size: 10 } } }
+      }
+    }
+  });
+}
+
+function renderChannel(){
+  const f = filtered();
+  const byCh = {};
+  f.forEach(r => { byCh[r.ch] = (byCh[r.ch]||0) + r.amt; });
+  const entries = Object.entries(byCh).filter(([_,v])=>v>0).sort((a,b)=>b[1]-a[1]);
+  const labels = entries.map(e=>e[0]);
+  const values = entries.map(e=>e[1]);
+  const colors = labels.map(l => CH_COLORS[l] || '#888');
+
+  if (chartChannel) chartChannel.destroy();
+  const ctx = document.getElementById('chartChannel').getContext('2d');
+  chartChannel = new Chart(ctx, {
+    type: 'doughnut',
+    data: { labels, datasets: [{ data: values, backgroundColor: colors, borderColor: '#fff', borderWidth: 3, hoverOffset: 8 }] },
+    options: {
+      responsive: true, maintainAspectRatio: false, cutout: '62%',
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 10, padding: 12, font: { size: 11 }, color: '#4a3f2f' } },
+        tooltip: {
+          backgroundColor: '#fff', borderColor: '#d4c5a0', borderWidth: 1, padding: 12,
+          titleColor: '#8b6914', bodyColor: '#1a1410',
+          callbacks: {
+            label: c => {
+              const total = c.dataset.data.reduce((s,v)=>s+v,0);
+              const pct = (c.parsed/total*100).toFixed(1);
+              return c.label + ': ' + fmtFull(c.parsed) + ' (' + pct + '%)';
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+function renderStacked(){
+  const f = filtered();
+  const chans = Array.from(STATE.channels).sort();
+  const cats = Array.from(STATE.categories);
+
+  const matrix = {};
+  chans.forEach(ch => { matrix[ch] = {}; cats.forEach(cat => matrix[ch][cat] = 0); });
+  f.forEach(r => { if (matrix[r.ch]) matrix[r.ch][r.cat] = (matrix[r.ch][r.cat]||0) + r.amt; });
+
+  const activeChans = chans.filter(ch => cats.some(c => matrix[ch][c] > 0));
+  const datasets = cats.map(cat => ({
+    label: cat,
+    data: activeChans.map(ch => matrix[ch][cat] || 0),
+    backgroundColor: CAT_COLORS[cat] || '#888',
+    borderColor: '#fff', borderWidth: 1, borderRadius: 4
+  }));
+
+  if (chartStacked) chartStacked.destroy();
+  const ctx = document.getElementById('chartStacked').getContext('2d');
+  chartStacked = new Chart(ctx, {
+    type: 'bar',
+    data: { labels: activeChans, datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+      plugins: {
+        legend: { position: 'bottom', labels: { boxWidth: 10, padding: 10, font: { size: 11 }, color: '#4a3f2f' } },
+        tooltip: {
+          backgroundColor: '#fff', borderColor: '#d4c5a0', borderWidth: 1, padding: 12,
+          titleColor: '#8b6914', bodyColor: '#1a1410',
+          callbacks: { label: c => c.dataset.label + ': ' + fmtFull(c.parsed.x) }
+        }
+      },
+      scales: {
+        x: { stacked: true, grid: { color: '#f1eadb' }, ticks: { callback: v => '฿' + fmtShort(v) + fmtSuffix(v), font: { size: 10 } } },
+        y: { stacked: true, grid: { display: false }, ticks: { font: { size: 11 } } }
+      }
+    }
+  });
+}
+
+function renderHeatmap(){
+  const f = filtered();
+  const chans = Array.from(STATE.channels).sort();
+  const cats = Array.from(STATE.categories);
+
+  const matrix = {};
+  const chTotals = {};
+  chans.forEach(ch => { matrix[ch] = {}; chTotals[ch] = 0; cats.forEach(cat => matrix[ch][cat] = 0); });
+  f.forEach(r => {
+    if (matrix[r.ch]) {
+      matrix[r.ch][r.cat] = (matrix[r.ch][r.cat]||0) + r.amt;
+      chTotals[r.ch] = (chTotals[r.ch]||0) + r.amt;
+    }
+  });
+  const activeChans = chans.filter(ch => chTotals[ch] > 0);
+
+  const el = document.getElementById('heatmap');
+  el.innerHTML = '';
+  el.className = 'heatmap-grid';
+
+  const hdr = document.createElement('div');
+  hdr.className = 'heatmap-row';
+  hdr.innerHTML = '<div></div>' + cats.map(c => '<div class="heatmap-header">' + c + '</div>').join('');
+  el.appendChild(hdr);
+
+  activeChans.forEach(ch => {
+    const row = document.createElement('div');
+    row.className = 'heatmap-row';
+    let html = '<div class="heatmap-label">' + ch + '</div>';
+    cats.forEach(cat => {
+      const v = matrix[ch][cat] || 0;
+      const pct = chTotals[ch] > 0 ? v/chTotals[ch]*100 : 0;
+      let intensity = 0;
+      if (pct >= 50) intensity = 5;
+      else if (pct >= 30) intensity = 4;
+      else if (pct >= 15) intensity = 3;
+      else if (pct >= 5) intensity = 2;
+      else if (pct > 0) intensity = 1;
+      html += '<div class="heatmap-cell" data-intensity="' + intensity + '" title="' + ch + ' · ' + cat + ': ' + fmtFull(v) + '">' + pct.toFixed(0) + '%</div>';
+    });
+    row.innerHTML = html;
+    el.appendChild(row);
+  });
+}
+
+function renderTopSKU(){
+  // Build top SKU from DCC data is not possible (no SKU dim).
+  // Use SKU table but filter by month via combining: SKU agg has no date,
+  // so when month filter active, we approximate by scaling.
+  // Better approach: just show top SKU within selected channels × categories (no month filter)
+  // because SKU agg doesn't carry date dimension.
+  const fs = filteredSKU();
+  const bySku = {};
+  fs.forEach(r => {
+    if (!bySku[r.sku]) bySku[r.sku] = { amt: 0, qty: 0, cat: r.cat };
+    bySku[r.sku].amt += r.amt;
+    bySku[r.sku].qty += r.qty;
+  });
+  const top = Object.entries(bySku).filter(([_,v])=>v.amt>0).sort((a,b)=>b[1].amt-a[1].amt).slice(0,10);
+  const maxAmt = top.length > 0 ? top[0][1].amt : 1;
+
+  const el = document.getElementById('top-sku');
+  el.innerHTML = '';
+  if (top.length === 0) {
+    el.innerHTML = '<div style="text-align:center;color:var(--text-2);padding:40px 0;font-size:13px;">ไม่มีข้อมูลตามตัวกรองที่เลือก</div>';
+    return;
+  }
+  top.forEach(([sku, v], i) => {
+    const row = document.createElement('div');
+    row.className = 'list-row';
+    row.innerHTML =
+      '<div class="list-rank">' + (i+1) + '</div>' +
+      '<div>' +
+        '<div class="list-name" title="' + sku + '">' + sku + '</div>' +
+        '<div class="list-meta">' + v.cat + ' · ' + fmtInt(v.qty) + ' ขวด/แพ็ค</div>' +
+      '</div>' +
+      '<div class="list-value">' + fmtFull(v.amt) + '</div>' +
+      '<div class="list-bar"><div class="list-bar-fill" style="width:' + (v.amt/maxAmt*100) + '%"></div></div>';
+    el.appendChild(row);
+  });
+}
+
+function renderTopCities(){
+  const fcc = filteredCC();
+  const byCity = {};
+  fcc.forEach(r => { byCity[r.city] = (byCity[r.city]||0) + r.amt; });
+  const top = Object.entries(byCity).filter(([_,v])=>v>0).sort((a,b)=>b[1]-a[1]).slice(0,10);
+  const maxAmt = top.length > 0 ? top[0][1] : 1;
+
+  const el = document.getElementById('top-cities');
+  el.innerHTML = '';
+  if (top.length === 0) {
+    el.innerHTML = '<div style="text-align:center;color:var(--text-2);padding:40px 0;font-size:13px;">ไม่มีข้อมูล</div>';
+    return;
+  }
+  top.forEach(([city, amt]) => {
+    const row = document.createElement('div');
+    row.className = 'city-row';
+    row.innerHTML =
+      '<div class="city-name" title="' + city + '">' + city + '</div>' +
+      '<div class="city-bar"><div class="city-bar-fill" style="width:' + (amt/maxAmt*100) + '%"></div></div>' +
+      '<div class="city-value">' + fmtFull(amt) + '</div>';
+    el.appendChild(row);
+  });
+}
+
+function renderAll(){
+  renderFilters();
+  renderKPI();
+  renderTrend();
+  renderChannel();
+  renderStacked();
+  renderHeatmap();
+  renderTopSKU();
+  renderTopCities();
+  // Update period label based on filter
+  const periodEl = document.getElementById('meta-period');
+  if (STATE.month === 'ALL') {
+    periodEl.textContent = DATA.meta.date_min + ' → ' + DATA.meta.date_max;
+  } else {
+    periodEl.textContent = monthLabel(STATE.month);
+  }
+}
+
+document.getElementById('meta-generated').textContent = DATA.meta.generated_at;
+document.getElementById('footer-rows').textContent = DATA.meta.total_rows.toLocaleString();
+
+document.getElementById('btn-reset').addEventListener('click', ()=>{
+  STATE.month = DATA.meta.default_month;
+  STATE.channels = new Set(DATA.meta.channels);
+  STATE.categories = new Set(DATA.meta.categories);
+  renderAll();
+});
+
+document.querySelectorAll('.time-tab').forEach(t => {
+  t.addEventListener('click', ()=>{
+    document.querySelectorAll('.time-tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    STATE.trendView = t.dataset.view;
+    renderTrend();
+  });
+});
+
+renderAll();
+</script>
+</body>
+</html>
