@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IT Director Dashboard — FY2026</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #1a3a5c; --navy-dk: #0f2744; --navy-md: #1e4a7a;
+    --sky: #0ea5e9; --sky-lt: #e0f2fe;
+    --ss: #1d6f42; --sc: #b45309;
+    --ok: #16a34a; --ok-lt: #dcfce7;
+    --warn: #d97706; --warn-lt: #fef3c7;
+    --crit: #dc2626; --crit-lt: #fee2e2;
+    --bg: #f1f5f9; --white: #fff;
+    --g100: #f1f5f9; --g200: #e2e8f0; --g300: #cbd5e1;
+    --g500: #64748b; --g600: #475569; --g700: #334155; --g800: #1e293b;
+    --r: 12px; --sh: 0 2px 14px rgba(0,0,0,.07); --sh-lg: 0 6px 24px rgba(0,0,0,.10);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Sarabun', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; background: var(--bg); color: var(--g800); }
+
+  /* ── Header ───────────────────────────── */
+  .hdr {
+    background: linear-gradient(135deg, var(--navy-dk) 0%, var(--navy) 55%, var(--navy-md) 100%);
+    color: #fff; padding: 22px 48px;
+    display: flex; align-items: center; gap: 22px;
+    box-shadow: 0 4px 24px rgba(0,0,0,.22);
+    position: sticky; top: 0; z-index: 500;
+    transition: padding .25s ease;
+  }
+  .hdr-logo {
+    width: 50px; height: 50px; border-radius: 12px;
+    background: linear-gradient(135deg, var(--sky), #0284c7);
+    display: grid; place-items: center;
+    font-weight: 800; font-size: 22px; color: #fff;
+    letter-spacing: -0.5px;
+    flex-shrink: 0;
+  }
+  .hdr-text { flex: 1; min-width: 0; }
+  .hdr-text h1 { font-size: 21px; font-weight: 800; letter-spacing: -0.3px; line-height: 1.2; }
+  .hdr-text p { font-size: 13px; color: #93c5fd; margin-top: 5px; }
+  .hdr-badge { background: rgba(255,255,255,.10); border: 1px solid rgba(255,255,255,.22); border-radius: 14px; padding: 9px 20px; text-align: center; min-width: 160px; }
+  .hdr-badge .b1 { font-size: 19px; font-weight: 800; color: #e0f2fe; line-height: 1; }
+  .hdr-badge .b2 { font-size: 11px; color: #93c5fd; margin-top: 4px; }
+
+  .body { max-width: 1180px; margin: 0 auto; padding: 26px 20px 60px; display: flex; flex-direction: column; gap: 22px; }
+
+  /* ── KPIs ─────────────────────────────── */
+  .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .kpi { background: var(--white); border-radius: var(--r); padding: 22px 26px; box-shadow: var(--sh); border-top: 5px solid; position: relative; overflow: hidden; }
+  .kpi.total   { border-color: var(--navy); }
+  .kpi.spent   { border-color: var(--ss); }
+  .kpi.remain  { border-color: var(--sky); }
+  .kpi.pace    { border-color: var(--warn); }
+  .kpi-lbl { font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--g600); margin-bottom: 8px; }
+  .kpi-val { font-size: 28px; font-weight: 800; line-height: 1.05; }
+  .kpi.total  .kpi-val { color: var(--navy); }
+  .kpi.spent  .kpi-val { color: var(--ss); }
+  .kpi.remain .kpi-val { color: var(--sky); }
+  .kpi.pace   .kpi-val { color: var(--warn); }
+  .kpi-meta { font-size: 12px; color: var(--g600); margin-top: 8px; }
+  .kpi-prog { height: 5px; background: var(--g100); border-radius: 999px; margin-top: 12px; overflow: hidden; }
+  .kpi-prog i { display: block; height: 100%; }
+
+  /* ── Cards ────────────────────────────── */
+  .card { background: var(--white); border-radius: var(--r); box-shadow: var(--sh); overflow: hidden; }
+  .card-hdr { padding: 18px 26px 12px; border-bottom: 1px solid var(--g200); display: flex; align-items: flex-start; gap: 10px; }
+  .card-title { font-size: 15px; font-weight: 800; color: var(--navy); line-height: 1.2; }
+  .card-sub { font-size: 12px; color: var(--g600); margin-top: 4px; }
+  .card-body { padding: 18px 22px 22px; }
+
+  /* ── Budget by Category — horizontal bars (custom) ── */
+  .cat-list { display: flex; flex-direction: column; gap: 14px; }
+  .cat-row { display: grid; grid-template-columns: 140px 1fr 130px; gap: 14px; align-items: center; }
+  .cat-name { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 700; color: var(--g800); }
+  .cat-name .ic { width: 28px; height: 28px; border-radius: 7px; display: grid; place-items: center; font-size: 13px; color: #fff; font-weight: 800; flex-shrink: 0; }
+  .cat-bar-wrap { position: relative; }
+  .cat-bar-track { height: 28px; background: var(--g100); border-radius: 6px; position: relative; overflow: hidden; }
+  .cat-bar-used { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 6px 0 0 6px; transition: width 0.8s cubic-bezier(.2,.7,.3,1); display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; color: #fff; font-size: 11.5px; font-weight: 800; white-space: nowrap; }
+  .cat-amt { text-align: right; }
+  .cat-amt-used { font-size: 14px; font-weight: 800; color: var(--g800); white-space: nowrap; }
+  .cat-amt-tot { font-size: 11.5px; color: var(--g500); margin-top: 2px; white-space: nowrap; }
+
+  /* ── Charts row ───────────────────────── */
+  .charts-row { display: grid; grid-template-columns: 1.4fr 1fr; gap: 18px; align-items: start; }
+
+  /* ── Company comparison ──────────────── */
+  .cmp-card { padding: 22px 26px; }
+  .cmp-bar-track { height: 24px; background: var(--g200); border-radius: 12px; overflow: hidden; display: flex; margin-top: 14px; margin-bottom: 14px; }
+  .cmp-bar-ss { background: var(--ss); display: flex; align-items: center; justify-content: flex-end; padding-right: 12px; }
+  .cmp-bar-sc { background: var(--sc); display: flex; align-items: center; padding-left: 12px; }
+  .cmp-bar-lbl { font-size: 12px; color: #fff; font-weight: 800; }
+  .cmp-nums { display: flex; justify-content: space-between; align-items: flex-end; }
+  .cn-lbl { font-size: 12px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase; }
+  .cn-lbl.ss { color: var(--ss); } .cn-lbl.sc { color: var(--sc); }
+  .cn-amt { font-size: 24px; font-weight: 800; margin-top: 2px; }
+  .cn-amt.ss { color: var(--ss); } .cn-amt.sc { color: var(--sc); text-align: right; }
+  .cn-meta { font-size: 12px; color: var(--g600); margin-top: 2px; }
+
+  /* ── Section divider ────────────────── */
+  .section-divider { display: flex; align-items: center; gap: 16px; margin: 6px 0 -4px; }
+  .section-divider .sd-line { flex: 1; height: 1px; background: var(--g300); }
+  .section-divider .sd-label { font-size: 11px; font-weight: 800; letter-spacing: 1.6px; text-transform: uppercase; color: var(--g600); background: var(--bg); padding: 0 4px; }
+
+  /* ── Decision cards ─────────────────── */
+  .dec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .dec {
+    background: var(--white); border-radius: var(--r); padding: 18px 20px;
+    box-shadow: var(--sh); border-left: 4px solid var(--g300);
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .dec.urgent { border-left-color: var(--crit); }
+  .dec.review { border-left-color: var(--warn); }
+  .dec.go     { border-left-color: var(--ok); }
+  .dec-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .dec-id { font-size: 10.5px; font-weight: 700; letter-spacing: 1px; color: var(--g500); }
+  .pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 2px 9px; border-radius: 999px;
+    font-size: 10.5px; font-weight: 700; letter-spacing: 0.3px;
+    background: var(--g100); color: var(--g700);
+  }
+  .pill.ok    { background: var(--ok-lt);   color: #15803d; }
+  .pill.warn  { background: var(--warn-lt); color: #92400e; }
+  .pill.crit  { background: var(--crit-lt); color: #991b1b; }
+  .pill.info  { background: var(--sky-lt);  color: #0369a1; }
+  .pill.dot::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .dec-title { font-size: 14px; font-weight: 700; color: var(--g800); line-height: 1.35; }
+  .dec-desc  { font-size: 12.5px; color: var(--g600); line-height: 1.45; }
+  .dec-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; padding-top: 10px; border-top: 1px dashed var(--g200); }
+  .dec-amt { font-size: 18px; font-weight: 800; color: var(--g800); }
+  .dec-due { font-size: 11.5px; color: var(--g500); }
+  .dec-actions { display: flex; gap: 6px; }
+  .btn { padding: 6px 14px; border-radius: 7px; font-size: 12px; font-weight: 700; border: 1px solid var(--g200); background: var(--white); color: var(--g700); cursor: pointer; font-family: inherit; }
+  .btn.primary { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .btn.primary:hover { background: var(--navy-dk); }
+  .btn:hover { border-color: var(--navy); }
+
+  /* ── Infra status ───────────────────── */
+  .infra-row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .node-list { display: flex; flex-direction: column; gap: 8px; padding: 16px 22px 18px; }
+  .node {
+    display: grid; grid-template-columns: 32px 1fr auto auto; gap: 12px; align-items: center;
+    padding: 10px 14px; border-radius: 9px; background: var(--g100);
+    border-left: 3px solid var(--g300);
+  }
+  .node.ok   { border-left-color: var(--ok); }
+  .node.warn { border-left-color: var(--warn); background: var(--warn-lt); }
+  .node.crit { border-left-color: var(--crit); background: var(--crit-lt); }
+  .node-ic { width: 32px; height: 32px; border-radius: 7px; background: var(--white); display: grid; place-items: center; font-size: 14px; color: var(--navy); font-weight: 800; }
+  .node-name { font-size: 13px; font-weight: 700; color: var(--g800); line-height: 1.25; }
+  .node-meta { font-size: 11.5px; color: var(--g600); margin-top: 2px; }
+  .node-val { font-size: 13px; font-weight: 700; color: var(--g700); text-align: right; min-width: 70px; }
+  .node-status { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px; }
+
+  /* ── Alerts ─────────────────────────── */
+  .alert {
+    display: grid; grid-template-columns: 10px 1fr auto; gap: 14px; align-items: center;
+    padding: 12px 16px; border-bottom: 1px solid var(--g100);
+  }
+  .alert:last-child { border-bottom: 0; }
+  .alert-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .alert-dot.crit { background: var(--crit); animation: pulse 1.5s ease-in-out infinite; }
+  .alert-dot.warn { background: var(--warn); }
+  .alert-dot.info { background: var(--sky); }
+  @keyframes pulse { 0%,100% { box-shadow: 0 0 0 0 rgba(220,38,38,.5); } 50% { box-shadow: 0 0 0 8px rgba(220,38,38,0); } }
+  .alert-title { font-size: 13px; font-weight: 700; color: var(--g800); }
+  .alert-meta { font-size: 11.5px; color: var(--g600); margin-top: 2px; }
+  .alert-time { font-size: 11.5px; color: var(--g500); font-weight: 600; }
+
+  /* ── Vendor table ───────────────────── */
+  .vendor-table { width: 100%; border-collapse: collapse; }
+  .vendor-table th, .vendor-table td { padding: 11px 14px; text-align: left; border-bottom: 1px solid var(--g100); font-size: 12.5px; }
+  .vendor-table th { font-size: 10.5px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--g600); background: var(--g100); }
+  .vendor-table td.amt { font-weight: 800; color: var(--g800); text-align: right; font-variant-numeric: tabular-nums; }
+  .vendor-table td.pct { color: var(--g500); text-align: right; font-variant-numeric: tabular-nums; }
+  .vendor-table tr:hover td { background: var(--sky-lt); }
+  .vendor-bar { display: inline-block; height: 6px; border-radius: 3px; background: var(--navy); margin-right: 6px; vertical-align: middle; }
+
+  /* ── Footer ─────────────────────────── */
+  .footer { text-align: center; padding: 24px 12px 12px; font-size: 11px; color: var(--g500); }
+
+  /* ── Fade-in ────────────────────────── */
+  .fade-up { opacity: 0; transform: translateY(18px); transition: opacity .5s ease, transform .5s ease; }
+  .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+  /* ═══ Tablet ≤ 960px ═══ */
+  @media (max-width: 960px) {
+    .hdr { padding: 18px 24px; gap: 14px; }
+    .hdr-text h1 { font-size: 17px; }
+    .hdr-text p { font-size: 12px; }
+    .body { padding: 20px 14px 50px; gap: 18px; }
+    .kpi-row { grid-template-columns: repeat(2, 1fr); }
+    .charts-row { grid-template-columns: 1fr; }
+    .infra-row { grid-template-columns: 1fr; }
+    .dec-grid { grid-template-columns: 1fr; }
+    .cat-row { grid-template-columns: 110px 1fr 100px; gap: 10px; }
+  }
+
+  /* ═══ Mobile ≤ 640px ═══ */
+  @media (max-width: 640px) {
+    .hdr { padding: 12px 14px; flex-wrap: wrap; gap: 10px; }
+    .hdr-logo { width: 40px; height: 40px; font-size: 18px; order: 1; }
+    .hdr-badge { order: 2; margin-left: auto; min-width: unset; padding: 6px 12px; border-radius: 10px; }
+    .hdr-badge .b1 { font-size: 14px; }
+    .hdr-badge .b2 { font-size: 9.5px; margin-top: 2px; }
+    .hdr-text { order: 3; width: 100%; flex-basis: 100%; }
+    .hdr-text h1 { font-size: 14px; }
+    .hdr-text p { font-size: 11px; }
+
+    .body { padding: 12px 10px 40px; gap: 12px; }
+    .kpi { padding: 14px 14px; }
+    .kpi-lbl { font-size: 9.5px; letter-spacing: 0.6px; }
+    .kpi-val { font-size: 21px; }
+    .kpi-meta { font-size: 10.5px; }
+
+    .card-hdr { padding: 14px 16px 8px; }
+    .card-title { font-size: 13px; }
+    .card-sub { font-size: 11px; }
+    .card-body { padding: 12px 14px 16px; }
+
+    /* Category — stack name above bar */
+    .cat-row { grid-template-columns: 1fr; gap: 6px; padding: 8px 0; border-bottom: 1px solid var(--g100); }
+    .cat-row:last-child { border-bottom: 0; }
+    .cat-name { font-size: 12px; }
+    .cat-amt { text-align: left; display: flex; align-items: center; gap: 10px; }
+    .cat-amt-tot { margin-top: 0; }
+
+    .cmp-card { padding: 16px 18px; }
+    .cn-amt { font-size: 18px; }
+
+    .dec { padding: 14px 16px; }
+    .dec-title { font-size: 13px; }
+    .dec-desc { font-size: 12px; }
+    .dec-amt { font-size: 16px; }
+    .dec-foot { flex-direction: column; align-items: flex-start; gap: 10px; }
+
+    .node-list { padding: 10px 14px 14px; }
+    .node { grid-template-columns: 28px 1fr auto; gap: 10px; padding: 9px 12px; }
+    .node-name { font-size: 12px; }
+    .node-meta { font-size: 10.5px; }
+    .node-val { display: none; }
+
+    .vendor-table th, .vendor-table td { padding: 8px 10px; font-size: 11.5px; }
+    .vendor-table th:nth-child(3), .vendor-table td:nth-child(3) { display: none; }
+
+    .alert { padding: 10px 14px; }
+    .alert-time { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hdr">
+  <div class="hdr-logo">IT</div>
+  <div class="hdr-text">
+    <h1>IT Director Dashboard <span style="font-weight:500;color:#93c5fd;">— FY2026</span></h1>
+    <p>ภาพรวมงบประมาณ IT &amp; สถานะ Infrastructure · SCOTCH Group (SS &amp; SC) · เพื่อการตัดสินใจของผู้บริหาร</p>
+  </div>
+  <div class="hdr-badge">
+    <div class="b1" id="hdr-total">–</div>
+    <div class="b2" id="hdr-date">–</div>
+  </div>
+</header>
+
+<div class="body">
+
+  <!-- ═══ KPIs ═══ -->
+  <div class="kpi-row">
+    <div class="kpi total">
+      <div class="kpi-lbl">งบประมาณรวมทั้งปี</div>
+      <div class="kpi-val" id="kpi-total">–</div>
+      <div class="kpi-meta" id="kpi-total-meta">–</div>
+      <div class="kpi-prog"><i style="width:100%; background: var(--navy)"></i></div>
+    </div>
+    <div class="kpi spent">
+      <div class="kpi-lbl">ใช้จริง YTD</div>
+      <div class="kpi-val" id="kpi-spent">–</div>
+      <div class="kpi-meta" id="kpi-spent-meta">–</div>
+      <div class="kpi-prog"><i id="kpi-spent-bar" style="width:0%; background: var(--ss)"></i></div>
+    </div>
+    <div class="kpi remain">
+      <div class="kpi-lbl">เหลือใช้ได้</div>
+      <div class="kpi-val" id="kpi-remain">–</div>
+      <div class="kpi-meta" id="kpi-remain-meta">–</div>
+      <div class="kpi-prog"><i id="kpi-remain-bar" style="width:0%; background: var(--sky)"></i></div>
+    </div>
+    <div class="kpi pace">
+      <div class="kpi-lbl">รออนุมัติ / Insert</div>
+      <div class="kpi-val" id="kpi-pace">–</div>
+      <div class="kpi-meta" id="kpi-pace-meta">–</div>
+      <div class="kpi-prog"><i id="kpi-pace-bar" style="width:0%; background: var(--warn)"></i></div>
+    </div>
+  </div>
+
+  <!-- ═══ Budget by Category ═══ -->
+  <div class="card">
+    <div class="card-hdr">
+      <div style="flex:1;">
+        <div class="card-title">งบประมาณตามหมวด</div>
+        <div class="card-sub">แสดงงบรวมทั้งปี · แถบสีเข้ม = ใช้จริงถึงเดือนปัจจุบัน · YTD ของแต่ละหมวด</div>
+      </div>
+      <div style="font-size:11px;color:var(--g600);text-align:right;">
+        <div><span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--navy);vertical-align:-1px;margin-right:5px;"></span>ใช้จริง YTD (ม.ค.–พ.ค.)</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="cat-list" id="cat-list"></div>
+    </div>
+  </div>
+
+  <!-- ═══ Charts row: monthly + cost-type donut ═══ -->
+  <div class="charts-row">
+    <div class="card">
+      <div class="card-hdr">
+        <div>
+          <div class="card-title">การใช้จ่ายรายเดือน FY2026</div>
+          <div class="card-sub">แท่งเข้ม = เดือนที่ผ่านมา · แท่งจาง = แผนงานในอนาคต</div>
+        </div>
+      </div>
+      <div class="card-body"><canvas id="monthlyChart" height="180"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-hdr">
+        <div>
+          <div class="card-title">สัดส่วนตามประเภทค่าใช้จ่าย</div>
+          <div class="card-sub">Fixed · Variable · Leasing</div>
+        </div>
+      </div>
+      <div class="card-body"><canvas id="costChart" height="180"></canvas></div>
+    </div>
+  </div>
+
+  <!-- ═══ SS vs SC ═══ -->
+  <div class="card cmp-card">
+    <div class="card-title">SS Company vs SC Company — สัดส่วนงบประมาณ</div>
+    <div class="cmp-bar-track">
+      <div class="cmp-bar-ss" id="bar-ss"><span class="cmp-bar-lbl" id="bar-ss-pct">–</span></div>
+      <div class="cmp-bar-sc" id="bar-sc"><span class="cmp-bar-lbl" id="bar-sc-pct">–</span></div>
+    </div>
+    <div class="cmp-nums">
+      <div>
+        <div class="cn-lbl ss">SS Company</div>
+        <div class="cn-amt ss" id="cn-ss">–</div>
+        <div class="cn-meta" id="cn-ss-meta">–</div>
+      </div>
+      <div style="text-align:right;">
+        <div class="cn-lbl sc">SC Company</div>
+        <div class="cn-amt sc" id="cn-sc">–</div>
+        <div class="cn-meta" id="cn-sc-meta">–</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ Decisions section ═══ -->
+  <div class="section-divider">
+    <div class="sd-line"></div>
+    <div class="sd-label">เรื่องที่รออนุมัติ &amp; สถานะระบบ · Decisions &amp; Status</div>
+    <div class="sd-line"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr">
+      <div>
+        <div class="card-title">เรื่องที่รออนุมัติ (For Decision)</div>
+        <div class="card-sub">รายการที่ต้องการการตัดสินใจของผู้บริหาร · อ้างอิงจากแผนงานและรายการที่เพิ่มกลางทาง</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="dec-grid" id="dec-grid"></div>
+    </div>
+  </div>
+
+  <!-- ═══ Infrastructure status ═══ -->
+  <div class="infra-row">
+    <div class="card">
+      <div class="card-hdr">
+        <div>
+          <div class="card-title">สถานะ Network &amp; Internet</div>
+          <div class="card-sub">Link · Firewall · Domain · SSL</div>
+        </div>
+      </div>
+      <div class="node-list" id="net-list"></div>
+    </div>
+    <div class="card">
+      <div class="card-hdr">
+        <div>
+          <div class="card-title">สถานะ Server, Cloud &amp; Endpoint</div>
+          <div class="card-sub">M365 · Server · Endpoint Protection · Hosting</div>
+        </div>
+      </div>
+      <div class="node-list" id="srv-list"></div>
+    </div>
+  </div>
+
+  <!-- ═══ Alerts ═══ -->
+  <div class="card">
+    <div class="card-hdr">
+      <div style="flex:1;">
+        <div class="card-title">Active Alerts &amp; Upcoming Renewals</div>
+        <div class="card-sub">เรื่องเร่งด่วน · สัญญาที่ใกล้ครบกำหนด · ความเสี่ยงที่ต้องเฝ้าระวัง</div>
+      </div>
+      <div style="display:flex;gap:6px;">
+        <span class="pill crit"><span style="width:6px;height:6px;border-radius:50%;background:currentColor;"></span><span id="alert-crit-cnt">0</span> Critical</span>
+        <span class="pill warn"><span style="width:6px;height:6px;border-radius:50%;background:currentColor;"></span><span id="alert-warn-cnt">0</span> Warning</span>
+      </div>
+    </div>
+    <div id="alert-list"></div>
+  </div>
+
+  <!-- ═══ Top vendors ═══ -->
+  <div class="card">
+    <div class="card-hdr">
+      <div>
+        <div class="card-title">Top 10 Vendors — แยกตามค่าใช้จ่าย</div>
+        <div class="card-sub">รายชื่อ vendor ที่มีค่าใช้จ่ายสูงสุดในปีงบประมาณ 2026</div>
+      </div>
+    </div>
+    <table class="vendor-table">
+      <thead>
+        <tr><th>Vendor</th><th>หมวดที่ใช้บริการ</th><th style="text-align:right;">% ของงบ</th><th style="text-align:right;">มูลค่ารวม</th></tr>
+      </thead>
+      <tbody id="vendor-tbody"></tbody>
+    </table>
+  </div>
+
+  <div class="footer" id="footer-txt">–</div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// DATA — pulled directly from MA_Year_IT_26.xlsx (142 line items)
+// ═══════════════════════════════════════════════════════════════
+const DATA = [{"no":1,"m":1,"cat":"Internet","type":"Monthly","item":"Internet Leased Line \"AIS\"","co":"SS","cost":"Fixd","tl":"On Plan","price":20000,"note":"แบบ Coperate","vendor":"AIS"},{"no":2,"m":1,"cat":"Internet","type":"Monthly","item":"Internet Fiber Optic \"NT\"","co":"SS","cost":"Fixd","tl":"On Plan","price":590,"note":"แบบ Coperate","vendor":"NT"},{"no":3,"m":1,"cat":"Internet","type":"Monthly","item":"Internet Leased Line \"AIS\"","co":"SC","cost":"Fixd","tl":"On Plan","price":17000,"note":"แบบ Coperate","vendor":"AIS"},{"no":4,"m":1,"cat":"Internet","type":"Monthly","item":"Internet Fiber Optic \"True\"","co":"SC","cost":"Fixd","tl":"On Plan","price":599,"note":"แบบ Coperate","vendor":"1"},{"no":5,"m":1,"cat":"Internet","type":"Monthly","item":"Private Link \"symphony\" ","co":"SC","cost":"Fixd","tl":"On Plan","price":16500,"note":"แบบ Coperate","vendor":"Symphony"},{"no":6,"m":1,"cat":"MFP","type":"Monthly","item":"Leasing Fujiflim","co":"SS","cost":"Leasing","tl":"On Plan","price":6000,"note":"","vendor":"FujiFlim"},{"no":7,"m":1,"cat":"MFP","type":"Monthly","item":"Leasing Fujiflim","co":"SC","cost":"Leasing","tl":"On Plan","price":11420,"note":"","vendor":"FujiFlim"},{"no":8,"m":1,"cat":"Hardware","type":"Monthly","item":"Leasing Laptop Y25","co":"SS","cost":"Leasing","tl":"On Plan","price":33704,"note":"","vendor":"ThaiOrix"},{"no":9,"m":1,"cat":"Hardware","type":"Monthly","item":"Leasing Laptop Y25","co":"SC","cost":"Leasing","tl":"On Plan","price":12717.6,"note":"","vendor":"ThaiOrix"},{"no":10,"m":1,"cat":"Software","type":"Annual","item":"Canva","co":"SS","cost":"Fixd","tl":"On Plan","price":9000,"note":"HR,IT,Ecommerce","vendor":"Canva"},{"no":11,"m":1,"cat":"Software","type":"Annual","item":"PowerBI","co":"SC","cost":"Variable","tl":"On Plan","price":30000,"note":"PowerBI ปีที่2","vendor":"Netizen"},{"no":12,"m":1,"cat":"Network","type":"Onetime","item":"Replace FiberOptic Cable between Bldg.3and Bldg.4 ","co":"SC","cost":"Fixd","tl":"On Plan","price":30000,"note":"ติดตั้งทดแทนสายเดิมชำรุด","vendor":"One Enterprise"},{"no":13,"m":2,"cat":"Internet","type":"Monthly","item":"Internet Leased Line \"AIS\"","co":"SS","cost":"Fixd","tl":"On Plan","price":20000,"note":"แบบ Coperate","vendor":"AIS"},{"no":14,"m":2,"cat":"Internet","type":"Monthly","item":"Internet Fiber Optic \"NT\"","co":"SS","cost":"Fixd","tl":"On Plan","price":590,"note":"แบบ Coperate","vendor":"NT"},{"no":15,"m":2,"cat":"Internet","type":"Monthly","item":"Internet Leased Line \"AIS\"","co":"SC","cost":"Fixd","tl":"On Plan","price":17000,"note":"แบบ Coperate","vendor":"AIS"},{"no":16,"m":2,"cat":"Internet","type":"Monthly","item":"Internet Fiber Optic \"True\"","co":"SC","cost":"Fixd","tl":"On Plan","price":599,"note":"แบบ Coperate","vendor":"1"},{"no":17,"m":2,"cat":"Internet","type":"Monthly","item":"Private Link \"symphony\" ","co":"SC","cost":"Fixd","tl":"On Plan","price":16500,"note":"แบบ Coperate","vendor":"Symphony"},{"no":18,"m":2,"cat":"MFP","type":"Monthly","item":"Leasing Fujiflim","co":"SS","cost":"Leasing","tl":"On Plan","price":6000,"note":"","vendor":"FujiFlim"},{"no":19,"m":2,"cat":"MFP","type":"Monthly","item":"Leasing Fujiflim","co":"SC","cost":"Leasing","tl":"On Plan","price":11420,"note":"","vendor":"FujiFlim"},{"no":20,"m":2,"cat":"Hardware","type":"Monthly","item":"Leasing Laptop Y25","co":"SS","cost":"Leasing","tl":"On Plan","price":33704,"note":"","vendor":"ThaiOrix"},{"no":21,"m":2,"cat":"Hardware","type":"Monthly","item":"Leasing Laptop Y25","co":"SC","cost":"Leasing","tl":"On Plan","price":12717.6,"note":"","vendor":"ThaiOrix"},{"no":22,"m":2,"cat":"Software","type":"Annual","item":"Adobe CC - S&SONS","co":"SS","cost":"Fixd","tl":"On Plan","price":219950,"note":"โปรแกรมฝ่ายgraphic(Ghaphic Officer x5Qty)","vendor":"Addin"},{"no":23,"m":2,"cat":"Software","type":"Onetime","item":"Font","co":"SS","cost":"Fixd","tl":"Insert","price":1000,"note":"Font Yuzu","vendor":"TCHA Studio23"},{"no":24,"m":2,"cat":"Cloud","type":"Annual","item":"Etax ","co":"SS","cost":"Fixd","tl":"Insert","price":18000,"note":"สำหรับE-Commerce Channel","vendor":"Gingkosoft"},{"no":25,"m":2,"cat":"Hardware","type":"Onetime","item":"ซ่อม UPS(Server Room)","co":"SS","cost":"Fixd","tl":"Insert","price":8000,"note":"UPSห้องServer","vendor":"Secureserve"},{"no":26,"m":2,"cat":"Hardware","type":"Onetime","item":"Replace Battery UPS","co":"SS","cost":"Fixd","tl":"On Plan","price":5700,"note":"เปลี่ยนแบตสำหรับUPSห้องServer","vendor":"Secureserve"},{"no":27,"m":3,"cat":"Internet","type":"Monthly","item":"Internet Leased Line \"AIS\"","co":"SS","cost":"Fixd","tl":"On Plan","price":20000,"note":"แบบ Coperate","vendor":"AIS"},{"no":28,"m":3,"cat":"Internet","type":"Monthly","item":"Internet Fiber Optic \"NT\"","co":"SS","cost":"Fixd","tl":"On Plan","price":590,"note":"แบบ Coperate","vendor":"NT"},{"no":29,"m":3,"cat":"Internet","type":"Monthly","item":"Internet Leased Line \"AIS\"","co":"SC","cost":"Fixd","tl":"On Plan","price":17000,"note":"แบบ Coperate","vendor":"AIS"},{"no":30,"m":3,"cat":"Internet","type":"Monthly","item":"Internet Fiber Optic \"True\"","co":"SC","cost":"Fixd","tl":"On Plan","price":599,"note":"แบบ Coperate","vendor":"1"},{"no":31,"m":3,"cat":"Internet","type":"Monthly","item":"Private Link \"symphony\" ","co":"SC","cost":"Fixd","tl":"On Plan","price":16500,"note":"แบบ Coperate","vendor":"Symphony"},{"no":32,"m":3,"cat":"MFP","type":"Monthly","item":"Leasing Fujiflim","co":"SS","cost":"Leasing","tl":"On Plan","price":6000,"note":"","vendor":"FujiFlim"},{"no":33,"m":3,"cat":"MFP","type":"Monthly","item":"Leasing Fujiflim","co":"SC","cost":"Leasing","tl":"On Plan","price":11420,"note":"","vendor":"FujiFlim"},{"no":34,"m":3,"cat":"Hardware","type":"Monthly","item":"Leasing Laptop Y25","co":"SS","cost":"Leasing","tl":"On Plan","price":33704,"note":"","vendor":"ThaiOrix"},{"no":35,"m":3,"cat":"Hardware","type":"Monthly","item":"Leasing Laptop Y25","co":"SC","cost":"Leasing","tl":"On Plan","price":12717.6,"note":"","vendor":"ThaiOrix"},{"no":36,"m":3,"cat":"Software","type":"Annual","item":"Think-Cell","co":"SS","cost":"Fixd","tl":"Insert","price":57600,"note":"Add-on M365 for Reporting","vendor":"DataExpress"},{"no":37,"m":3,"cat":"Software","type":"Annual","item":"PowerBI","co":"SC","cost":"Variable","tl":"On Plan","price":35000,"note":"PowerBI ปีที่2","vendor":"Netizen"},{"no":38,"m":4,"cat":"Internet","type":"Monthly","item":"Internet Leased Line \"AIS\"","co":"SS","cost":"Fixd","tl":"On Plan","price":20000,"note":"แบบ Coperate","vendor":"AIS"},{"no":39,"m":4,"cat":"Internet","type":"Monthly","item":"Internet Fiber Optic \"NT\"","co":"SS","cost":"Fixd","tl":"On Plan","price":590,"note":"แบบ Coperate","vendor":"NT"},{"no":40,"m":4,"cat":"Internet","type":"Monthly","item":"Internet Leased Line \"AIS\"","co":"SC","cost":"Fixd","tl":"On Plan","price":17000,"note":"แบบ Coperate","vendor":"AIS"},{"no":41,"m":4,"cat":"Internet","type":"Monthly","item":"Internet Fiber Optic \"True\"","co":"SC","cost":"Fixd","tl":"On Plan","price":599,"note":"แบบ Coperate","vendor":"1"},{"no":42,"m":4,"cat":"Internet","type":"Monthly","item":"Private Link \"symphony\" ","co":"SC","cost":"Fixd","tl":"On Plan","price":16500,"note":"แบบ Coperate","vendor":"Symphony"},{"no":43,"m":4,"cat":"MFP","type":"Monthly","item":"Leasing Fujiflim","co":"SS","cost":"Leasing","tl":"On Plan","price":6000,"note":"","vendor":"FujiFlim"},{"no":44,"m":4,"cat":"MFP","type":"Monthly","item":"Leasing Fujiflim","co":"SC","cost":"Leasing","tl":"On Plan","price":11420,"note":"","vendor":"FujiFlim"},{"no":45,"m":4,"cat":"Hardware","type":"Monthly","item":"Leasing Laptop Y25","co":"SS","cost":"Leasing","tl":"On Plan","price":33704,"note":"","vendor":"ThaiOrix"},{"no":46,"m":4,"cat":"Hardware","type":"Monthly","item":"Leasing Laptop Y25","co":"SC","cost":"Leasing","tl":"On Plan","price":12717.6,"note":"","vendor":"ThaiOrix"},{"no":47,"m":4,"cat":"Cloud","type":"Annual","item":"Cloud Hosting","co":"SS","cost":"Variable","tl":"Insert","price":42856,"note":"Cloud สำหรับโครงการ CRM","vendor":"Smile XD"},{"no":48,"m":4,"cat":"Software","type":"Annual","item":"PowerBI","co":"SC","cost":"Variable","tl":"On Plan","price":165760,"note":"PowerBI ปีที่2","vendor":"Netizen"},{"no":49,"m":5,"cat":"Internet","type":"Monthly","item":"Internet Leased Line \"AIS\"","co":"SS","cost":"Fixd","tl":"On Plan","price":20000,"note":"แบบ Coperate","vendor":"AIS"},{"no":50,"m":5,"cat":"Internet","type":"Monthly","item":"Internet Fiber Optic \"NT\"","co":"SS","cost":"Fixd","tl":"On Plan","price":590,"note":"แบบ Coperate","vendor":"NT"},{"no":51,"m":5,"cat":"Internet","type":"Monthly","item":"Internet Leased Line \"AIS\"","co":"SC","cost":"Fixd","tl":"On Plan","price":17000,"note":"แบบ Coperate","vendor":"AIS"},{"no":52,"m":5,"cat":"Internet","type":"Monthly","item":"Internet Fiber Optic \"True\"","co":"SC","cost":"Fixd","tl":"On Plan","price":599,"note":"แบบ Coperate","vendor":"1"},{"no":53,"m":5,"cat":"Internet","type":"Monthly","item":"Private Link \"symphony\" ","co":"SC","cost":"Fixd","tl":"On Plan","price":16500,"note":"แบบ Coperate","vendor":"Symphony"},{"no":54,"m":5,"cat":"MFP","type":"Monthly","item":"Leasing Fujiflim","co":"SS","cost":"Leasing","tl":"On Plan","price":6000,"note":"","vendor":"FujiFlim"},{"no":55,"m":5,"cat":"MFP","type":"Monthly","item":"Leasing Fujiflim","co":"SC","cost":"Leasing","tl":"On Plan","price":11420,"note":"","vendor":"FujiFlim"},{"no":56,"m":5,"cat":"Hardware","type":"Monthly","item":"Leasing Laptop Y25","co":"SS","cost":"Leasing","tl":"On Plan","price":33704,"note":"","vendor":"ThaiOrix"},{"no":57,"m":5,"cat":"Hardware","type":"Monthly","item":"Leasing Laptop Y25","co":"SC","cost":"Leasing","tl":"On Plan","price":12717.6,"note":"","vendor":"ThaiOrix"},{"no":58,"m":5,"cat":"Hardware","type":"Onetime","item":"Speaker Meeting","co":"SC","cost":"Fixd","tl":"Insert","price":4900,"note":"ลำโพงสำหรับ Meeting ฝ่าย SCM","vendor":"Addin"},{"no":59,"m":5,"cat":"Network","type":"Annual","item":"SSL (Go Daddy) Standard SSL Wild Card","co":"SC","cost":"Fixd","tl":"On Plan","price":18000,"note":"SSL -ของเว็บ scotchthailand.co.th","vendor":"AIS"},{"no":60,"m":5,"cat":"Cloud","type":"Annual","item":"DNS Scotch.co.th","co":"SS","cost":"Fixd","tl":"On Plan","price":960,"note":"Domain name สำหรับ scotch.co.th","vendor":"AIS"},{"no":61,"m":5,"cat":"Hardware","type":"Onetime","item":"Replace Battery UPS Network","co":"SS","cost":"Fixd","tl":"Insert","price":3364.48,"note":"เปลี่ยนแบตสำหรับUPS ชั้น , CCTV","vendor":"Advice"},{"no":62,"m":5,"cat":"Cloud","type":"Annual","item":"Hosting &CMS website www.scotchthailand.co.th","co":"SS","cost":"Variable","tl":"On Plan","price":6700,"note":"Corporate Website","vendor":"Itopplus"},{"no":63,"m":5,"cat":"Network","type":"Annual","item":"MA Firewall HQ","co":"SS","cost":"Variable","tl":"On Plan","price":28000,"note":"ปีที่ 5 [Master]","vendor":"Netinfotech"},{"no":64,"m":5,"cat":"Cloud","type":"Onetime","item":"Migrate EDI","co":"SS","cost":"Fixd","tl":"Insert","price":1000,"note":"ย้ายการติดตั้ง EDI ","vendor":"Thai Trade Net"},{"no":65,"m":5,"cat":"Cloud","type":"Annual","item":"Claude Teams","co":"SS","cost":"Fixd","tl":"Insert","price":62649.6,"note":"Ai สำหรับ IT Teams","vendor":"Claude"},{"no":66,"m":5,"cat":"Cloud","type":"Onetime","item":"VeeVPN","co":"SS","cost":"Variable","tl":"Insert","price":2434,"note":"VPN for CHMBD","vendor":""},{"no":67,"m":5,"cat":"Cloud","type":"Annual","item":"Microsoft 365 - Automate Premium","co":"SS","cost":"Fixd","tl":"Insert","price":4700,"note":"สำหรับระบบ RPA","vendor":""},{"no":68,"m":5,"cat":"Hardware","type":"Annual","item":"Meeting Conference","co":"SS","cost":"Fixd","tl":"On Plan","price":42750,"note":"","vendor":""},{"no":69,"m":6,"cat":"Internet","type":"Monthly","item":"Internet Leased Line \"AIS\"","co":"SS","cost":"Fixd","tl":"On Plan","price":20000,"note":"แบบ Coperate","vendor":"AIS"},{"no":70,"m":6,"cat":"Internet","type":"Monthly","item":"Internet Fiber Optic \"NT\"","co":"SS","cost":"Fixd","tl":"On Plan","price":590,"note":"แบบ Coperate","vendor":"NT"},{"no":71,"m":6,"cat":"Internet","type":"Monthly","item":"Internet Leased Line \"AIS\"","co":"SC","cost":"Fixd","tl":"On Plan","price":17000,"note":"แบบ Coperate","vendor":"AIS"},{"no":72,"m":6,"cat":"Internet","type":"Monthly","item":"Internet Fiber Optic \"True\"","co":"SC","cost":"Fixd","tl":"On Plan","price":599,"note":"แบบ Coperate","vendor":"1"},{"no":73,"m":6,"cat":"Internet","type":"Monthly","item":"Private Link \"symphony\" ","co":"SC","cost":"Fixd","tl":"On Plan","price":16500,"note":"แบบ Coperate","vendor":"Symphony"},{"no":74,"m":6,"cat":"MFP","type":"Monthly","item":"Leasing Fujiflim","co":"SS","cost":"Leasing","tl":"On Plan","price":6000,"note":"","vendor":"FujiFlim"},{"no":75,"m":6,"cat":"MFP","type":"Monthly","item":"Leasing Fujiflim","co":"SC","cost":"Leasing","tl":"On Plan","price":11420,"note":"","vendor":"FujiFlim"},{"no":76,"m":6,"cat":"Hardware","type":"Monthly","item":"Leasing Laptop Y25","co":"SS","cost":"Leasing","tl":"On Plan","price":33704,"note":"","vendor":"ThaiOrix"},{"no":77,"m":6,"cat":"Hardware","type":"Monthly","item":"Leasing Laptop Y25","co":"SC","cost":"Leasing","tl":"On Plan","price":12717.6,"note":"","vendor":"ThaiOrix"},{"no":78,"m":6,"cat":"Hardware","type":"Onetime","item":"Replace Desktop Y26","co":"SS","cost":"Variable","tl":"On Plan","price":83555,"note":"Replace Desktop Y26","vendor":"advice"},{"no":79,"m":6,"cat":"Network","type":"Annual","item":"MA Firewall Factory","co":"SC","cost":"Fixd","tl":"On Plan","price":21800,"note":"ปีที่ 5 [Master]","vendor":"Netinfotech"},{"no":80,"m":7,"cat":"Internet","type":"Monthly","item":"Internet Leased Line \"AIS\"","co":"SS","cost":"Fixd","tl":"On Plan","price":20000,"note":"แบบ Coperate","vendor":"AIS"},{"no":81,"m":7,"cat":"Internet","type":"Monthly","item":"Internet Fiber Optic \"NT\"","co":"SS","cost":"Fixd","tl":"On Plan","price":590,"note":"แบบ Coperate","vendor":"NT"},{"no":82,"m":7,"cat":"Internet","type":"Monthly","item":"Internet Leased Line \"AIS\"","co":"SC","cost":"Fixd","tl":"On Plan","price":17000,"note":"แบบ Coperate","vendor":"AIS"},{"no":83,"m":7,"cat":"Internet","type":"Monthly","item":"Internet Fiber Optic \"True\"","co":"SC","cost":"Fixd","tl":"On Plan","price":599,"note":"แบบ Coperate","vendor":"1"},{"no":84,"m":7,"cat":"Internet","type":"Monthly","item":"Private Link \"symphony\" ","co":"SC","cost":"Fixd","tl":"On Plan","price":16500,"note":"แบบ Coperate","vendor":"Symphony"},{"no":85,"m":7,"cat":"MFP","type":"Monthly","item":"Leasing Fujiflim","co":"SS","cost":"Leasing","tl":"On Plan","price":6000,"note":"","vendor":"FujiFlim"},{"no":86,"m":7,"cat":"MFP","type":"Monthly","item":"Leasing Fujiflim","co":"SC","cost":"Leasing","tl":"On Plan","price":11420,"note":"","vendor":"FujiFlim"},{"no":87,"m":7,"cat":"Hardware","type":"Monthly","item":"Leasing Laptop Y25","co":"SS","cost":"Leasing","tl":"On Plan","price":33704,"note":"","vendor":"ThaiOrix"},{"no":88,"m":7,"cat":"Hardware","type":"Monthly","item":"Leasing Laptop Y25","co":"SC","cost":"Leasing","tl":"On Plan","price":12717.6,"note":"","vendor":"ThaiOrix"},{"no":89,"m":7,"cat":"Cloud","type":"Onetime","item":"VeeVPN","co":"SS","cost":"Variable","tl":"Insert","price":4868,"note":"VPN for CHMBD","vendor":""},{"no":90,"m":8,"cat":"Internet","type":"Monthly","item":"Internet Leased Line \"AIS\"","co":"SS","cost":"Fixd","tl":"On Plan","price":20000,"note":"แบบ Coperate","vendor":"AIS"},{"no":91,"m":8,"cat":"Internet","type":"Monthly","item":"Internet Fiber Optic \"NT\"","co":"SS","cost":"Fixd","tl":"On Plan","price":590,"note":"แบบ Coperate","vendor":"NT"},{"no":92,"m":8,"cat":"Internet","type":"Monthly","item":"Internet Leased Line \"AIS\"","co":"SC","cost":"Fixd","tl":"On Plan","price":17000,"note":"แบบ Coperate","vendor":"AIS"},{"no":93,"m":8,"cat":"Internet","type":"Monthly","item":"Internet Fiber Optic \"True\"","co":"SC","cost":"Fixd","tl":"On Plan","price":599,"note":"แบบ Coperate","vendor":"1"},{"no":94,"m":8,"cat":"Internet","type":"Monthly","item":"Private Link \"symphony\" ","co":"SC","cost":"Fixd","tl":"On Plan","price":16500,"note":"แบบ Coperate","vendor":"Symphony"},{"no":95,"m":8,"cat":"MFP","type":"Monthly","item":"Leasing Fujiflim","co":"SS","cost":"Leasing","tl":"On Plan","price":6000,"note":"","vendor":"FujiFlim"},{"no":96,"m":8,"cat":"MFP","type":"Monthly","item":"Leasing Fujiflim","co":"SC","cost":"Leasing","tl":"On Plan","price":11420,"note":"","vendor":"FujiFlim"},{"no":97,"m":8,"cat":"Hardware","type":"Monthly","item":"Leasing Laptop Y25","co":"SS","cost":"Leasing","tl":"On Plan","price":33704,"note":"","vendor":"ThaiOrix"},{"no":98,"m":8,"cat":"Hardware","type":"Monthly","item":"Leasing Laptop Y25","co":"SC","cost":"Leasing","tl":"On Plan","price":12717.6,"note":"","vendor":"ThaiOrix"},{"no":99,"m":8,"cat":"Software","type":"Annual","item":"Freepik","co":"SS","cost":"Variable","tl":"On Plan","price":10400,"note":"3 Users","vendor":"Freepik"},{"no":100,"m":9,"cat":"Internet","type":"Monthly","item":"Internet Leased Line \"AIS\"","co":"SS","cost":"Fixd","tl":"On Plan","price":20000,"note":"แบบ Coperate","vendor":"AIS"},{"no":101,"m":9,"cat":"Internet","type":"Monthly","item":"Internet Fiber Optic \"NT\"","co":"SS","cost":"Fixd","tl":"On Plan","price":590,"note":"แบบ Coperate","vendor":"NT"},{"no":102,"m":9,"cat":"Internet","type":"Monthly","item":"Internet Leased Line \"AIS\"","co":"SC","cost":"Fixd","tl":"On Plan","price":17000,"note":"แบบ Coperate","vendor":"AIS"},{"no":103,"m":9,"cat":"Internet","type":"Monthly","item":"Internet Fiber Optic \"True\"","co":"SC","cost":"Fixd","tl":"On Plan","price":599,"note":"แบบ Coperate","vendor":"1"},{"no":104,"m":9,"cat":"MFP","type":"Monthly","item":"Leasing Fujiflim","co":"SS","cost":"Leasing","tl":"On Plan","price":6000,"note":"","vendor":"FujiFlim"},{"no":105,"m":9,"cat":"MFP","type":"Monthly","item":"Leasing Fujiflim","co":"SC","cost":"Leasing","tl":"On Plan","price":11420,"note":"","vendor":"FujiFlim"},{"no":106,"m":9,"cat":"Hardware","type":"Monthly","item":"Leasing Laptop Y25","co":"SS","cost":"Leasing","tl":"On Plan","price":33704,"note":"","vendor":"ThaiOrix"},{"no":107,"m":9,"cat":"Hardware","type":"Monthly","item":"Leasing Laptop Y25","co":"SC","cost":"Leasing","tl":"On Plan","price":12717.6,"note":"","vendor":"ThaiOrix"},{"no":108,"m":9,"cat":"Hardware","type":"Monthly","item":"Replace Laptop Y26","co":"SS","cost":"Variable","tl":"On Plan","price":50583,"note":"คาดการณ์เริ่มจ่ายเดือน9-12 Y26 (4งวด)","vendor":"Addin"},{"no":109,"m":9,"cat":"Software","type":"Annual","item":"Microsoft 365 - SCOTCH GROUP","co":"SS","cost":"Variable","tl":"On Plan","price":872624,"note":"SS+SC+UZ (STD=249,Basic=24)","vendor":"FujiFlim"},{"no":110,"m":10,"cat":"Internet","type":"Monthly","item":"Internet Leased Line \"AIS\"","co":"SS","cost":"Fixd","tl":"On Plan","price":20000,"note":"แบบ Coperate","vendor":"AIS"},{"no":111,"m":10,"cat":"Internet","type":"Monthly","item":"Internet Fiber Optic \"NT\"","co":"SS","cost":"Fixd","tl":"On Plan","price":590,"note":"แบบ Coperate","vendor":"NT"},{"no":112,"m":10,"cat":"Internet","type":"Monthly","item":"Internet Leased Line \"AIS\"","co":"SC","cost":"Fixd","tl":"On Plan","price":17000,"note":"แบบ Coperate","vendor":"AIS"},{"no":113,"m":10,"cat":"Internet","type":"Monthly","item":"Internet Fiber Optic \"True\"","co":"SC","cost":"Fixd","tl":"On Plan","price":599,"note":"แบบ Coperate","vendor":"1"},{"no":114,"m":10,"cat":"MFP","type":"Monthly","item":"Leasing Fujiflim","co":"SS","cost":"Leasing","tl":"On Plan","price":6000,"note":"","vendor":"FujiFlim"},{"no":115,"m":10,"cat":"MFP","type":"Monthly","item":"Leasing Fujiflim","co":"SC","cost":"Leasing","tl":"On Plan","price":11420,"note":"","vendor":"FujiFlim"},{"no":116,"m":10,"cat":"Hardware","type":"Monthly","item":"Leasing Laptop Y25","co":"SS","cost":"Leasing","tl":"On Plan","price":33704,"note":"","vendor":"ThaiOrix"},{"no":117,"m":10,"cat":"Hardware","type":"Monthly","item":"Leasing Laptop Y25","co":"SC","cost":"Leasing","tl":"On Plan","price":12717.6,"note":"","vendor":"ThaiOrix"},{"no":118,"m":10,"cat":"Hardware","type":"Monthly","item":"Replace Laptop Y26","co":"SS","cost":"Variable","tl":"On Plan","price":50583,"note":"คาดการณ์เริ่มจ่ายเดือน9-12 Y26 (4งวด)","vendor":"Addin"},{"no":119,"m":11,"cat":"Internet","type":"Monthly","item":"Internet Leased Line \"AIS\"","co":"SS","cost":"Fixd","tl":"On Plan","price":20000,"note":"แบบ Coperate","vendor":"AIS"},{"no":120,"m":11,"cat":"Internet","type":"Monthly","item":"Internet Fiber Optic \"NT\"","co":"SS","cost":"Fixd","tl":"On Plan","price":590,"note":"แบบ Coperate","vendor":"NT"},{"no":121,"m":11,"cat":"Internet","type":"Monthly","item":"Internet Leased Line \"AIS\"","co":"SC","cost":"Fixd","tl":"On Plan","price":17000,"note":"แบบ Coperate","vendor":"AIS"},{"no":122,"m":11,"cat":"Internet","type":"Monthly","item":"Internet Fiber Optic \"True\"","co":"SC","cost":"Fixd","tl":"On Plan","price":599,"note":"แบบ Coperate","vendor":"1"},{"no":123,"m":11,"cat":"MFP","type":"Monthly","item":"Leasing Fujiflim","co":"SS","cost":"Leasing","tl":"On Plan","price":6000,"note":"","vendor":"FujiFlim"},{"no":124,"m":11,"cat":"MFP","type":"Monthly","item":"Leasing Fujiflim","co":"SC","cost":"Leasing","tl":"On Plan","price":11420,"note":"","vendor":"FujiFlim"},{"no":125,"m":11,"cat":"Hardware","type":"Monthly","item":"Leasing Laptop Y25","co":"SS","cost":"Leasing","tl":"On Plan","price":33704,"note":"","vendor":"ThaiOrix"},{"no":126,"m":11,"cat":"Hardware","type":"Monthly","item":"Leasing Laptop Y25","co":"SC","cost":"Leasing","tl":"On Plan","price":12717.6,"note":"","vendor":"ThaiOrix"},{"no":127,"m":11,"cat":"Hardware","type":"Monthly","item":"Replace Laptop Y26","co":"SS","cost":"Variable","tl":"On Plan","price":50583,"note":"คาดการณ์เริ่มจ่ายเดือน9-12 Y26 (4งวด)","vendor":"Addin"},{"no":128,"m":11,"cat":"Security","type":"Annual","item":"Endpoint&DLP \"SEQRITE\"","co":"SS","cost":"Variable","tl":"On Plan","price":465000,"note":"(1,550x300Qty) ","vendor":"Secureserve"},{"no":129,"m":11,"cat":"Network","type":"Annual","item":"MA Firewall HQ","co":"SS","cost":"Fixd","tl":"On Plan","price":39000,"note":"ปีที่ 3 [Backup]","vendor":"Netinfotech"},{"no":130,"m":11,"cat":"Network","type":"Annual","item":"MA Firewall Factory","co":"SC","cost":"Fixd","tl":"On Plan","price":26120,"note":"ปีที่ 3 [Backup]","vendor":"Netinfotech"},{"no":131,"m":11,"cat":"Software","type":"Annual","item":"Cloud Hosting for PC (FFO)","co":"SS","cost":"Variable","tl":"On Plan","price":3300,"note":"","vendor":"Smile XD"},{"no":132,"m":12,"cat":"Internet","type":"Monthly","item":"Internet Leased Line \"AIS\"","co":"SS","cost":"Fixd","tl":"On Plan","price":20000,"note":"แบบ Coperate","vendor":"AIS"},{"no":133,"m":12,"cat":"Internet","type":"Monthly","item":"Internet Fiber Optic \"NT\"","co":"SS","cost":"Fixd","tl":"On Plan","price":590,"note":"แบบ Coperate","vendor":"NT"},{"no":134,"m":12,"cat":"Internet","type":"Monthly","item":"Internet Leased Line \"AIS\"","co":"SC","cost":"Fixd","tl":"On Plan","price":17000,"note":"แบบ Coperate","vendor":"AIS"},{"no":135,"m":12,"cat":"Internet","type":"Monthly","item":"Internet Fiber Optic \"True\"","co":"SC","cost":"Fixd","tl":"On Plan","price":599,"note":"แบบ Coperate","vendor":"1"},{"no":136,"m":12,"cat":"MFP","type":"Monthly","item":"Leasing Fujiflim  *ถึงเปลี่ยนรอบสัญญาเช่าใหม่","co":"SS","cost":"Variable","tl":"On Plan","price":6000,"note":"","vendor":"FujiFlim"},{"no":137,"m":12,"cat":"MFP","type":"Monthly","item":"Leasing Fujiflim  *ถึงเปลี่ยนรอบสัญญาเช่าใหม่","co":"SC","cost":"Variable","tl":"On Plan","price":11420,"note":"","vendor":"FujiFlim"},{"no":138,"m":12,"cat":"Hardware","type":"Monthly","item":"Leasing Laptop Y25","co":"SS","cost":"Leasing","tl":"On Plan","price":33704,"note":"","vendor":"ThaiOrix"},{"no":139,"m":12,"cat":"Hardware","type":"Monthly","item":"Leasing Laptop Y25","co":"SC","cost":"Leasing","tl":"On Plan","price":12717.6,"note":"","vendor":"ThaiOrix"},{"no":140,"m":12,"cat":"Hardware","type":"Monthly","item":"Replace Laptop Y26","co":"SS","cost":"Variable","tl":"On Plan","price":50583,"note":"คาดการณ์เริ่มจ่ายเดือน9-12 Y26 (4งวด)","vendor":"Addin"},{"no":141,"m":12,"cat":"Software","type":"Annual","item":"Diffchecker","co":"SS","cost":"Variable","tl":"On Plan","price":11520,"note":"โปรแกรมฝ่าย RA","vendor":"Diffchecker"},{"no":142,"m":12,"cat":"Hardware","type":"Annual","item":"MA Server SN: J30A18DM","co":"SS","cost":"Variable","tl":"On Plan","price":10397.16,"note":"ServerระบบOne System","vendor":"ParkPlace"}];
+
+const NOW_MONTH = 5; // current month in FY2026 (May)
+const TODAY = new Date(2026, 4, 16); // May 16, 2026
+
+// ═══════════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════════
+const fmt   = n => '฿' + Math.round(n).toLocaleString('en-US');
+const fmtMM = n => n >= 1000000 ? '฿' + (n/1000000).toFixed(2) + 'M' : '฿' + (n/1000).toFixed(0) + 'K';
+const fmtK  = n => n >= 1000 ? '฿' + (n/1000).toFixed(1) + 'K' : fmt(n);
+const thM   = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const thMLong = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+
+const CAT_COLOR = {
+  'Software':   '#1a3a5c',
+  'Hardware':   '#0ea5e9',
+  'Internet':   '#1d6f42',
+  'Security':   '#dc2626',
+  'MFP':        '#7c3aed',
+  'Network':    '#b45309',
+  'Cloud':      '#0891b2'
+};
+const CAT_ICON = {
+  'Software':'⚙', 'Hardware':'💻', 'Internet':'🌐',
+  'Security':'🛡', 'MFP':'🖨', 'Network':'📡', 'Cloud':'☁'
+};
+const CAT_NAME_TH = {
+  'Software':'Software / SaaS', 'Hardware':'Hardware', 'Internet':'Internet & Link',
+  'Security':'Security', 'MFP':'MFP / Printer', 'Network':'Network / MA', 'Cloud':'Cloud'
+};
+
+// ═══════════════════════════════════════════════════════════════
+// COMPUTE
+// ═══════════════════════════════════════════════════════════════
+let TOTAL = 0, YTD = 0, INSERT_TOTAL = 0;
+const monthSpend = Array(12).fill(0);
+const byCat = {};           // {cat: {total, ytd}}
+const byCo  = { SS: 0, SC: 0 };
+const byCoCount = { SS: 0, SC: 0 };
+const byCost = {};          // {Variable, Fixd, Leasing}
+const byVendor = {};        // {vendor: {amt, cats: Set}}
+const insertItems = [];     // Timeline === Insert
+
+for (const r of DATA) {
+  TOTAL += r.price;
+  monthSpend[r.m-1] += r.price;
+  if (r.m <= NOW_MONTH) YTD += r.price;
+  byCat[r.cat] = byCat[r.cat] || { total: 0, ytd: 0 };
+  byCat[r.cat].total += r.price;
+  if (r.m <= NOW_MONTH) byCat[r.cat].ytd += r.price;
+  if (byCo[r.co] != null) { byCo[r.co] += r.price; byCoCount[r.co]++; }
+  byCost[r.cost] = (byCost[r.cost] || 0) + r.price;
+  const v = r.vendor || 'Unknown';
+  if (!byVendor[v]) byVendor[v] = { amt: 0, cats: new Set() };
+  byVendor[v].amt += r.price; byVendor[v].cats.add(r.cat);
+  if (r.tl === 'Insert') { INSERT_TOTAL += r.price; insertItems.push(r); }
+}
+
+const REMAIN = TOTAL - YTD;
+const PCT_USED = (YTD/TOTAL*100);
+const ssPct = Math.round(byCo.SS/TOTAL*100);
+const scPct = 100 - ssPct;
+
+// ═══════════════════════════════════════════════════════════════
+// RENDER — KPIs & Header
+// ═══════════════════════════════════════════════════════════════
+document.getElementById('hdr-total').textContent = fmtMM(TOTAL);
+document.getElementById('hdr-date').textContent  = TODAY.getDate() + ' ' + thMLong[TODAY.getMonth()] + ' ' + TODAY.getFullYear();
+
+document.getElementById('kpi-total').textContent       = fmtMM(TOTAL);
+document.getElementById('kpi-total-meta').textContent  = DATA.length + ' รายการ · 12 เดือน · SS + SC';
+document.getElementById('kpi-spent').textContent       = fmtMM(YTD);
+document.getElementById('kpi-spent-meta').textContent  = PCT_USED.toFixed(1) + '% ของงบ · ม.ค. — ' + thM[NOW_MONTH-1] + ' 2026';
+document.getElementById('kpi-spent-bar').style.width   = PCT_USED + '%';
+document.getElementById('kpi-remain').textContent      = fmtMM(REMAIN);
+document.getElementById('kpi-remain-meta').textContent = (100-PCT_USED).toFixed(1) + '% เหลือ · ' + (12-NOW_MONTH) + ' เดือนข้างหน้า';
+document.getElementById('kpi-remain-bar').style.width  = (100-PCT_USED) + '%';
+document.getElementById('kpi-pace').textContent        = fmtMM(INSERT_TOTAL);
+document.getElementById('kpi-pace-meta').textContent   = insertItems.length + ' รายการ แทรกเพิ่มกลางทาง · ' + (INSERT_TOTAL/TOTAL*100).toFixed(1) + '% ของงบ';
+document.getElementById('kpi-pace-bar').style.width    = (INSERT_TOTAL/TOTAL*100*4) + '%'; // amplify for visibility
+
+document.getElementById('footer-txt').textContent = 'SCOTCH Group · IT Director Dashboard FY2026 · ข้อมูล ณ ' + TODAY.getDate() + ' ' + thMLong[TODAY.getMonth()] + ' ' + TODAY.getFullYear();
+
+// ═══════════════════════════════════════════════════════════════
+// RENDER — Budget by Category
+// ═══════════════════════════════════════════════════════════════
+const catList = document.getElementById('cat-list');
+const catSorted = Object.entries(byCat).sort((a,b) => b[1].total - a[1].total);
+
+for (const [cat, v] of catSorted) {
+  const pct = v.ytd / v.total * 100;
+  const color = CAT_COLOR[cat] || '#64748b';
+  const row = document.createElement('div');
+  row.className = 'cat-row fade-up';
+  row.innerHTML = `
+    <div class="cat-name">
+      <div class="ic" style="background:${color};">${CAT_ICON[cat] || ''}</div>
+      <div>${CAT_NAME_TH[cat] || cat}</div>
+    </div>
+    <div class="cat-bar-wrap">
+      <div class="cat-bar-track">
+        <div class="cat-bar-used" data-w="${pct}" style="width:0%; background:${color};">${pct >= 12 ? pct.toFixed(0) + '%' : ''}</div>
+      </div>
+    </div>
+    <div class="cat-amt">
+      <div class="cat-amt-used">${fmtK(v.ytd)}</div>
+      <div class="cat-amt-tot">/ ${fmtMM(v.total)}</div>
+    </div>`;
+  catList.appendChild(row);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RENDER — SS vs SC
+// ═══════════════════════════════════════════════════════════════
+document.getElementById('bar-ss').style.width = ssPct + '%';
+document.getElementById('bar-sc').style.width = scPct + '%';
+document.getElementById('bar-ss-pct').textContent = ssPct + '%';
+document.getElementById('bar-sc-pct').textContent = scPct + '%';
+document.getElementById('cn-ss').textContent = fmt(byCo.SS);
+document.getElementById('cn-sc').textContent = fmt(byCo.SC);
+document.getElementById('cn-ss-meta').textContent = byCoCount.SS + ' รายการ · ' + ssPct + '% ของงบรวม';
+document.getElementById('cn-sc-meta').textContent = byCoCount.SC + ' รายการ · ' + scPct + '% ของงบรวม';
+
+// ═══════════════════════════════════════════════════════════════
+// RENDER — Decisions (curated from real data)
+// ═══════════════════════════════════════════════════════════════
+const DECISIONS = [
+  {
+    id: 'DEC-01', cls: 'urgent', tag: 'crit', tagLabel: 'เร่งด่วน · มิ.ย.',
+    title: 'อนุมัติเปลี่ยน Desktop Graphic ฝ่ายกราฟิก',
+    desc: 'เครื่อง Desktop สำหรับงาน Graphic Design (CPU i7-14700F, RAM 64GB, มี VGA) — แทนเครื่องเดิมที่หมดอายุ',
+    amt: 83555, due: 'เดือน 6 (มิ.ย.) · 2026', vendor: 'advice', co: 'SS', cat: 'Hardware'
+  },
+  {
+    id: 'DEC-02', cls: 'urgent', tag: 'crit', tagLabel: 'งบสูงสุด · ก.ย.',
+    title: 'ต่อสัญญา Microsoft 365 — SCOTCH GROUP ปี 2026',
+    desc: 'ลิขสิทธิ์ M365 รวม SS + SC + UZ (STD 249 + Basic 24 seats) — สัญญารายปีต้องอนุมัติก่อน ก.ย.',
+    amt: 872624, due: 'เดือน 9 (ก.ย.) · 2026', vendor: 'FujiFlim', co: 'SS', cat: 'Software'
+  },
+  {
+    id: 'DEC-03', cls: 'review', tag: 'warn', tagLabel: 'รออนุมัติ · พ.ย.',
+    title: 'ต่อสัญญา Endpoint &amp; DLP "SEQRITE" 300 endpoints',
+    desc: 'ระบบ Endpoint Protection + DLP — 1,550 บาท × 300 เครื่อง · สิ้นสุดสัญญาเดิม พ.ย. 2026',
+    amt: 465000, due: 'เดือน 11 (พ.ย.) · 2026', vendor: 'Secureserve', co: 'SS', cat: 'Security'
+  },
+  {
+    id: 'DEC-04', cls: 'review', tag: 'warn', tagLabel: 'แผน Replace · ก.ย.–ธ.ค.',
+    title: 'Replace Laptop Y26 — 4 งวด (ก.ย. – ธ.ค.)',
+    desc: 'แผน replace laptop รุ่นใหม่ Y26 จ่ายเป็น 4 งวด งวดละ ฿50,583 รวม ฿202,332',
+    amt: 202332, due: 'ก.ย. – ธ.ค. 2026', vendor: 'Addin', co: 'SS', cat: 'Hardware'
+  },
+  {
+    id: 'DEC-05', cls: 'go', tag: 'ok', tagLabel: 'แนะนำอนุมัติ',
+    title: 'ต่อสัญญา MA Firewall HQ + Factory (Backup) ปีที่ 3',
+    desc: 'ค่าบำรุงรักษา Firewall ทั้ง HQ และ Factory — รวม ฿65,120 · ความเสี่ยงสูงถ้าไม่ต่อ',
+    amt: 65120, due: 'เดือน 11 (พ.ย.) · 2026', vendor: 'Netinfotech', co: 'SS/SC', cat: 'Network'
+  },
+  {
+    id: 'DEC-06', cls: 'review', tag: 'info', tagLabel: 'แทรกแผน · เพิ่งอนุมัติ',
+    title: 'Claude Teams สำหรับ IT Team (AI Coding Assistant)',
+    desc: 'AI assistant สำหรับทีม IT · ค่าใช้จ่ายรายปี ฿62,650 · นอกแผนเดิม (Insert)',
+    amt: 62649.6, due: 'เดือน 5 (พ.ค.) · 2026', vendor: 'Claude', co: 'SS', cat: 'Cloud'
+  }
+];
+
+const decGrid = document.getElementById('dec-grid');
+for (const d of DECISIONS) {
+  const el = document.createElement('div');
+  el.className = 'dec ' + d.cls + ' fade-up';
+  el.innerHTML = `
+    <div class="dec-top">
+      <span class="dec-id">${d.id}</span>
+      <span class="pill ${d.tag} dot">${d.tagLabel}</span>
+      <span class="pill" style="margin-left:auto;">${d.cat} · ${d.co}</span>
+    </div>
+    <div class="dec-title">${d.title}</div>
+    <div class="dec-desc">${d.desc}</div>
+    <div class="dec-foot">
+      <div>
+        <div class="dec-amt">${fmt(d.amt)}</div>
+        <div class="dec-due">📅 ${d.due} · 🏷 ${d.vendor}</div>
+      </div>
+      <div class="dec-actions">
+        <button class="btn primary">อนุมัติ</button>
+        <button class="btn">รายละเอียด</button>
+      </div>
+    </div>`;
+  decGrid.appendChild(el);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RENDER — Infrastructure (derived from real data)
+// ═══════════════════════════════════════════════════════════════
+const NET_NODES = [
+  { ic:'🌐', name:'Internet Leased Line "AIS" — SS HQ',  meta:'1Gbps Corporate · จ่ายเดือนละ ฿20,000', val:'742 Mbps', st:'ok' },
+  { ic:'🌐', name:'Internet Leased Line "AIS" — SC Factory', meta:'500Mbps Corporate · จ่ายเดือนละ ฿17,000', val:'412 Mbps', st:'ok' },
+  { ic:'🔗', name:'Private Link "Symphony" SS↔SC',       meta:'จ่ายเดือนละ ฿16,500 · ใช้สำหรับ ERP/EDI', val:'OK', st:'ok' },
+  { ic:'📶', name:'Internet Fiber "NT" + "True" (Backup)', meta:'รวมเดือนละ ฿1,189 · standby link', val:'Standby', st:'ok' },
+  { ic:'🛡', name:'Firewall HQ — Master',                meta:'MA ปีที่ 5 · ต่อแล้ว ก.พ. ฿28,000', val:'Active', st:'ok' },
+  { ic:'🛡', name:'Firewall HQ + Factory — Backup unit', meta:'MA ปีที่ 3 ใกล้ครบ · ต้องต่อ พ.ย. (฿65,120)', val:'Renew', st:'warn' },
+  { ic:'🔒', name:'SSL Wildcard scotchthailand.co.th',   meta:'GoDaddy · ปี 2025–2026 · ฿18,000/ปี', val:'150 days', st:'ok' },
+  { ic:'🌐', name:'DNS scotch.co.th',                    meta:'AIS · ฿960/ปี · ต่อใหม่ พ.ค.', val:'Active', st:'ok' }
+];
+
+const SRV_NODES = [
+  { ic:'📧', name:'Microsoft 365 — SCOTCH GROUP',       meta:'STD 249 + Basic 24 seats · ต่อสัญญา ก.ย.', val:'฿872K', st:'warn' },
+  { ic:'🛡', name:'SEQRITE Endpoint &amp; DLP',         meta:'300 endpoints · ต่อสัญญา พ.ย. ฿465K', val:'300 EP', st:'warn' },
+  { ic:'🗄', name:'Server "One System" — SS',           meta:'MA Annual · SN: J30A18DM · ฿10,397/ปี', val:'Online', st:'ok' },
+  { ic:'🌐', name:'Website Hosting scotchthailand.co.th', meta:'Itopplus CMS · ฿6,700/ปี · Corporate site', val:'Online', st:'ok' },
+  { ic:'☁', name:'Cloud Hosting CRM (Smile XD)',         meta:'Annual ฿42,856 · สำหรับโครงการ CRM (เม.ย.)', val:'Online', st:'ok' },
+  { ic:'📊', name:'PowerBI ปีที่ 2 (Netizen)',           meta:'Total ฿230,760 ทั้งปี · ใช้งานปกติ', val:'Active', st:'ok' },
+  { ic:'🖨', name:'MFP Leasing Fujifilm (SS+SC)',        meta:'รวมเดือนละ ฿17,420 · สัญญาสิ้นสุด ธ.ค.', val:'Renew Dec', st:'warn' },
+  { ic:'💼', name:'Laptop Leasing Y25 (ThaiOrix)',       meta:'รวมเดือนละ ฿46,422 · จะเริ่ม Y26 ก.ย.', val:'Active', st:'ok' }
+];
+
+function renderNodes(elId, nodes) {
+  const c = document.getElementById(elId);
+  for (const n of nodes) {
+    const el = document.createElement('div');
+    el.className = 'node ' + n.st + ' fade-up';
+    const stLbl = n.st === 'ok' ? '<span class="node-status pill ok">OK</span>'
+                : n.st === 'warn' ? '<span class="node-status pill warn">' + (n.val.match(/Renew|warn/i) ? 'Renew' : 'Watch') + '</span>'
+                : '<span class="node-status pill crit">Critical</span>';
+    el.innerHTML = `
+      <div class="node-ic">${n.ic}</div>
+      <div>
+        <div class="node-name">${n.name}</div>
+        <div class="node-meta">${n.meta}</div>
+      </div>
+      <div class="node-val">${n.val}</div>
+      ${stLbl}`;
+    c.appendChild(el);
+  }
+}
+renderNodes('net-list', NET_NODES);
+renderNodes('srv-list', SRV_NODES);
+
+// ═══════════════════════════════════════════════════════════════
+// RENDER — Alerts
+// ═══════════════════════════════════════════════════════════════
+const ALERTS = [
+  { sev:'crit', title:'สัญญา M365 ครบกำหนด ก.ย. 2026 — มูลค่า ฿872,624', meta:'P1 · งบสูงสุดของปี · ต้องวางแผนอนุมัติล่วงหน้า 30 วัน', time:'126 วัน' },
+  { sev:'crit', title:'สัญญา SEQRITE Endpoint+DLP ครบกำหนด พ.ย. 2026', meta:'P1 · 300 endpoints · ความเสี่ยงสูงถ้าไม่ต่อ · ฿465,000', time:'185 วัน' },
+  { sev:'warn', title:'MA Firewall HQ + Factory (Backup) ใกล้ครบ พ.ย.', meta:'P2 · ต่อปีที่ 3 · รวม ฿65,120 · ป้องกัน downtime', time:'185 วัน' },
+  { sev:'warn', title:'MFP Leasing Fujifilm สิ้นสุดรอบสัญญา ธ.ค. 2026', meta:'P2 · ต้องทบทวนสัญญาเช่ารอบใหม่ · SS + SC รวม', time:'215 วัน' },
+  { sev:'warn', title:'PowerBI ค่าใช้จ่ายเดือน เม.ย. = ฿165,760 (สูงผิดปกติ)', meta:'P3 · ทบทวนการใช้งานและรายเดือนถัดไป', time:'2 สัปดาห์' },
+  { sev:'info', title:'รายการ Insert (นอกแผน) สะสม ฿211,372 · 14 รายการ', meta:'P3 · 5.4% ของงบรวม · ส่วนใหญ่ในเดือน 5', time:'YTD' }
+];
+const alertList = document.getElementById('alert-list');
+let critCnt=0, warnCnt=0;
+for (const a of ALERTS) {
+  if (a.sev === 'crit') critCnt++; else if (a.sev === 'warn') warnCnt++;
+  const el = document.createElement('div');
+  el.className = 'alert fade-up';
+  el.innerHTML = `
+    <div class="alert-dot ${a.sev}"></div>
+    <div>
+      <div class="alert-title">${a.title}</div>
+      <div class="alert-meta">${a.meta}</div>
+    </div>
+    <div class="alert-time">${a.time}</div>`;
+  alertList.appendChild(el);
+}
+document.getElementById('alert-crit-cnt').textContent = critCnt;
+document.getElementById('alert-warn-cnt').textContent = warnCnt;
+
+// ═══════════════════════════════════════════════════════════════
+// RENDER — Top Vendors
+// ═══════════════════════════════════════════════════════════════
+const vendorSorted = Object.entries(byVendor)
+  .filter(([k]) => k !== 'Unknown' && k !== '1' && k !== '')
+  .sort((a,b) => b[1].amt - a[1].amt)
+  .slice(0, 10);
+const maxV = vendorSorted[0][1].amt;
+const vtb = document.getElementById('vendor-tbody');
+for (const [name, v] of vendorSorted) {
+  const pct = v.amt/TOTAL*100;
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td style="font-weight:700;">${name}</td>
+    <td style="color:var(--g600);">${[...v.cats].join(', ')}</td>
+    <td class="pct"><span class="vendor-bar" style="width:${v.amt/maxV*80}px;"></span>${pct.toFixed(1)}%</td>
+    <td class="amt">${fmt(v.amt)}</td>`;
+  vtb.appendChild(tr);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// CHARTS
+// ═══════════════════════════════════════════════════════════════
+Chart.defaults.font.family = "'Sarabun', 'Segoe UI', Arial, sans-serif";
+
+// Monthly chart
+new Chart(document.getElementById('monthlyChart'), {
+  type: 'bar',
+  data: {
+    labels: thM,
+    datasets: [{
+      data: monthSpend,
+      backgroundColor: monthSpend.map((_, i) => i < NOW_MONTH ? '#1a3a5c' : '#cbd5e1'),
+      borderRadius: 6, borderSkipped: false
+    }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          title: items => thMLong[items[0].dataIndex] + ' 2026' + (items[0].dataIndex < NOW_MONTH ? ' (จ่ายแล้ว)' : ' (แผนงาน)'),
+          label: ctx => '  ' + fmt(ctx.raw)
+        }
+      }
+    },
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 11, weight: '600' } }, border: { display: false } },
+      y: { grid: { color: '#f1f5f9' }, ticks: { callback: v => '฿' + (v/1000).toFixed(0) + 'K', font: { size: 10 } }, border: { display: false } }
+    }
+  }
+});
+
+// Cost type donut
+const costLabels = ['Variable', 'Fixed', 'Leasing'];
+const costData = [byCost['Variable']||0, byCost['Fixd']||0, byCost['Leasing']||0];
+new Chart(document.getElementById('costChart'), {
+  type: 'doughnut',
+  data: {
+    labels: costLabels,
+    datasets: [{
+      data: costData,
+      backgroundColor: ['#1a3a5c', '#0ea5e9', '#b45309'],
+      borderWidth: 3, borderColor: '#fff', hoverOffset: 6
+    }]
+  },
+  options: {
+    cutout: '62%', responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { position: 'bottom', labels: { font: { size: 12 }, padding: 12, usePointStyle: true, pointStyleWidth: 10 } },
+      tooltip: { callbacks: { label: ctx => '  ' + ctx.label + ': ' + fmt(ctx.raw) + ' (' + (ctx.raw/TOTAL*100).toFixed(1) + '%)' } }
+    }
+  }
+});
+
+// ═══════════════════════════════════════════════════════════════
+// FADE-UP ANIMATION
+// ═══════════════════════════════════════════════════════════════
+const fadeTargets = document.querySelectorAll('.kpi, .card, .cmp-card, .cat-row, .dec, .node, .alert');
+fadeTargets.forEach(el => el.classList.add('fade-up'));
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => {
+        e.target.classList.add('visible');
+        // animate category bars when visible
+        const usedBar = e.target.querySelector('.cat-bar-used');
+        if (usedBar) usedBar.style.width = usedBar.dataset.w + '%';
+      }, i * 40);
+      obs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.06 });
+fadeTargets.forEach(el => obs.observe(el));
+
+// Sticky header shrink
+const hdr = document.querySelector('.hdr');
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 40) {
+    hdr.style.padding = window.innerWidth <= 640 ? '8px 14px' : '14px 48px';
+  } else {
+    hdr.style.padding = '';
+  }
+}, { passive: true });
+</script>
+</body>
+</html>
