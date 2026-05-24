@@ -332,8 +332,11 @@
 
     <!-- LAPTOP COMPARE (Price Switcher) -->
     <div class="card">
-      <div class="card-header">🔄 Laptop Compare — เปลี่ยนรุ่นแล้วราคาภาพรวมปรับตาม</div>
-      <div class="card-body">
+      <div class="card-header" style="cursor:pointer;user-select:none;" onclick="toggleCompareSection()">
+        🔄 Laptop Compare — เปลี่ยนรุ่นแล้วราคาภาพรวมปรับตาม
+        <span id="compare-toggle-icon" style="margin-left:auto;font-size:16px;transition:transform 0.2s;">▶</span>
+      </div>
+      <div class="card-body" id="compare-section" style="display:none;">
         <p class="compare-intro">
           คลิกเลือกแถวรุ่นที่ต้องการ — ราคาของ Laptop ประเภทนั้นจะ<b>ปรับทั่วทั้ง Report</b> (Summary, Grand Total, ค่าประหยัด) ทันที
           <span style="color:var(--gray-400);">คำนวณจากจำนวนที่ active อยู่เท่านั้น</span>
@@ -342,24 +345,24 @@
           <div class="compare-card">
             <div class="compare-card-header">
               💻 Laptop Standard 14"
-              <span style="font-size:11px;font-weight:500;opacity:0.85;" id="cur14-label">ราคาปัจจุบัน: ฿30,500</span>
+              <span style="font-size:11px;font-weight:500;opacity:0.85;" id="cur14-label">ราคาปัจจุบัน: ฿41,328</span>
             </div>
             <table class="compare-table" id="tbl14">
               <thead><tr><th>#</th><th>ยี่ห้อ</th><th>CPU</th><th>RAM</th><th>SKU</th><th class="right">ราคา/เครื่อง</th><th class="right">ต่างจากปัจจุบัน</th></tr></thead>
               <tbody id="body14"></tbody>
             </table>
-            <div class="compare-note" id="note14">📍 <strong>กำลังใช้:</strong> Asus (225H) — ฿30,500</div>
+            <div class="compare-note" id="note14">📍 <strong>กำลังใช้:</strong> Asus (225H) — ฿41,328</div>
           </div>
           <div class="compare-card">
             <div class="compare-card-header">
               💻 Laptop Standard 16"
-              <span style="font-size:11px;font-weight:500;opacity:0.85;" id="cur16-label">ราคาปัจจุบัน: ฿28,500</span>
+              <span style="font-size:11px;font-weight:500;opacity:0.85;" id="cur16-label">ราคาปัจจุบัน: ฿30,636</span>
             </div>
             <table class="compare-table" id="tbl16">
               <thead><tr><th>#</th><th>ยี่ห้อ</th><th>CPU</th><th>RAM</th><th>SKU</th><th class="right">ราคา/เครื่อง</th><th class="right">ต่างจากปัจจุบัน</th></tr></thead>
               <tbody id="body16"></tbody>
             </table>
-            <div class="compare-note" id="note16">📍 <strong>กำลังใช้:</strong> Asus (225H) — ฿28,500</div>
+            <div class="compare-note" id="note16">📍 <strong>กำลังใช้:</strong> Asus (225H) — ฿30,636</div>
           </div>
         </div>
 
@@ -408,11 +411,11 @@
 // MASTER DATA & PRICES
 // =============================================
 const BASE_PRICES = {
-  'Laptop - Standard 14"': 30500,
-  'Laptop - Standard 16"': 28500,
+  'Laptop - Standard 14"': 41328,
+  'Laptop - Standard 16"': 30636,
   'Desktop - Graphic':     83555,
-  'Monitor 24"':           2300,
-  'Laptop - Pro':          42500,
+  'Monitor 24"':           3132,
+  'Laptop - Pro':          44100,
   'Laptop - Engineering':  36700
 };
 
@@ -440,16 +443,16 @@ const CALC_TYPES = [...TYPE_LIST, 'Monitor 24"'];
 let scenarioPrices = { ...BASE_PRICES };
 
 const COMPARE_14 = [
-  { no:1, brand:'Asus',   cpu:'225H', ram:'16GB', sku:'B5405CCA-NZ1580X', price:30500 },
-  { no:2, brand:'Lenovo', cpu:'226V', ram:'16GB', sku:'21U20040TH',        price:32500 },
-  { no:3, brand:'HP',     cpu:'226V', ram:'16GB', sku:'D85MMPT',           price:35000 },
-  { no:4, brand:'Dell',   cpu:'236V', ram:'16GB', sku:'SNSPB142501',       price:45700 }
+  { no:1, brand:'Asus',   cpu:'225H', ram:'16GB', sku:'B5405CCA-LY0920X', price:41328 },
+  { no:2, brand:'Lenovo', cpu:'226V', ram:'16GB', sku:'21U20040TH',        price:0 },
+  { no:3, brand:'HP',     cpu:'226V', ram:'16GB', sku:'D85MMPT',           price:0 },
+  { no:4, brand:'Dell',   cpu:'236V', ram:'16GB', sku:'SNSPB142501',       price:0 }
 ];
 const COMPARE_16 = [
-  { no:1, brand:'Asus',   cpu:'225H', ram:'16GB', sku:'B3605CCA-MB1734X',  price:28500 },
-  { no:2, brand:'Lenovo', cpu:'226V', ram:'16GB', sku:'22AY005TTH',        price:32200 },
-  { no:3, brand:'HP',     cpu:'255H', ram:'16GB', sku:'BX8N9PT',           price:35000 },
-  { no:4, brand:'Dell',   cpu:'236V', ram:'16GB', sku:'SNSPB1625005',      price:39500 }
+  { no:1, brand:'Asus',   cpu:'225H', ram:'16GB', sku:'B3605CCA-MB1734X',  price:30636 },
+  { no:2, brand:'Lenovo', cpu:'226V', ram:'16GB', sku:'22AY005TTH',        price:0 },
+  { no:3, brand:'HP',     cpu:'255H', ram:'16GB', sku:'BX8N9PT',           price:0 },
+  { no:4, brand:'Dell',   cpu:'236V', ram:'16GB', sku:'SNSPB1625005',      price:0 }
 ];
 
 let selected14 = 1, selected16 = 1; // index (1-based)
@@ -466,15 +469,15 @@ const TYPE_CHIPS = {
 const LAPTOP_SPECS = {
   'Laptop - Standard 14"': {
     cpu: '225H', ram: '16GB', ssd: '512GB', os: 'Win11Pro', warranty: '3Yrs',
-    monitor: '14"', vga: 'No', sku: 'Asus.B5405CCA-NZ1580X', price: '30,500'
+    monitor: '14"', vga: 'No', sku: 'Asus.B5405CCA-LY0920X', price: '41,328'
   },
   'Laptop - Standard 16"': {
     cpu: '225H', ram: '16GB', ssd: '512GB', os: 'Win11Pro', warranty: '3Yrs',
-    monitor: '16"', vga: 'No', sku: 'Asus.B3605CCA-MB1734X', price: '28,500'
+    monitor: '16"', vga: 'No', sku: 'Asus.B3605CCA-MB1734X', price: '30,636'
   },
   'Laptop - Pro': {
-    cpu: '225H', ram: '32GB', ssd: '512GB', os: 'Win11Pro', warranty: '3Yrs',
-    monitor: '14"', vga: 'No', sku: 'Lenovo.21U2008JTH', price: '42,500'
+    cpu: '258V', ram: '32GB', ssd: '512GB', os: 'Win11Pro', warranty: '3Yrs',
+    monitor: '14"', vga: 'No', sku: 'Lenovo.21U20042TH', price: '44,100'
   },
   'Laptop - Engineering': {
     cpu: '258V', ram: '16GB', ssd: '512GB', os: 'Win11Pro', warranty: '3Yrs',
@@ -1004,6 +1007,17 @@ function updateCompareScenario() {
   diffEl.style.color = diff>0?'#dc2626':diff<0?'#16a34a':'#94a3b8';
   diffItem.className = 'scenario-item'+(diff>0?' highlight':diff<0?' positive':'');
   document.getElementById('sc-diff-sub').textContent = diff>0?'ค่าใช้จ่ายเพิ่มขึ้น':diff<0?'ค่าใช้จ่ายลดลง':'ไม่เปลี่ยนแปลง';
+}
+
+// =============================================
+// COMPARE SECTION COLLAPSE
+// =============================================
+function toggleCompareSection() {
+  const section = document.getElementById('compare-section');
+  const icon = document.getElementById('compare-toggle-icon');
+  const isHidden = section.style.display === 'none';
+  section.style.display = isHidden ? 'block' : 'none';
+  icon.style.transform = isHidden ? 'rotate(90deg)' : 'rotate(0deg)';
 }
 
 // =============================================

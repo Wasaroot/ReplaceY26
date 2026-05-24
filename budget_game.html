@@ -222,12 +222,12 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#0f1923;color:#e2e8f0;mi
     </div>
     <div class="budget-input-wrap">
       <label>งบประมาณที่ได้รับ (บาท)</label>
-      <input type="text" class="budget-input" id="budget-input" value="1,835,300" oninput="formatBudgetInput(this)">
+      <input type="text" class="budget-input" id="budget-input" value="" oninput="formatBudgetInput(this)">
       <div class="budget-presets">
-        <button class="preset-btn" onclick="setPreset(1500000)">฿1.5M</button>
-        <button class="preset-btn" onclick="setPreset(1800000)">฿1.8M</button>
         <button class="preset-btn" onclick="setPreset(2000000)">฿2.0M</button>
-        <button class="preset-btn" onclick="setPreset(2500000)">฿2.5M</button>
+        <button class="preset-btn" onclick="setPreset(2200000)">฿2.2M</button>
+        <button class="preset-btn" onclick="setPreset(2400000)">฿2.4M</button>
+        <button class="preset-btn" onclick="setPreset(2600000)">฿2.6M</button>
       </div>
     </div>
     <button class="start-btn" onclick="startGame()">⚔️ เริ่มเกม</button>
@@ -344,11 +344,11 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#0f1923;color:#e2e8f0;mi
 // DATA
 // =============================================
 const PRICES = {
-  'Laptop - Standard 14"': 30500,
-  'Laptop - Standard 16"': 28500,
+  'Laptop - Standard 14"': 41328,
+  'Laptop - Standard 16"': 30636,
   'Desktop - Graphic':     83555,
-  'Monitor 24"':           2300,
-  'Laptop - Pro':          42500,
+  'Monitor 24"':           3132,
+  'Laptop - Pro':          44100,
   'Laptop - Engineering':  36700
 };
 const UPGRADE_MAP = {
@@ -359,7 +359,7 @@ const DEPT_COLORS = {
   'FA':    '#ec4899','CD':    '#3b82f6','SCM':   '#f59e0b',
   'Manu':  '#10b981','CHMBD': '#8b5cf6','MKT':   '#ef4444','HR&IT': '#06b6d4'
 };
-// Data synced from Excel Y26 .xlsx / Sheet 64 — verify total ฿1,819,155
+// Data synced from Excel Y26 .xlsx / Sheet 64 — verify total ฿2,371,608
 const ALL_PEOPLE = [
   {key:"SC_1",no:1,company:"SC",dept:"SCM",division:"Logistic",type:'Laptop - Standard 14"',name:'Sukunya Muichin(Yui)',hasMonitor:false},
   {key:"SC_2",no:2,company:"SC",dept:"Manu",division:"RD",type:'Laptop - Standard 16"',name:'Pimwadee(nan)',hasMonitor:true},
@@ -420,7 +420,8 @@ const ALL_PEOPLE = [
 // =============================================
 // GAME STATE
 // =============================================
-let BUDGET = 1819155;
+// คำนวณอัตโนมัติจาก ALL_PEOPLE × PRICES — ไม่ต้อง hardcode ให้ตรงกันทีหลัง
+let BUDGET = ALL_PEOPLE.reduce((sum, p) => sum + PRICES[p.type] + (p.hasMonitor ? PRICES['Monitor 24"'] : 0), 0);
 let selectedDept = null;
 let selectedCompany = null;
 let GAME_QUEUE = [...ALL_PEOPLE];
@@ -695,7 +696,7 @@ function renderCard() {
     <div class="card-name">${p.name}</div>
     <div class="card-equipment">
       <div class="eq-row"><span class="eq-label">ประเภทอุปกรณ์</span><span class="eq-val">${typeShort}</span></div>
-      <div class="eq-row"><span class="eq-label">Monitor 24"</span><span class="eq-val ${p.hasMonitor?'green':''}"> ${p.hasMonitor?'จัดซื้อใหม่ (+฿2,300)':'มีแล้ว / ไม่รับ'}</span></div>
+      <div class="eq-row"><span class="eq-label">Monitor 24"</span><span class="eq-val ${p.hasMonitor?'green':''}"> ${p.hasMonitor?`จัดซื้อใหม่ (+฿${PRICES['Monitor 24"'].toLocaleString('th-TH')})`:'มีแล้ว / ไม่รับ'}</span></div>
       ${upType?`<div class="eq-row"><span class="eq-label" style="color:#a78bfa">ถ้า Upgrade เป็น</span><span class="eq-val purple">${upShort} (+฿${diffCost.toLocaleString('th-TH')})</span></div>`:''}
     </div>
     <div class="cost-display">
@@ -980,8 +981,10 @@ function openReport() {
   window.open('index.html','_blank');
 }
 
-// Boot
-document.addEventListener('DOMContentLoaded', ()=>{});
+// Boot — ใส่ค่า BUDGET (คำนวณจาก ALL_PEOPLE × PRICES) ลง input เริ่มต้น
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('budget-input').value = BUDGET.toLocaleString('th-TH');
+});
 </script>
 </body>
 </html>

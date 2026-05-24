@@ -440,7 +440,7 @@
       </div>
       <div class="dev-count" id="dev-l14">–</div>
       <div class="dev-name">Laptop 14"</div>
-      <div class="dev-unit">฿30,500 / เครื่อง</div>
+      <div class="dev-unit">฿41,328 / เครื่อง</div>
       <div class="dev-total" id="tot-l14">–</div>
     </div>
 
@@ -457,7 +457,7 @@
       </div>
       <div class="dev-count" id="dev-l16">–</div>
       <div class="dev-name">Laptop 16"</div>
-      <div class="dev-unit">฿28,500 / เครื่อง</div>
+      <div class="dev-unit">฿30,636 / เครื่อง</div>
       <div class="dev-total" id="tot-l16">–</div>
     </div>
 
@@ -474,7 +474,7 @@
       </div>
       <div class="dev-count" id="dev-pro">–</div>
       <div class="dev-name">Laptop Pro</div>
-      <div class="dev-unit">฿42,500 / เครื่อง</div>
+      <div class="dev-unit">฿44,100 / เครื่อง</div>
       <div class="dev-total" id="tot-pro">–</div>
     </div>
 
@@ -506,7 +506,7 @@
       </div>
       <div class="dev-count" id="dev-mon">–</div>
       <div class="dev-name">Monitor 24"</div>
-      <div class="dev-unit">฿2,300 / จอ</div>
+      <div class="dev-unit">฿3,132 / จอ</div>
       <div class="dev-total" id="tot-mon">–</div>
     </div>
 
@@ -551,6 +551,25 @@
       <div class="lkpi-lbl">ระยะเวลาสัญญา</div>
       <div class="lkpi-val">36 เดือน</div>
       <div class="lkpi-meta">Sep 2026 — Aug 2029 (FY2026–2029)</div>
+    </div>
+  </div>
+
+  <!-- SS / SC monthly breakdown -->
+  <div class="lease-kpi-row" style="margin-top:12px;">
+    <div class="lease-kpi" style="border-color:#1d6f42;">
+      <div class="lkpi-lbl" style="color:#1d6f42;">SS · ค่างวด/เดือน</div>
+      <div class="lkpi-val" id="lkpi-ss-monthly" style="color:#1d6f42;">–</div>
+      <div class="lkpi-meta" id="lkpi-ss-meta-lease">–</div>
+    </div>
+    <div class="lease-kpi" style="border-color:#b45309;">
+      <div class="lkpi-lbl" style="color:#b45309;">SC · ค่างวด/เดือน</div>
+      <div class="lkpi-val" id="lkpi-sc-monthly" style="color:#b45309;">–</div>
+      <div class="lkpi-meta" id="lkpi-sc-meta-lease">–</div>
+    </div>
+    <div class="lease-kpi" style="border-color:#64748b;">
+      <div class="lkpi-lbl">อัตราดอกเบี้ย</div>
+      <div class="lkpi-val" style="color:#64748b;font-size:22px;">Flat Rate 2.00%</div>
+      <div class="lkpi-meta">ต่อปี · 3 ปี = 6% รวม · ไม่มีมัดจำ</div>
     </div>
   </div>
 
@@ -642,11 +661,11 @@
 <script>
 // ---- DATA ----
 const BASE_PRICES = {
-  'Laptop - Standard 14"': 30500,
-  'Laptop - Standard 16"': 28500,
+  'Laptop - Standard 14"': 41328,
+  'Laptop - Standard 16"': 30636,
   'Desktop - Graphic':     83555,
-  'Monitor 24"':           2300,
-  'Laptop - Pro':          42500,
+  'Monitor 24"':           3132,
+  'Laptop - Pro':          44100,
   'Laptop - Engineering':  36700
 };
 
@@ -786,8 +805,11 @@ typeCostMap['Monitor 24"']  = totalMonCount * BASE_PRICES['Monitor 24"'];
 const totalUnits = ALL_PEOPLE.length;
 
 // ---- LEASING ----
-const LEASE_MONTHS = 36;
-const monthly = grand / LEASE_MONTHS;
+// อ้างอิงใบเสนอราคาจริง (Flat Rate 2.00% × 36 เดือน)
+const LEASE_MONTHS    = 36;
+const LEASE_MONTHLY_SS = 47656;   // Quotation #2026-0030 · SS (บ.เอส.แอนด์ซันส์ฯ)
+const LEASE_MONTHLY_SC = 18144;   // Quotation #2026-0031 · SC (บ.สก็อตอินดัสเตรียลฯ)
+const monthly = LEASE_MONTHLY_SS + LEASE_MONTHLY_SC;  // 65,800 รวม SS+SC
 const yearBreakdown = { 2026: 4, 2027: 12, 2028: 12, 2029: 8 };
 const yearColors = { 2026: '#1a3a5c', 2027: '#2563a8', 2028: '#0ea5e9', 2029: '#1d6f42' };
 
@@ -840,8 +862,16 @@ Object.entries(devKeys).forEach(([k,[cntId, totId]]) => {
 
 // Leasing KPIs
 document.getElementById('lkpi-monthly').textContent    = fmt(monthly);
-document.getElementById('lkpi-total').textContent      = fmt(grand);
-document.getElementById('lkpi-total-meta').textContent = `36 งวด × ${fmt(monthly)}/งวด`;
+document.getElementById('lkpi-total').textContent      = fmt(monthly * LEASE_MONTHS);
+document.getElementById('lkpi-total-meta').textContent = `36 งวด × ${fmt(monthly)}/งวด · SS+SC รวมกัน`;
+if (document.getElementById('lkpi-ss-monthly'))
+  document.getElementById('lkpi-ss-monthly').textContent = fmt(LEASE_MONTHLY_SS);
+if (document.getElementById('lkpi-sc-monthly'))
+  document.getElementById('lkpi-sc-monthly').textContent = fmt(LEASE_MONTHLY_SC);
+if (document.getElementById('lkpi-ss-meta-lease'))
+  document.getElementById('lkpi-ss-meta-lease').textContent = `36 งวด · ใบเสนอราคา #2026-0030`;
+if (document.getElementById('lkpi-sc-meta-lease'))
+  document.getElementById('lkpi-sc-meta-lease').textContent = `36 งวด · ใบเสนอราคา #2026-0031`;
 
 // Year cards
 Object.entries(yearBreakdown).forEach(([yr, mo]) => {
