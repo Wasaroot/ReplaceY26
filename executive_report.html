@@ -33,7 +33,12 @@
 
   .body { max-width: 1160px; margin: 0 auto; padding: 28px 20px; display: flex; flex-direction: column; gap: 22px; }
 
-  .kpi-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+  .kpi-row { display: grid; grid-template-columns: repeat(5,1fr); gap: 16px; }
+  .kpi-cb-row { display:flex; gap:10px; margin-top:9px; align-items:center; flex-wrap:wrap; border-top:1px solid rgba(0,0,0,0.07); padding-top:8px; }
+  .kpi-cb-row label { display:flex; align-items:center; gap:4px; font-size:11px; font-weight:700; color:#475569; cursor:pointer; user-select:none; }
+  .kpi-cb-row label:has(input:not(:checked)) { opacity:0.5; }
+  .kpi-cb-row input[type=checkbox] { width:13px; height:13px; cursor:pointer; accent-color:#1a3a5c; }
+  .kpi-cb-row .cb-hint { font-size:10px; color:#f87171; font-style:italic; margin-left:2px; }
   .kpi { background: var(--white); border-radius: var(--r); padding: 22px 26px; box-shadow: var(--sh); border-top: 5px solid; }
   .kpi.grand { border-color: var(--navy); }
   .kpi.units { border-color: var(--sky); }
@@ -139,6 +144,25 @@
   .lease-kpi.period  .lkpi-val { font-size: 17px; color: var(--sky); margin-top: 4px; }
   .lkpi-meta { font-size: 12px; color: var(--g600); margin-top: 6px; }
 
+  /* Dept filter bar */
+  .dept-filter-bar { display:flex; flex-wrap:wrap; gap:6px; padding:10px 4px 4px; background:transparent; margin-top:4px; border-top:1px solid var(--g200); }
+  .dept-filter-bar .df-label { font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.6px; width:100%; margin-bottom:2px; }
+  .dept-filter-bar label { display:flex; align-items:center; gap:4px; font-size:11px; font-weight:700; cursor:pointer; user-select:none;
+    padding:3px 9px; border-radius:20px; border:1.5px solid #e2e8f0; background:#f8fafc; transition:all 0.15s; color:#475569; }
+  .dept-filter-bar label:has(input:not(:checked)) { opacity:0.4; background:#f1f5f9; text-decoration:line-through; }
+  .dept-filter-bar label:hover { border-color:#94a3b8; background:#fff; }
+  .dept-filter-bar input[type=checkbox] { width:12px; height:12px; cursor:pointer; accent-color:#1a3a5c; }
+  .dept-filter-hint { font-size:10px; color:#f87171; font-style:italic; padding:4px 0 0; display:none; }
+  .dept-filter-hint.show { display:block; }
+
+  /* Lease filter bar */
+  .lease-filter-bar { display:flex; flex-wrap:wrap; gap:10px; align-items:center; background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:10px 16px; margin-bottom:16px; }
+  .lease-filter-bar .lf-label { font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:0.6px; margin-right:4px; }
+  .lease-filter-bar label { display:flex; align-items:center; gap:6px; font-size:13px; font-weight:600; color:#334155; cursor:pointer; user-select:none; padding:4px 10px; border-radius:6px; border:1px solid #e2e8f0; background:#fff; transition:background 0.15s; }
+  .lease-filter-bar label:hover { background:#f1f5f9; }
+  .lease-filter-bar input[type=checkbox] { width:15px; height:15px; cursor:pointer; accent-color:#1a3a5c; }
+  .lease-filter-bar .lf-hint { margin-left:auto; font-size:11px; color:#94a3b8; font-style:italic; }
+
   /* Year summary cards */
   .year-cards { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
   .yr-card { border-radius: var(--r); padding: 16px 20px; box-shadow: var(--sh); color: white; }
@@ -203,7 +227,7 @@
     .hdr { padding: 20px 28px; }
     .hdr-text h1 { font-size: 18px; }
     .body { padding: 20px 16px; gap: 18px; }
-    .kpi-row { grid-template-columns: repeat(2, 1fr); }
+    .kpi-row { grid-template-columns: repeat(3, 1fr); }
     .charts-row { grid-template-columns: 1fr; }
     .dev-row { grid-template-columns: repeat(3, 1fr); gap: 12px; }
     .lease-kpi-row { grid-template-columns: repeat(2, 1fr); }
@@ -232,7 +256,7 @@
     /* Body */
     .body { padding: 12px 10px; gap: 12px; }
 
-    /* KPI 2×2 */
+    /* KPI 2×3 */
     .kpi-row { grid-template-columns: repeat(2, 1fr); gap: 10px; }
     .kpi { padding: 14px 14px; border-top-width: 4px; }
     .kpi-lbl { font-size: 9px; letter-spacing: 0.7px; margin-bottom: 6px; }
@@ -365,19 +389,34 @@
       <div class="kpi-meta" id="kpi-grand-meta">–</div>
     </div>
     <div class="kpi units">
-      <div class="kpi-lbl">จำนวนอุปกรณ์</div>
+      <div class="kpi-lbl">จำนวน Laptop</div>
       <div class="kpi-val" id="kpi-units">–</div>
       <div class="kpi-meta" id="kpi-units-meta">–</div>
+    </div>
+    <div class="kpi" style="border-color:#0ea5e9;border-top:5px solid #0ea5e9;">
+      <div class="kpi-lbl" style="color:#0369a1;">จำนวน Monitor</div>
+      <div class="kpi-val" style="color:#0ea5e9;" id="kpi-monitor">–</div>
+      <div class="kpi-meta" id="kpi-monitor-meta">–</div>
     </div>
     <div class="kpi ss">
       <div class="kpi-lbl">SS Company</div>
       <div class="kpi-val" id="kpi-ss">–</div>
       <div class="kpi-meta" id="kpi-ss-meta">–</div>
+      <div class="kpi-cb-row">
+        <label><input type="checkbox" id="kcb-ss-dev" checked onchange="toggleKpiCat('SS','dev')"> เครื่อง</label>
+        <label><input type="checkbox" id="kcb-ss-mon" checked onchange="toggleKpiCat('SS','mon')"> จอ</label>
+        <span class="cb-hint" id="kpi-ss-hint"></span>
+      </div>
     </div>
     <div class="kpi sc">
       <div class="kpi-lbl">SC Company</div>
       <div class="kpi-val" id="kpi-sc">–</div>
       <div class="kpi-meta" id="kpi-sc-meta">–</div>
+      <div class="kpi-cb-row">
+        <label><input type="checkbox" id="kcb-sc-dev" checked onchange="toggleKpiCat('SC','dev')"> เครื่อง</label>
+        <label><input type="checkbox" id="kcb-sc-mon" checked onchange="toggleKpiCat('SC','mon')"> จอ</label>
+        <span class="cb-hint" id="kpi-sc-hint"></span>
+      </div>
     </div>
   </div>
 
@@ -390,7 +429,20 @@
           <div class="card-sub">รวมค่าอุปกรณ์ + จอ · วางเมาส์เพื่อดูรายละเอียด</div>
         </div>
       </div>
-      <div class="card-body"><canvas id="deptChart"></canvas></div>
+      <div class="card-body">
+        <canvas id="deptChart"></canvas>
+        <div class="dept-filter-bar" id="dept-filter-bar">
+          <div class="df-label">เลือกฝ่ายที่รวมในการคำนวณ:</div>
+          <label><input type="checkbox" checked onchange="toggleDept('FA',this.checked)">    🏦 FA</label>
+          <label><input type="checkbox" checked onchange="toggleDept('CD',this.checked)">    🛒 CD</label>
+          <label><input type="checkbox" checked onchange="toggleDept('HR&IT',this.checked)"> 💻 HR&IT</label>
+          <label><input type="checkbox" checked onchange="toggleDept('SCM',this.checked)">   📦 SCM</label>
+          <label><input type="checkbox" checked onchange="toggleDept('Manu',this.checked)">  🏭 Manu</label>
+          <label><input type="checkbox" checked onchange="toggleDept('MKT',this.checked)">   📣 MKT</label>
+          <label><input type="checkbox" checked onchange="toggleDept('CHMBD',this.checked)"> 🌐 CHMBD</label>
+        </div>
+        <div class="dept-filter-hint" id="dept-filter-hint">⚠️ บางฝ่ายถูกยกเว้น — ตัวเลขทั้งหมดปรับตาม</div>
+      </div>
     </div>
     <div class="card">
       <div class="card-hdr">
@@ -440,7 +492,7 @@
       </div>
       <div class="dev-count" id="dev-l14">–</div>
       <div class="dev-name">Laptop 14"</div>
-      <div class="dev-unit">฿41,328 / เครื่อง</div>
+      <div class="dev-unit">฿30,900 / เครื่อง</div>
       <div class="dev-total" id="tot-l14">–</div>
     </div>
 
@@ -457,7 +509,7 @@
       </div>
       <div class="dev-count" id="dev-l16">–</div>
       <div class="dev-name">Laptop 16"</div>
-      <div class="dev-unit">฿30,636 / เครื่อง</div>
+      <div class="dev-unit">฿30,900 / เครื่อง</div>
       <div class="dev-total" id="tot-l16">–</div>
     </div>
 
@@ -466,34 +518,18 @@
         <div class="dev-icon">🖥️</div>
         <div class="spec-tt">
           <div class="spec-tt-title">Laptop Pro — Spec</div>
-          <div class="spec-tt-row"><span class="spec-tt-lbl">Brand</span><span class="spec-tt-val">Lenovo</span></div>
-          <div class="spec-tt-row"><span class="spec-tt-lbl">CPU</span><span class="spec-tt-val">258V</span></div>
+          <div class="spec-tt-row"><span class="spec-tt-lbl">Brand</span><span class="spec-tt-val">Asus</span></div>
+          <div class="spec-tt-row"><span class="spec-tt-lbl">CPU</span><span class="spec-tt-val">225H</span></div>
           <div class="spec-tt-row"><span class="spec-tt-lbl">RAM</span><span class="spec-tt-val yes">32 GB</span></div>
           <div class="spec-tt-row"><span class="spec-tt-lbl">VGA</span><span class="spec-tt-val no">No</span></div>
         </div>
       </div>
       <div class="dev-count" id="dev-pro">–</div>
       <div class="dev-name">Laptop Pro</div>
-      <div class="dev-unit">฿44,100 / เครื่อง</div>
+      <div class="dev-unit">฿40,650 / เครื่อง</div>
       <div class="dev-total" id="tot-pro">–</div>
     </div>
 
-    <div class="dev-card">
-      <div class="dev-icon-wrap">
-        <div class="dev-icon">🖥</div>
-        <div class="spec-tt">
-          <div class="spec-tt-title">Desktop Graphic — Spec</div>
-          <div class="spec-tt-row"><span class="spec-tt-lbl">CPU</span><span class="spec-tt-val">I7-14700F</span></div>
-          <div class="spec-tt-row"><span class="spec-tt-lbl">RAM</span><span class="spec-tt-val">64 GB</span></div>
-          <div class="spec-tt-row"><span class="spec-tt-lbl">VGA</span><span class="spec-tt-val yes">Yes</span></div>
-          <div class="spec-tt-row"><span class="spec-tt-lbl">Monitor</span><span class="spec-tt-val">ใช้ของเดิม</span></div>
-        </div>
-      </div>
-      <div class="dev-count" id="dev-desk">–</div>
-      <div class="dev-name">Desktop Graphic</div>
-      <div class="dev-unit">฿83,555 / เครื่อง</div>
-      <div class="dev-total" id="tot-desk">–</div>
-    </div>
 
     <div class="dev-card">
       <div class="dev-icon-wrap">
@@ -506,7 +542,7 @@
       </div>
       <div class="dev-count" id="dev-mon">–</div>
       <div class="dev-name">Monitor 24"</div>
-      <div class="dev-unit">฿3,132 / จอ</div>
+      <div class="dev-unit">฿2,650 / จอ</div>
       <div class="dev-total" id="tot-mon">–</div>
     </div>
 
@@ -533,6 +569,16 @@
         <div class="ins-sub">Accidental Damage Insurance</div>
       </div>
     </div>
+  </div>
+
+  <!-- Leasing filter bar -->
+  <div class="lease-filter-bar">
+    <span class="lf-label">คำนวณจาก:</span>
+    <label><input type="checkbox" id="lf-l14" checked onchange="toggleLeaseType('Laptop - Standard 14&quot;',this.checked)"> 💻 Laptop 14"</label>
+    <label><input type="checkbox" id="lf-l16" checked onchange="toggleLeaseType('Laptop - Standard 16&quot;',this.checked)"> 💻 Laptop 16"</label>
+    <label><input type="checkbox" id="lf-pro" checked onchange="toggleLeaseType('Laptop - Pro',this.checked)"> 🖥️ Laptop Pro</label>
+    <label><input type="checkbox" id="lf-mon" checked onchange="toggleLeaseType('Monitor 24&quot;',this.checked)"> 📺 Monitor 24"</label>
+    <span class="lf-hint" id="lf-hint">รวมทุกรายการ</span>
   </div>
 
   <!-- Leasing KPI cards -->
@@ -568,8 +614,8 @@
     </div>
     <div class="lease-kpi" style="border-color:#64748b;">
       <div class="lkpi-lbl">อัตราดอกเบี้ย</div>
-      <div class="lkpi-val" style="color:#64748b;font-size:22px;">Flat Rate 2.00%</div>
-      <div class="lkpi-meta">ต่อปี · 3 ปี = 6% รวม · ไม่มีมัดจำ</div>
+      <div class="lkpi-val" style="color:#64748b;font-size:22px;">Flat Rate 0.37%</div>
+      <div class="lkpi-meta">ต่อปี · 3 ปี = 1.11% รวม · ไม่มีมัดจำ</div>
     </div>
   </div>
 
@@ -661,11 +707,11 @@
 <script>
 // ---- DATA ----
 const BASE_PRICES = {
-  'Laptop - Standard 14"': 41328,
-  'Laptop - Standard 16"': 30636,
+  'Laptop - Standard 14"': 31243,
+  'Laptop - Standard 16"': 31243,
   'Desktop - Graphic':     83555,
-  'Monitor 24"':           3132,
-  'Laptop - Pro':          44100,
+  'Monitor 24"':           2679,
+  'Laptop - Pro':          41101,
   'Laptop - Engineering':  36700
 };
 
@@ -726,6 +772,24 @@ const ALL_PEOPLE = [
   {"company":"SS","dept":"HR&IT","type":"Laptop - Pro","hasMonitor":true}
 ];
 
+// Cash prices (column F ของ Laptop_Compare_Vendor — Addin vendor)
+const CASH_PRICES = {
+  'Laptop - Standard 14"': 30900,
+  'Laptop - Standard 16"': 30900,
+  'Laptop - Pro':          40650,
+  'Monitor 24"':           2650,
+  'Desktop - Graphic':     83555,
+  'Laptop - Engineering':  36700
+};
+
+// ---- DEPT FILTER STATE ----
+const deptExcluded = new Set();
+function getActive() {
+  return deptExcluded.size
+    ? ALL_PEOPLE.filter(p => !deptExcluded.has(p.dept))
+    : ALL_PEOPLE;
+}
+
 // ---- HELPERS ----
 const fmt  = n => '฿' + Math.round(n).toLocaleString('th-TH');
 const fmtK = n => n >= 1000000 ? '฿' + (n/1000000).toFixed(2) + 'M' : fmt(n);
@@ -771,6 +835,65 @@ const scTotal = scP.reduce((s,p) => s + personCost(p), 0);
 const grand   = ssTotal + scTotal;
 const ssPct   = Math.round(ssTotal / grand * 100);
 const scPct   = 100 - ssPct;
+const totalLaptopCount  = ALL_PEOPLE.length;
+const totalMonitorCount = ALL_PEOPLE.filter(p => p.hasMonitor).length;
+
+// ---- KPI CHECKBOX STATE (เครื่อง/จอ แยก SS/SC) ----
+const kpiExclude = { SS: { dev: false, mon: false }, SC: { dev: false, mon: false } };
+
+function personCostKpi(p) {
+  const ex = kpiExclude[p.company] || {};
+  return (ex.dev ? 0 : (BASE_PRICES[p.type] || 0))
+       + (!ex.mon && p.hasMonitor ? BASE_PRICES['Monitor 24"'] : 0);
+}
+
+function updateKpiDisplay() {
+  const active   = getActive();
+  const activeSS = active.filter(p => p.company === 'SS');
+  const activeSC = active.filter(p => p.company === 'SC');
+  const activeSSMon = activeSS.filter(p => p.hasMonitor).length;
+  const activeSCMon = activeSC.filter(p => p.hasMonitor).length;
+
+  function costCo(people, co) {
+    const ex = kpiExclude[co];
+    return people.reduce((s,p) =>
+      s + (ex.dev ? 0 : (BASE_PRICES[p.type]||0))
+        + (!ex.mon && p.hasMonitor ? BASE_PRICES['Monitor 24"'] : 0), 0);
+  }
+  const newSs = costCo(activeSS,'SS'), newSc = costCo(activeSC,'SC');
+  const newGrand = newSs + newSc;
+  const newSsPct = newGrand > 0 ? Math.round(newSs/newGrand*100) : 0;
+  const newScPct = 100 - newSsPct;
+
+  document.getElementById('kpi-grand').textContent = fmtK(newGrand);
+  document.getElementById('kpi-ss').textContent    = fmtK(newSs);
+  document.getElementById('kpi-sc').textContent    = fmtK(newSc);
+
+  [[activeSS,activeSSMon,'SS',newSsPct],[activeSC,activeSCMon,'SC',newScPct]].forEach(([ppl,mon,co,pct]) => {
+    const ex = kpiExclude[co];
+    document.getElementById(`kpi-${co.toLowerCase()}-meta`).textContent =
+      `${ex.dev?'—':ppl.length+' เครื่อง'} / ${ex.mon?'—':mon+' จอ'} · ${pct}% ของงบรวม`;
+    const hints = [];
+    if (ex.dev) hints.push('ไม่รวมเครื่อง');
+    if (ex.mon) hints.push('ไม่รวมจอ');
+    const h = document.getElementById(`kpi-${co.toLowerCase()}-hint`);
+    if (h) h.textContent = hints.join(' · ');
+  });
+
+  document.getElementById('bar-ss').style.width     = newSsPct + '%';
+  document.getElementById('bar-sc').style.width     = newScPct + '%';
+  document.getElementById('bar-ss-pct').textContent = newSsPct + '%';
+  document.getElementById('bar-sc-pct').textContent = newScPct + '%';
+  document.getElementById('cn-ss').textContent      = fmt(newSs);
+  document.getElementById('cn-sc').textContent      = fmt(newSc);
+  document.getElementById('cn-ss-meta').textContent = `${activeSS.length} เครื่อง / ${activeSSMon} จอ`;
+  document.getElementById('cn-sc-meta').textContent = `${activeSC.length} เครื่อง / ${activeSCMon} จอ`;
+}
+
+function toggleKpiCat(company, cat) {
+  kpiExclude[company][cat] = !document.getElementById(`kcb-${company.toLowerCase()}-${cat}`).checked;
+  updateKpiDisplay();
+}
 
 // Dept DETAILED breakdown (devices + monitors + total)
 const deptBreakdown = {};
@@ -804,13 +927,150 @@ typeCountMap['Monitor 24"'] = totalMonCount;
 typeCostMap['Monitor 24"']  = totalMonCount * BASE_PRICES['Monitor 24"'];
 const totalUnits = ALL_PEOPLE.length;
 
-// ---- LEASING ----
-// อ้างอิงใบเสนอราคาจริง (Flat Rate 2.00% × 36 เดือน)
-const LEASE_MONTHS    = 36;
-const LEASE_MONTHLY_SS = 47656;   // Quotation #2026-0030 · SS (บ.เอส.แอนด์ซันส์ฯ)
-const LEASE_MONTHLY_SC = 18144;   // Quotation #2026-0031 · SC (บ.สก็อตอินดัสเตรียลฯ)
-const monthly = LEASE_MONTHLY_SS + LEASE_MONTHLY_SC;  // 65,800 รวม SS+SC
+// ---- LEASING (Dynamic — Addin Flat Rate 0.37%/yr × 36 เดือน) ----
+const LEASE_MONTHS  = 36;
 const yearBreakdown = { 2026: 4, 2027: 12, 2028: 12, 2029: 8 };
+
+// Types ที่รวมในการคำนวณ leasing (toggle ได้จาก checkbox)
+const leaseIncluded = {
+  'Laptop - Standard 14"': true,
+  'Laptop - Standard 16"': true,
+  'Laptop - Pro':          true,
+  'Monitor 24"':           true
+};
+
+function calcLeasing() {
+  let ss = 0, sc = 0;
+  getActive().forEach(p => {
+    const devMonthly = (BASE_PRICES[p.type] || 0) / LEASE_MONTHS;
+    const monMonthly = BASE_PRICES['Monitor 24"'] / LEASE_MONTHS;
+    if (leaseIncluded[p.type]) {
+      if (p.company === 'SS') ss += devMonthly;
+      else                    sc += devMonthly;
+    }
+    if (p.hasMonitor && leaseIncluded['Monitor 24"']) {
+      if (p.company === 'SS') ss += monMonthly;
+      else                    sc += monMonthly;
+    }
+  });
+  return { ss: Math.round(ss), sc: Math.round(sc), total: Math.round(ss + sc) };
+}
+
+let annualChart = null, deptChart = null, typeChart = null; // chart refs
+
+// ---- RENDER HELPERS (recompute from active people) ----
+
+function renderDevCards() {
+  const active = getActive();
+  const tcMap = {}, tCostMap = {};
+  active.forEach(p => {
+    tcMap[p.type] = (tcMap[p.type]||0) + 1;
+  });
+  tcMap['Monitor 24"'] = active.filter(p => p.hasMonitor).length;
+  Object.entries(devKeys||{}).forEach(([k,[cntId,totId]]) => {
+    const cnt = tcMap[k]||0;
+    document.getElementById(cntId).textContent = cnt;
+    document.getElementById(totId).textContent = fmt(cnt * (CASH_PRICES[k]||0));
+  });
+  // Update KPI unit counts
+  const activeSS = active.filter(p=>p.company==='SS');
+  const activeSC = active.filter(p=>p.company==='SC');
+  const monCnt   = tcMap['Monitor 24"'];
+  const ssMonCnt = activeSS.filter(p=>p.hasMonitor).length;
+  const scMonCnt = activeSC.filter(p=>p.hasMonitor).length;
+  document.getElementById('kpi-units').textContent        = active.length;
+  document.getElementById('kpi-units-meta').textContent   = `${activeSS.length} SS · ${activeSC.length} SC`;
+  document.getElementById('kpi-monitor').textContent      = monCnt;
+  document.getElementById('kpi-monitor-meta').textContent = `SS ${ssMonCnt} จอ · SC ${scMonCnt} จอ`;
+  // Header total
+  const activeGrand = active.reduce((s,p) => s + personCost(p), 0);
+  document.getElementById('hdr-total').textContent = `งบรวม ${fmtK(activeGrand)}`;
+}
+
+function renderDeptChart() {
+  const active = getActive();
+  const bd = {};
+  active.forEach(p => {
+    if (!p.dept) return;
+    if (!bd[p.dept]) bd[p.dept] = { devices:{}, monitors:0, total:0 };
+    bd[p.dept].devices[p.type] = (bd[p.dept].devices[p.type]||0)+1;
+    if (p.hasMonitor) bd[p.dept].monitors++;
+    bd[p.dept].total += personCost(p);
+  });
+  const sorted = Object.entries(bd).map(([k,v])=>[k,v.total]).sort((a,b)=>b[1]-a[1]);
+  if (deptChart) {
+    deptChart.data.labels = sorted.map(([d])=>d);
+    deptChart.data.datasets[0].data = sorted.map(([,v])=>v);
+    deptChart._activeDeptBd = bd;
+    deptChart.update();
+  }
+}
+
+function renderTypeChart() {
+  const active = getActive();
+  const tCostMap = {};
+  active.forEach(p => { tCostMap[p.type] = (tCostMap[p.type]||0) + (BASE_PRICES[p.type]||0); });
+  tCostMap['Monitor 24"'] = active.filter(p=>p.hasMonitor).length * BASE_PRICES['Monitor 24"'];
+  const activeGrand = active.reduce((s,p)=>s+personCost(p),0);
+  if (typeChart) {
+    typeChart.data.datasets[0].data = donutKeys.map(k=>tCostMap[k]||0);
+    typeChart._activeGrand = activeGrand;
+    typeChart.update();
+  }
+}
+
+function recalcAll() {
+  updateKpiDisplay();
+  updateLeasingDisplay();
+  renderDevCards();
+  renderDeptChart();
+  renderTypeChart();
+}
+
+function toggleDept(dept, checked) {
+  if (checked) deptExcluded.delete(dept);
+  else         deptExcluded.add(dept);
+  const hint = document.getElementById('dept-filter-hint');
+  if (hint) hint.classList.toggle('show', deptExcluded.size > 0);
+  recalcAll();
+}
+
+function updateLeasingDisplay() {
+  const { ss, sc, total } = calcLeasing();
+  document.getElementById('lkpi-monthly').textContent    = fmt(total);
+  document.getElementById('lkpi-total').textContent      = fmt(total * LEASE_MONTHS);
+  document.getElementById('lkpi-total-meta').textContent = `36 งวด × ${fmt(total)}/งวด · SS+SC รวมกัน`;
+  if (document.getElementById('lkpi-ss-monthly'))
+    document.getElementById('lkpi-ss-monthly').textContent = fmt(ss);
+  if (document.getElementById('lkpi-sc-monthly'))
+    document.getElementById('lkpi-sc-monthly').textContent = fmt(sc);
+  if (document.getElementById('lkpi-ss-meta-lease'))
+    document.getElementById('lkpi-ss-meta-lease').textContent = `36 งวด · Addin (SS)`;
+  if (document.getElementById('lkpi-sc-meta-lease'))
+    document.getElementById('lkpi-sc-meta-lease').textContent = `36 งวด · Addin (SC)`;
+  // Year cards
+  Object.entries(yearBreakdown).forEach(([yr, mo]) => {
+    const el = document.getElementById(`yr-${yr}`);
+    if (el) el.textContent = fmt(mo * total);
+  });
+  // Update annual bar chart ถ้ามี
+  if (annualChart) {
+    annualChart.data.datasets[0].data = Object.values(yearBreakdown).map(mo => mo * total);
+    annualChart.update();
+  }
+  // Hint text
+  const excl = Object.entries(leaseIncluded).filter(([,v])=>!v).map(([k])=>k.replace('Laptop - Standard ','Laptop ').replace('Monitor 24"','Monitor'));
+  const hint = document.getElementById('lf-hint');
+  if (hint) hint.textContent = excl.length ? `ไม่รวม: ${excl.join(', ')}` : 'รวมทุกรายการ';
+}
+
+function toggleLeaseType(type, checked) {
+  leaseIncluded[type] = checked;
+  updateLeasingDisplay();
+}
+
+// initial monthly (for annualChart label before chart exists)
+const { total: monthly } = calcLeasing();
 const yearColors = { 2026: '#1a3a5c', 2027: '#2563a8', 2028: '#0ea5e9', 2029: '#1d6f42' };
 
 // Generate 36 months Sep 2026 → Aug 2029
@@ -824,59 +1084,19 @@ for (let i = 0; i < LEASE_MONTHS; i++) {
 const today = new Date();
 const dateStr = ceDateStr(today);
 
-document.getElementById('kpi-grand').textContent     = fmtK(grand);
 document.getElementById('kpi-grand-meta').textContent = 'รวมทั้ง SS และ SC Company';
-document.getElementById('kpi-units').textContent      = totalUnits;
-document.getElementById('kpi-units-meta').textContent = `${ssP.length} SS · ${scP.length} SC`;
-document.getElementById('kpi-ss').textContent         = fmtK(ssTotal);
-document.getElementById('kpi-ss-meta').textContent    = `${ssP.length} เครื่อง / ${ssMonCount} จอ · ${ssPct}% ของงบรวม`;
-document.getElementById('kpi-sc').textContent         = fmtK(scTotal);
-document.getElementById('kpi-sc-meta').textContent    = `${scP.length} เครื่อง / ${scMonCount} จอ · ${scPct}% ของงบรวม`;
 
 document.getElementById('hdr-total').textContent = `งบรวม ${fmtK(grand)}`;
 document.getElementById('hdr-date').textContent  = dateStr;
 document.getElementById('footer-txt').textContent = `SCOTCH Group IT Budget Review FY2026 · IT Infrastructure Team · ${dateStr}`;
 
-// Comparison bar
-document.getElementById('bar-ss').style.width    = ssPct + '%';
-document.getElementById('bar-sc').style.width    = scPct + '%';
-document.getElementById('bar-ss-pct').textContent = ssPct + '%';
-document.getElementById('bar-sc-pct').textContent = scPct + '%';
-document.getElementById('cn-ss').textContent      = fmt(ssTotal);
-document.getElementById('cn-sc').textContent      = fmt(scTotal);
-document.getElementById('cn-ss-meta').textContent = `${ssP.length} เครื่อง / ${ssMonCount} จอ`;
-document.getElementById('cn-sc-meta').textContent = `${scP.length} เครื่อง / ${scMonCount} จอ`;
-
-// Devices
+// Device keys (ใช้ใน renderDevCards ด้วย)
 const devKeys = {
   'Laptop - Standard 14"': ['dev-l14','tot-l14'],
   'Laptop - Standard 16"': ['dev-l16','tot-l16'],
   'Laptop - Pro':          ['dev-pro','tot-pro'],
-  'Desktop - Graphic':     ['dev-desk','tot-desk'],
   'Monitor 24"':           ['dev-mon','tot-mon']
 };
-Object.entries(devKeys).forEach(([k,[cntId, totId]]) => {
-  document.getElementById(cntId).textContent = typeCountMap[k] || 0;
-  document.getElementById(totId).textContent = fmt((typeCountMap[k]||0) * (BASE_PRICES[k]||0));
-});
-
-// Leasing KPIs
-document.getElementById('lkpi-monthly').textContent    = fmt(monthly);
-document.getElementById('lkpi-total').textContent      = fmt(monthly * LEASE_MONTHS);
-document.getElementById('lkpi-total-meta').textContent = `36 งวด × ${fmt(monthly)}/งวด · SS+SC รวมกัน`;
-if (document.getElementById('lkpi-ss-monthly'))
-  document.getElementById('lkpi-ss-monthly').textContent = fmt(LEASE_MONTHLY_SS);
-if (document.getElementById('lkpi-sc-monthly'))
-  document.getElementById('lkpi-sc-monthly').textContent = fmt(LEASE_MONTHLY_SC);
-if (document.getElementById('lkpi-ss-meta-lease'))
-  document.getElementById('lkpi-ss-meta-lease').textContent = `36 งวด · ใบเสนอราคา #2026-0030`;
-if (document.getElementById('lkpi-sc-meta-lease'))
-  document.getElementById('lkpi-sc-meta-lease').textContent = `36 งวด · ใบเสนอราคา #2026-0031`;
-
-// Year cards
-Object.entries(yearBreakdown).forEach(([yr, mo]) => {
-  document.getElementById(`yr-${yr}`).textContent = fmt(mo * monthly);
-});
 
 // ---- SS/SC BAR CUSTOM TOOLTIP ----
 const cmpTt = document.getElementById('cmp-tt');
@@ -919,8 +1139,8 @@ document.addEventListener('scroll', () => { cmpTt.style.display = 'none'; }, tru
 // ---- CHART.JS ----
 Chart.defaults.font.family = "'Segoe UI', Arial, sans-serif";
 
-// 1. Dept horizontal bar — with device breakdown tooltip
-new Chart(document.getElementById('deptChart'), {
+// 1. Dept horizontal bar (store ref for dynamic update)
+deptChart = new Chart(document.getElementById('deptChart'), {
   type: 'bar',
   data: {
     labels: deptSorted.map(([d]) => d),
@@ -939,53 +1159,52 @@ new Chart(document.getElementById('deptChart'), {
           title: items => `${items[0].label} — รายละเอียด`,
           label: ctx => {
             const dept = ctx.label;
-            const bd = deptBreakdown[dept];
+            const bd = (deptChart._activeDeptBd || deptBreakdown)[dept];
+            if (!bd) return [`  งบรวม: ${fmt(ctx.raw)}`];
             const lines = [`  งบรวม: ${fmt(ctx.raw)}`];
-            Object.entries(bd.devices)
-              .sort((a,b) => b[1]-a[1])
-              .forEach(([type, cnt]) => {
-                const price = BASE_PRICES[type] || 0;
-                lines.push(`  ${shortType(type)}: ${cnt} เครื่อง  (${fmt(cnt * price)})`);
-              });
-            if (bd.monitors > 0) {
-              lines.push(`  Monitor 24": ${bd.monitors} จอ  (${fmt(bd.monitors * BASE_PRICES['Monitor 24"'])})`);
-            }
+            Object.entries(bd.devices).sort((a,b)=>b[1]-a[1]).forEach(([type,cnt]) => {
+              lines.push(`  ${shortType(type)}: ${cnt} เครื่อง  (${fmt(cnt*(BASE_PRICES[type]||0))})`);
+            });
+            if (bd.monitors > 0) lines.push(`  Monitor 24": ${bd.monitors} จอ  (${fmt(bd.monitors*BASE_PRICES['Monitor 24"'])})`);
             return lines;
           }
         }
       }
     },
     scales: {
-      x: { grid: { color: '#f1f5f9' }, ticks: { callback: v => '฿' + (v/1000).toFixed(0) + 'K', font: { size: 11 } }, border: { display: false } },
+      x: { grid: { color: '#f1f5f9' }, ticks: { callback: v => '฿'+(v/1000).toFixed(0)+'K', font:{size:11} }, border:{display:false} },
       y: { grid: { display: false }, ticks: { font: { size: 13, weight: '600' } }, border: { display: false } }
     }
   }
 });
 
-// 2. Device type donut
-const donutLabels = ['Laptop 14"', 'Laptop Pro', 'Monitor 24"', 'Desktop Graphic', 'Laptop 16"'];
-const donutKeys   = ['Laptop - Standard 14"', 'Laptop - Pro', 'Monitor 24"', 'Desktop - Graphic', 'Laptop - Standard 16"'];
-new Chart(document.getElementById('typeChart'), {
+// 2. Device type donut (no Desktop Graphic, store ref)
+const donutLabels = ['Laptop 14"', 'Laptop Pro', 'Monitor 24"', 'Laptop 16"'];
+const donutKeys   = ['Laptop - Standard 14"', 'Laptop - Pro', 'Monitor 24"', 'Laptop - Standard 16"'];
+typeChart = new Chart(document.getElementById('typeChart'), {
   type: 'doughnut',
   data: {
     labels: donutLabels,
     datasets: [{
       data: donutKeys.map(k => typeCostMap[k] || 0),
-      backgroundColor: ['#1a3a5c','#7c3aed','#0ea5e9','#b45309','#2563a8'],
+      backgroundColor: ['#1a3a5c','#7c3aed','#0ea5e9','#2563a8'],
       borderWidth: 3, borderColor: '#fff', hoverOffset: 6
     }]
   },
   options: {
     cutout: '60%', responsive: true, maintainAspectRatio: true,
     plugins: {
-      legend: { position: 'bottom', labels: { font: { size: 12 }, padding: 14, usePointStyle: true, pointStyleWidth: 10 } },
-      tooltip: { callbacks: { label: ctx => `  ${ctx.label}: ${fmt(ctx.raw)}  (${Math.round(ctx.raw/grand*100)}%)` } }
+      legend: { position: 'bottom', labels: { font:{size:12}, padding:14, usePointStyle:true, pointStyleWidth:10 } },
+      tooltip: { callbacks: { label: ctx => {
+        const g = typeChart._activeGrand || grand;
+        return `  ${ctx.label}: ${fmt(ctx.raw)}  (${g>0?Math.round(ctx.raw/g*100):0}%)`;
+      }}}
     }
   }
 });
 
-// 3. Annual bar chart (CE years only)
-new Chart(document.getElementById('annualChart'), {
+// 3. Annual bar chart (CE years only) — เก็บ ref ไว้ update เมื่อ leasing toggle
+annualChart = new Chart(document.getElementById('annualChart'), {
   type: 'bar',
   data: {
     labels: Object.keys(yearBreakdown),
@@ -1004,7 +1223,7 @@ new Chart(document.getElementById('annualChart'), {
           label: ctx => {
             const yr = Object.keys(yearBreakdown)[ctx.dataIndex];
             const mo = yearBreakdown[yr];
-            return `  ${fmt(ctx.raw)}  (${mo} งวด × ${fmt(monthly)}/งวด)`;
+            return `  ${fmt(ctx.raw)}  (${mo} งวด × ${fmt(ctx.raw/mo)}/งวด)`;
           }
         }
       }
@@ -1076,6 +1295,9 @@ new Chart(document.getElementById('monthlyChart'), {
     }
   }
 });
+
+// Initial full render (charts must be initialized first above)
+recalcAll();
 
 // ═══ SCROLL FADE-IN ANIMATION ═══
 const fadeObserver = new IntersectionObserver((entries) => {

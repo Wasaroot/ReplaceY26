@@ -64,6 +64,14 @@
   .company-card-header { padding: 11px 16px; color: white; font-weight: 800; font-size: 15px; display: flex; justify-content: space-between; align-items: center; }
   .company-card-header.ss { background: linear-gradient(135deg, #1d6f42, #166534); }
   .company-card-header.sc { background: linear-gradient(135deg, #b45309, #92400e); }
+  .company-cb-bar { display:flex; gap:20px; padding:7px 16px; align-items:center; }
+  .company-cb-bar.ss { background:linear-gradient(135deg,#14532d,#052e16); }
+  .company-cb-bar.sc { background:linear-gradient(135deg,#78350f,#431407); }
+  .company-cb-bar label { display:flex; align-items:center; gap:6px; font-size:12px; font-weight:700; color:#d1fae5; cursor:pointer; user-select:none; }
+  .company-cb-bar.sc label { color:#fde68a; }
+  .company-cb-bar input[type=checkbox] { width:15px; height:15px; cursor:pointer; accent-color:#4ade80; }
+  .company-cb-bar.sc input[type=checkbox] { accent-color:#fbbf24; }
+  .company-cb-bar .cb-subtotal { margin-left:auto; font-size:11px; font-weight:600; opacity:0.75; color:#fff; }
   .company-card-header .total-label { font-size: 11px; font-weight: 500; opacity: 0.85; }
   .company-card-header .total-amount { font-size: 17px; font-weight: 800; }
   .company-table { width: 100%; border-collapse: collapse; background: white; }
@@ -252,6 +260,11 @@
             <div class="total-label" id="ss-count-label">–</div>
           </div>
         </div>
+        <div class="company-cb-bar ss">
+          <label><input type="checkbox" id="cb-ss-dev" checked onchange="toggleCompanyCat('SS','dev')"> เครื่อง</label>
+          <label><input type="checkbox" id="cb-ss-mon" checked onchange="toggleCompanyCat('SS','mon')"> จอ</label>
+          <span class="cb-subtotal" id="ss-cb-hint">รวมทุกรายการ</span>
+        </div>
         <table class="company-table">
           <thead><tr><th style="width:28px;"></th><th>รายการ</th><th class="right">จำนวน</th><th class="right">ราคา/หน่วย</th><th class="right">รวม</th></tr></thead>
           <tbody id="ss-body"></tbody>
@@ -264,6 +277,11 @@
             <div class="total-amount" id="sc-total">–</div>
             <div class="total-label" id="sc-count-label">–</div>
           </div>
+        </div>
+        <div class="company-cb-bar sc">
+          <label><input type="checkbox" id="cb-sc-dev" checked onchange="toggleCompanyCat('SC','dev')"> เครื่อง</label>
+          <label><input type="checkbox" id="cb-sc-mon" checked onchange="toggleCompanyCat('SC','mon')"> จอ</label>
+          <span class="cb-subtotal" id="sc-cb-hint">รวมทุกรายการ</span>
         </div>
         <table class="company-table">
           <thead><tr><th style="width:28px;"></th><th>รายการ</th><th class="right">จำนวน</th><th class="right">ราคา/หน่วย</th><th class="right">รวม</th></tr></thead>
@@ -411,11 +429,11 @@
 // MASTER DATA & PRICES
 // =============================================
 const BASE_PRICES = {
-  'Laptop - Standard 14"': 41328,
-  'Laptop - Standard 16"': 30636,
+  'Laptop - Standard 14"': 31243,
+  'Laptop - Standard 16"': 31243,
   'Desktop - Graphic':     83555,
-  'Monitor 24"':           3132,
-  'Laptop - Pro':          44100,
+  'Monitor 24"':           2679,
+  'Laptop - Pro':          41101,
   'Laptop - Engineering':  36700
 };
 
@@ -443,16 +461,16 @@ const CALC_TYPES = [...TYPE_LIST, 'Monitor 24"'];
 let scenarioPrices = { ...BASE_PRICES };
 
 const COMPARE_14 = [
-  { no:1, brand:'Asus',   cpu:'225H', ram:'16GB', sku:'B5405CCA-LY0920X', price:41328 },
-  { no:2, brand:'Lenovo', cpu:'226V', ram:'16GB', sku:'21U20040TH',        price:0 },
-  { no:3, brand:'HP',     cpu:'226V', ram:'16GB', sku:'D85MMPT',           price:0 },
-  { no:4, brand:'Dell',   cpu:'236V', ram:'16GB', sku:'SNSPB142501',       price:0 }
+  { no:1, brand:'Addin',   cpu:'225H', ram:'16GB', sku:'B3405CCA-NZ1580X', price:31243 },
+  { no:2, brand:'Bhatara', cpu:'225H', ram:'16GB', sku:'90NZ08I1-M013Y0',  price:41328 },
+  { no:3, brand:'Ricoh',   cpu:'225H', ram:'16GB', sku:'90NX08I1-M013Y0',  price:43785 },
+  { no:4, brand:'Netcube', cpu:'226V', ram:'16GB', sku:'P5405CSA-NZ1087X', price:38760 }
 ];
 const COMPARE_16 = [
-  { no:1, brand:'Asus',   cpu:'225H', ram:'16GB', sku:'B3605CCA-MB1734X',  price:30636 },
-  { no:2, brand:'Lenovo', cpu:'226V', ram:'16GB', sku:'22AY005TTH',        price:0 },
-  { no:3, brand:'HP',     cpu:'255H', ram:'16GB', sku:'BX8N9PT',           price:0 },
-  { no:4, brand:'Dell',   cpu:'236V', ram:'16GB', sku:'SNSPB1625005',      price:0 }
+  { no:1, brand:'Addin',   cpu:'225H', ram:'16GB', sku:'B3605CCA-MB1734X', price:31243 },
+  { no:2, brand:'Bhatara', cpu:'225H', ram:'16GB', sku:'B3605CCA-MB1734X', price:33804 },
+  { no:3, brand:'Ricoh',   cpu:'255H', ram:'16GB', sku:'B3605CCA-MB1073X', price:35595 },
+  { no:4, brand:'Netcube', cpu:'13340U', ram:'16GB', sku:'B3605CVA-MB0167X', price:29580 }
 ];
 
 let selected14 = 1, selected16 = 1; // index (1-based)
@@ -469,15 +487,15 @@ const TYPE_CHIPS = {
 const LAPTOP_SPECS = {
   'Laptop - Standard 14"': {
     cpu: '225H', ram: '16GB', ssd: '512GB', os: 'Win11Pro', warranty: '3Yrs',
-    monitor: '14"', vga: 'No', sku: 'Asus.B5405CCA-LY0920X', price: '41,328'
+    monitor: '14"', vga: 'No', sku: 'Asus.B3405CCA-NZ1580X', price: '31,243'
   },
   'Laptop - Standard 16"': {
     cpu: '225H', ram: '16GB', ssd: '512GB', os: 'Win11Pro', warranty: '3Yrs',
-    monitor: '16"', vga: 'No', sku: 'Asus.B3605CCA-MB1734X', price: '30,636'
+    monitor: '16"', vga: 'No', sku: 'Asus.B3605CCA-MB1734X', price: '31,243'
   },
   'Laptop - Pro': {
-    cpu: '258V', ram: '32GB', ssd: '512GB', os: 'Win11Pro', warranty: '3Yrs',
-    monitor: '14"', vga: 'No', sku: 'Lenovo.21U20042TH', price: '44,100'
+    cpu: '225H', ram: '32GB', ssd: '512GB', os: 'Win11Pro', warranty: '3Yrs',
+    monitor: '14"', vga: 'No', sku: 'Asus.B3405CCA-NZ1580X', price: '41,101'
   },
   'Laptop - Engineering': {
     cpu: '258V', ram: '16GB', ssd: '512GB', os: 'Win11Pro', warranty: '3Yrs',
@@ -513,7 +531,7 @@ const ALL_PEOPLE = [
   {"key":"SS_26_Papatchaya","no":"26","company":"SS","dept":"CD","division":"TT","type":"Laptop - Standard 14\"","name":"Papatchaya Chotichiynapang(Aey)","monitor":"ไม่มีQuota","hasMonitor":false},
   {"key":"SS_27_Jittima","no":"27","company":"SS","dept":"CHMBD","division":"TMKT","type":"Laptop - Standard 14\"","name":"Jittima Phantham(Ice)","monitor":"จัดซื้อMonitorใหม่","hasMonitor":true},
   {"key":"SS_28_Komson","no":"28","company":"SS","dept":"CD","division":"TT","type":"Laptop - Standard 14\"","name":"Komson Prakornkaew(Kom)","monitor":"ไม่มีQuota","hasMonitor":false},
-  {"key":"SS_29_Pongchai","no":"29","company":"SS","dept":"CD","division":"MT","type":"Laptop - Pro","name":"Pongchai Pongpaichate(Pong)","monitor":"ไม่รับจอ","hasMonitor":false},
+  {"key":"SS_29_Pongchai","no":"29","company":"SS","dept":"CD","division":"MT","type":"Laptop - Pro","name":"Commercial Director-International","monitor":"ไม่รับจอ","hasMonitor":false},
   {"key":"SS_30_Thanchanok","no":"30","company":"SS","dept":"MKT","division":"MKT","type":"Laptop - Standard 14\"","name":"Thanchanok Kittinunthakul(Fang)","monitor":"ไม่รับจอ","hasMonitor":false},
   {"key":"SS_31_Kochaporn","no":"31","company":"SS","dept":"MKT","division":"MKT","type":"Laptop - Standard 14\"","name":"Kochaporn Khrutthatsa(Cartoon)","monitor":"จัดซื้อMonitorใหม่","hasMonitor":true},
   {"key":"SS_32_Chanakhan","no":"32","company":"SS","dept":"FA","division":"FA","type":"Laptop - Standard 14\"","name":"Chanakhan Plaitho(Bow)","monitor":"จัดซื้อMonitorใหม่","hasMonitor":true},
@@ -555,6 +573,14 @@ let typeOverrides = {};        // personKey → newType (upgrade)
 let monitorStatus = {};        // personKey → monitor status ('จัดซื้อใหม่' or 'ไม่มีQuota')
 let calcExcludedTypes = new Set(); // item types excluded from summary totals
 let baseTotalFull = 0;
+
+// Per-company device/monitor exclusion (สำหรับ checkbox เครื่อง/จอ แยกบริษัท)
+const companyCatExclude = { SS: { dev: false, mon: false }, SC: { dev: false, mon: false } };
+function toggleCompanyCat(company, cat) {
+  const cbId = `cb-${company.toLowerCase()}-${cat}`;
+  companyCatExclude[company][cat] = !document.getElementById(cbId).checked;
+  renderSummary();
+}
 
 // =============================================
 // HELPERS
@@ -722,11 +748,14 @@ function renderSummary() {
     const monTotal = monCount * BASE_PRICES['Monitor 24"'];
     const monExcluded = calcExcludedTypes.has('Monitor 24"');
 
+    const coExcDev = companyCatExclude[company].dev;
+    const coExcMon = companyCatExclude[company].mon;
+
     let html = '', grandTotal = 0, totalItems = 0;
     const sortedTypes = TYPE_LIST.filter(t => typeMap[t]);
     sortedTypes.forEach(type => {
       const data = typeMap[type];
-      const excluded = calcExcludedTypes.has(type);
+      const excluded = calcExcludedTypes.has(type) || coExcDev;
       if (!excluded) { grandTotal += data.total; totalItems += data.qty; }
       const upgraded = (type === 'Laptop - Pro' || type === 'Laptop - Engineering');
       const upgradeTag = upgraded ? ' <span style="font-size:10px;color:#7c3aed;font-weight:700;">⬆UPGRADE</span>' : '';
@@ -734,7 +763,7 @@ function renderSummary() {
       const strikeStyle = excluded ? 'text-decoration:line-through;color:#94a3b8;' : '';
       const typeIdx = CALC_TYPES.indexOf(type);
       html += `<tr style="${rowStyle}">
-        <td style="text-align:center;"><input type="checkbox" class="row-cb" ${excluded?'':'checked'} onchange="toggleCalcType(${typeIdx})"></td>
+        <td style="text-align:center;"><input type="checkbox" class="row-cb" ${calcExcludedTypes.has(type)?'':'checked'} onchange="toggleCalcType(${typeIdx})"></td>
         <td style="${strikeStyle}">${TYPE_CHIPS[type]||type}${upgradeTag}</td>
         <td class="right" style="${strikeStyle}">${data.qty}</td>
         <td class="right" style="${strikeStyle}">${fmt(data.unitPrice)}</td>
@@ -742,9 +771,10 @@ function renderSummary() {
       </tr>`;
     });
     if (monCount > 0) {
-      if (!monExcluded) grandTotal += monTotal;
-      const rowStyle = monExcluded ? 'opacity:0.4;' : '';
-      const strikeStyle = monExcluded ? 'text-decoration:line-through;color:#94a3b8;' : '';
+      const monRowExcluded = monExcluded || coExcMon;
+      if (!monRowExcluded) grandTotal += monTotal;
+      const rowStyle = monRowExcluded ? 'opacity:0.4;' : '';
+      const strikeStyle = monRowExcluded ? 'text-decoration:line-through;color:#94a3b8;' : '';
       const monIdx = CALC_TYPES.indexOf('Monitor 24"');
       html += `<tr style="${rowStyle}">
         <td style="text-align:center;"><input type="checkbox" class="row-cb" ${monExcluded?'':'checked'} onchange="toggleCalcType(${monIdx})"></td>
@@ -754,13 +784,20 @@ function renderSummary() {
         <td class="right td-total" style="${strikeStyle}">${fmt(monTotal)}</td>
       </tr>`;
     }
-    const monLabel = (!monExcluded && monCount > 0) ? ` +${monCount} Monitor` : '';
+    const monLabel = (!monExcluded && !coExcMon && monCount > 0) ? ` +${monCount} Monitor` : '';
     html += `<tr class="subtotal-row"><td></td><td>รวม ${company}</td><td class="right">${totalItems} เครื่อง${monLabel}</td><td></td><td class="right">${fmt(grandTotal)}</td></tr>`;
     document.getElementById(`${company.toLowerCase()}-body`).innerHTML = html || '<tr><td colspan="5" class="no-data">ไม่มีรายการ</td></tr>';
     document.getElementById(`${company.toLowerCase()}-total`).textContent = fmt(grandTotal);
-    document.getElementById(`${company.toLowerCase()}-count-label`).textContent = `${totalItems} เครื่อง${(!monExcluded&&monCount>0)?` + ${monCount} Monitor`:''}`;
+    document.getElementById(`${company.toLowerCase()}-count-label`).textContent =
+      `${coExcDev ? '— เครื่อง' : totalItems+' เครื่อง'}${(!monExcluded&&!coExcMon&&monCount>0)?` + ${monCount} Monitor`:(!coExcMon&&monCount>0?'':' — จอ')}`;
+    // hint bar
+    const hints = [];
+    if (coExcDev) hints.push('ไม่รวมเครื่อง');
+    if (coExcMon) hints.push('ไม่รวมจอ');
+    const hintEl = document.getElementById(`${company.toLowerCase()}-cb-hint`);
+    if (hintEl) hintEl.textContent = hints.length ? hints.join(' · ') : 'รวมทุกรายการ';
     window[`_total_${company}`] = grandTotal;
-    window[`_items_${company}`] = { devices: totalItems, monitors: monExcluded ? 0 : monCount };
+    window[`_items_${company}`] = { devices: coExcDev ? 0 : totalItems, monitors: (monExcluded||coExcMon) ? 0 : monCount };
   });
 
   const gt = (window._total_SS||0) + (window._total_SC||0);
