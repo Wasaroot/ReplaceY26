@@ -695,14 +695,6 @@
       </div>
       <span class="cta-arrow">→</span>
     </a>
-    <a href="budget_game.html" class="cta-btn cta-game">
-      <span class="cta-icon">🎮</span>
-      <div>
-        <div class="cta-label">Mini IT Budget Game</div>
-        <div class="cta-sub">ลองบริหารงบประมาณ IT ด้วยตัวเอง</div>
-      </div>
-      <span class="cta-arrow">→</span>
-    </a>
   </div>
 
 <div class="footer" id="footer-txt">–</div>
@@ -908,7 +900,7 @@ function updateKpiDisplay() {
 
 function toggleKpiCat(company, cat) {
   kpiExclude[company][cat] = !document.getElementById(`kcb-${company.toLowerCase()}-${cat}`).checked;
-  updateKpiDisplay();
+  recalcAll();
 }
 
 // Dept DETAILED breakdown (devices + monitors + total)
@@ -1018,9 +1010,12 @@ function renderDeptChart() {
   active.forEach(p => {
     if (!p.dept) return;
     if (!bd[p.dept]) bd[p.dept] = { devices:{}, monitors:0, total:0 };
-    bd[p.dept].devices[p.type] = (bd[p.dept].devices[p.type]||0)+1;
-    if (p.hasMonitor) bd[p.dept].monitors++;
-    bd[p.dept].total += personCost(p);
+    const ex = kpiExclude[p.company] || {};
+    let price = CASH_PRICES[p.type] || 0;
+    if (p.company === 'SC' && p.type === 'Laptop - Standard 14"') price = 31900;
+    if (!ex.dev) { bd[p.dept].devices[p.type] = (bd[p.dept].devices[p.type]||0)+1; }
+    if (p.hasMonitor && !ex.mon) bd[p.dept].monitors++;
+    bd[p.dept].total += (ex.dev ? 0 : price) + (!ex.mon && p.hasMonitor ? CASH_PRICES['Monitor 24"'] : 0);
   });
   const sorted = Object.entries(bd).map(([k,v])=>[k,v.total]).sort((a,b)=>b[1]-a[1]);
   if (deptChart) {
@@ -1034,13 +1029,29 @@ function renderDeptChart() {
 function renderTypeChart() {
   const active = getActive();
   const tCostMap = {};
+  // รวม device cost ตาม kpiExclude ของแต่ละบริษัท
   active.forEach(p => {
+    if (kpiExclude[p.company]?.dev) return; // ถ้า dev excluded ข้ามไป
     let price = CASH_PRICES[p.type] || 0;
     if (p.company === 'SC' && p.type === 'Laptop - Standard 14"') price = 31900;
     tCostMap[p.type] = (tCostMap[p.type]||0) + price;
   });
-  tCostMap['Monitor 24"'] = active.filter(p=>p.hasMonitor).length * CASH_PRICES['Monitor 24"'];
-  const activeGrand = active.reduce((s,p)=>s+personCost(p),0);
+  // Monitor — แสดงเฉพาะบริษัทที่ไม่ได้ exclude จอ
+  let monTotal = 0;
+  active.forEach(p => {
+    if (!p.hasMonitor) return;
+    if (!kpiExclude[p.company]?.mon) monTotal += CASH_PRICES['Monitor 24"'];
+  });
+  tCostMap['Monitor 24"'] = monTotal;
+
+  // grand = ผลรวมที่แสดงจริง (ตรงกับ kpi-grand)
+  const activeGrand = active.reduce((s,p) => {
+    const ex = kpiExclude[p.company] || {};
+    let price = CASH_PRICES[p.type] || 0;
+    if (p.company === 'SC' && p.type === 'Laptop - Standard 14"') price = 31900;
+    return s + (ex.dev ? 0 : price) + (!ex.mon && p.hasMonitor ? CASH_PRICES['Monitor 24"'] : 0);
+  }, 0);
+
   if (typeChart) {
     typeChart.data.datasets[0].data = donutKeys.map(k=>tCostMap[k]||0);
     typeChart._activeGrand = activeGrand;
