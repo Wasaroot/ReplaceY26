@@ -580,6 +580,7 @@ function toggleCompanyCat(company, cat) {
   const cbId = `cb-${company.toLowerCase()}-${cat}`;
   companyCatExclude[company][cat] = !document.getElementById(cbId).checked;
   renderSummary();
+  renderDetail(); // อัพเดต detail table ให้ sync กับ checkbox จอ
 }
 
 // =============================================
@@ -899,9 +900,13 @@ function renderDetail() {
     const active = isActive(p);
     const upgraded = isUpgraded(p);
     const curType = effectiveType(p);
-    const devPx = active ? devicePrice(p) : 0;
-    const monPx = (active && p.hasMonitor) ? BASE_PRICES['Monitor 24"'] : 0;
-    const total = devPx + monPx;
+    const devPx    = active ? devicePrice(p) : 0;
+    const rawMonPx = active ? monitorPrice(p) : 0; // ตาม dropdown: จัดซื้อใหม่/ไม่มีQuota/มีจอแล้ว
+    const monExcl  = companyCatExclude[p.company]?.mon; // company-level checkbox
+    // detail table แสดงราคาจริงตาม dropdown เสมอ
+    // company checkbox กระทบแค่ รวม/คน ใน total
+    const monPx    = (!monExcl) ? rawMonPx : 0;
+    const total    = devPx + monPx;
     let monTxt;
     if (p.hasMonitor) {
       // Show dropdown only for people eligible for monitor purchase (2 options only)
@@ -940,7 +945,7 @@ function renderDetail() {
       </td>
       <td>${monTxt}</td>
       <td class="td-right">${active?fmt(devPx):'—'}</td>
-      <td class="td-right">${(active&&p.hasMonitor)?fmt(BASE_PRICES['Monitor 24"']):'—'}</td>
+      <td class="td-right">${rawMonPx > 0 ? fmt(rawMonPx) : '—'}</td>
       <td class="td-right td-total">${active?fmt(total):'ยกเว้น'}</td>
     </tr>`;
   });
