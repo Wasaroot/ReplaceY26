@@ -262,7 +262,7 @@
         </div>
         <div class="company-cb-bar ss">
           <label><input type="checkbox" id="cb-ss-dev" checked onchange="toggleCompanyCat('SS','dev')"> เครื่อง</label>
-          <label><input type="checkbox" id="cb-ss-mon" checked onchange="toggleCompanyCat('SS','mon')"> จอ</label>
+          <label><input type="checkbox" id="cb-ss-mon" onchange="toggleCompanyCat('SS','mon')"> จอ</label>
           <span class="cb-subtotal" id="ss-cb-hint">รวมทุกรายการ</span>
         </div>
         <table class="company-table">
@@ -280,7 +280,7 @@
         </div>
         <div class="company-cb-bar sc">
           <label><input type="checkbox" id="cb-sc-dev" checked onchange="toggleCompanyCat('SC','dev')"> เครื่อง</label>
-          <label><input type="checkbox" id="cb-sc-mon" checked onchange="toggleCompanyCat('SC','mon')"> จอ</label>
+          <label><input type="checkbox" id="cb-sc-mon" onchange="toggleCompanyCat('SC','mon')"> จอ</label>
           <span class="cb-subtotal" id="sc-cb-hint">รวมทุกรายการ</span>
         </div>
         <table class="company-table">
@@ -462,13 +462,13 @@ let scenarioPrices = { ...BASE_PRICES };
 
 const COMPARE_14 = [
   { no:1, brand:'Addin',   cpu:'225H', ram:'16GB', sku:'B3405CCA-NZ1580X', price:31243 },
-  { no:2, brand:'Bhatara', cpu:'225H', ram:'16GB', sku:'90NZ08I1-M013Y0',  price:41328 },
+  { no:2, brand:'Bhatara', cpu:'225H', ram:'16GB', sku:'90NZ08I1-M013Y0',  price:41340 },
   { no:3, brand:'Ricoh',   cpu:'225H', ram:'16GB', sku:'90NX08I1-M013Y0',  price:43785 },
   { no:4, brand:'Netcube', cpu:'226V', ram:'16GB', sku:'P5405CSA-NZ1087X', price:38760 }
 ];
 const COMPARE_16 = [
   { no:1, brand:'Addin',   cpu:'225H', ram:'16GB', sku:'B3605CCA-MB1734X', price:31243 },
-  { no:2, brand:'Bhatara', cpu:'225H', ram:'16GB', sku:'B3605CCA-MB1734X', price:33804 },
+  { no:2, brand:'Bhatara', cpu:'225H', ram:'16GB', sku:'B3605CCA-MB1734X', price:33814 },
   { no:3, brand:'Ricoh',   cpu:'255H', ram:'16GB', sku:'B3605CCA-MB1073X', price:35595 },
   { no:4, brand:'Netcube', cpu:'13340U', ram:'16GB', sku:'B3605CVA-MB0167X', price:29580 }
 ];
@@ -575,7 +575,7 @@ let calcExcludedTypes = new Set(); // item types excluded from summary totals
 let baseTotalFull = 0;
 
 // Per-company device/monitor exclusion (สำหรับ checkbox เครื่อง/จอ แยกบริษัท)
-const companyCatExclude = { SS: { dev: false, mon: false }, SC: { dev: false, mon: false } };
+const companyCatExclude = { SS: { dev: false, mon: true }, SC: { dev: false, mon: true } }; // default ไม่รวมจอ
 function toggleCompanyCat(company, cat) {
   const cbId = `cb-${company.toLowerCase()}-${cat}`;
   companyCatExclude[company][cat] = !document.getElementById(cbId).checked;

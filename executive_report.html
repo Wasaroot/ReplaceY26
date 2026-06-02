@@ -404,7 +404,7 @@
       <div class="kpi-meta" id="kpi-ss-meta">–</div>
       <div class="kpi-cb-row">
         <label><input type="checkbox" id="kcb-ss-dev" checked onchange="toggleKpiCat('SS','dev')"> เครื่อง</label>
-        <label><input type="checkbox" id="kcb-ss-mon" checked onchange="toggleKpiCat('SS','mon')"> จอ</label>
+        <label><input type="checkbox" id="kcb-ss-mon" onchange="toggleKpiCat('SS','mon')"> จอ</label>
         <span class="cb-hint" id="kpi-ss-hint"></span>
       </div>
     </div>
@@ -414,7 +414,7 @@
       <div class="kpi-meta" id="kpi-sc-meta">–</div>
       <div class="kpi-cb-row">
         <label><input type="checkbox" id="kcb-sc-dev" checked onchange="toggleKpiCat('SC','dev')"> เครื่อง</label>
-        <label><input type="checkbox" id="kcb-sc-mon" checked onchange="toggleKpiCat('SC','mon')"> จอ</label>
+        <label><input type="checkbox" id="kcb-sc-mon" onchange="toggleKpiCat('SC','mon')"> จอ</label>
         <span class="cb-hint" id="kpi-sc-hint"></span>
       </div>
     </div>
@@ -577,7 +577,7 @@
     <label><input type="checkbox" id="lf-l14" checked onchange="toggleLeaseType('Laptop - Standard 14&quot;',this.checked)"> 💻 Laptop 14"</label>
     <label><input type="checkbox" id="lf-l16" checked onchange="toggleLeaseType('Laptop - Standard 16&quot;',this.checked)"> 💻 Laptop 16"</label>
     <label><input type="checkbox" id="lf-pro" checked onchange="toggleLeaseType('Laptop - Pro',this.checked)"> 🖥️ Laptop Pro</label>
-    <label><input type="checkbox" id="lf-mon" checked onchange="toggleLeaseType('Monitor 24&quot;',this.checked)"> 📺 Monitor 24"</label>
+    <label><input type="checkbox" id="lf-mon" onchange="toggleLeaseType('Monitor 24&quot;',this.checked)"> 📺 Monitor 24"</label>
     <span class="lf-hint" id="lf-hint">รวมทุกรายการ</span>
   </div>
 
@@ -794,9 +794,14 @@ function getActive() {
 const fmt  = n => '฿' + Math.round(n).toLocaleString('th-TH');
 const fmtK = n => n >= 1000000 ? '฿' + (n/1000000).toFixed(2) + 'M' : fmt(n);
 
-function personCost(p) {
-  return (BASE_PRICES[p.type] || 0) + (p.hasMonitor ? BASE_PRICES['Monitor 24"'] : 0);
+// cashCost — ใช้ราคาเงินสด (column F) ตรงกับ Excel M/N/O summary
+// SC Laptop14" ใช้ 31,900 ตาม Excel (ค่าอ้างอิง SS ใช้ 30,900)
+function cashCost(p) {
+  let price = CASH_PRICES[p.type] || 0;
+  if (p.company === 'SC' && p.type === 'Laptop - Standard 14"') price = 31900;
+  return price + (p.hasMonitor ? CASH_PRICES['Monitor 24"'] : 0);
 }
+function personCost(p) { return cashCost(p); }
 
 function shortType(t) {
   const m = {
@@ -839,7 +844,7 @@ const totalLaptopCount  = ALL_PEOPLE.length;
 const totalMonitorCount = ALL_PEOPLE.filter(p => p.hasMonitor).length;
 
 // ---- KPI CHECKBOX STATE (เครื่อง/จอ แยก SS/SC) ----
-const kpiExclude = { SS: { dev: false, mon: false }, SC: { dev: false, mon: false } };
+const kpiExclude = { SS: { dev: false, mon: true }, SC: { dev: false, mon: true } }; // default ไม่รวมจอ
 
 function personCostKpi(p) {
   const ex = kpiExclude[p.company] || {};
@@ -856,9 +861,12 @@ function updateKpiDisplay() {
 
   function costCo(people, co) {
     const ex = kpiExclude[co];
-    return people.reduce((s,p) =>
-      s + (ex.dev ? 0 : (BASE_PRICES[p.type]||0))
-        + (!ex.mon && p.hasMonitor ? BASE_PRICES['Monitor 24"'] : 0), 0);
+    return people.reduce((s,p) => {
+      let price = CASH_PRICES[p.type] || 0;
+      if (p.company === 'SC' && p.type === 'Laptop - Standard 14"') price = 31900;
+      return s + (ex.dev ? 0 : price)
+               + (!ex.mon && p.hasMonitor ? CASH_PRICES['Monitor 24"'] : 0);
+    }, 0);
   }
   const newSs = costCo(activeSS,'SS'), newSc = costCo(activeSC,'SC');
   const newGrand = newSs + newSc;
@@ -936,24 +944,35 @@ const leaseIncluded = {
   'Laptop - Standard 14"': true,
   'Laptop - Standard 16"': true,
   'Laptop - Pro':          true,
-  'Monitor 24"':           true
+  'Monitor 24"':           false  // default ไม่รวมจอ
+};
+
+// อัตราค่างวด/เดือน/เครื่อง จาก column H ของ Addin (Laptop_Compare_Vendor)
+// ใช้ค่านี้แทน BASE_PRICES/36 เพื่อให้ตรงกับ Excel ทุกบาท
+const LEASE_RATES = {
+  'Laptop - Standard 14"': 867.8608333333333,
+  'Laptop - Standard 16"': 867.8608333333333,
+  'Laptop - Pro':          1141.7004166666666,
+  'Monitor 24"':           74.42819444444443
 };
 
 function calcLeasing() {
   let ss = 0, sc = 0;
   getActive().forEach(p => {
-    const devMonthly = (BASE_PRICES[p.type] || 0) / LEASE_MONTHS;
-    const monMonthly = BASE_PRICES['Monitor 24"'] / LEASE_MONTHS;
+    const rate    = LEASE_RATES[p.type] || (BASE_PRICES[p.type] / LEASE_MONTHS);
+    const monRate = LEASE_RATES['Monitor 24"'];
     if (leaseIncluded[p.type]) {
-      if (p.company === 'SS') ss += devMonthly;
-      else                    sc += devMonthly;
+      if (p.company === 'SS') ss += rate;
+      else                    sc += rate;
     }
     if (p.hasMonitor && leaseIncluded['Monitor 24"']) {
-      if (p.company === 'SS') ss += monMonthly;
-      else                    sc += monMonthly;
+      if (p.company === 'SS') ss += monRate;
+      else                    sc += monRate;
     }
   });
-  return { ss: Math.round(ss), sc: Math.round(sc), total: Math.round(ss + sc) };
+  // คำนวณ 36M จากยอดรวมก่อน round เพื่อความแม่นยำ
+  const total36M = Math.round((ss + sc) * LEASE_MONTHS);
+  return { ss: Math.round(ss), sc: Math.round(sc), total: Math.round(ss + sc), total36M };
 }
 
 let annualChart = null, deptChart = null, typeChart = null; // chart refs
@@ -1009,8 +1028,12 @@ function renderDeptChart() {
 function renderTypeChart() {
   const active = getActive();
   const tCostMap = {};
-  active.forEach(p => { tCostMap[p.type] = (tCostMap[p.type]||0) + (BASE_PRICES[p.type]||0); });
-  tCostMap['Monitor 24"'] = active.filter(p=>p.hasMonitor).length * BASE_PRICES['Monitor 24"'];
+  active.forEach(p => {
+    let price = CASH_PRICES[p.type] || 0;
+    if (p.company === 'SC' && p.type === 'Laptop - Standard 14"') price = 31900;
+    tCostMap[p.type] = (tCostMap[p.type]||0) + price;
+  });
+  tCostMap['Monitor 24"'] = active.filter(p=>p.hasMonitor).length * CASH_PRICES['Monitor 24"'];
   const activeGrand = active.reduce((s,p)=>s+personCost(p),0);
   if (typeChart) {
     typeChart.data.datasets[0].data = donutKeys.map(k=>tCostMap[k]||0);
@@ -1036,9 +1059,9 @@ function toggleDept(dept, checked) {
 }
 
 function updateLeasingDisplay() {
-  const { ss, sc, total } = calcLeasing();
+  const { ss, sc, total, total36M } = calcLeasing();
   document.getElementById('lkpi-monthly').textContent    = fmt(total);
-  document.getElementById('lkpi-total').textContent      = fmt(total * LEASE_MONTHS);
+  document.getElementById('lkpi-total').textContent      = fmt(total36M);
   document.getElementById('lkpi-total-meta').textContent = `36 งวด × ${fmt(total)}/งวด · SS+SC รวมกัน`;
   if (document.getElementById('lkpi-ss-monthly'))
     document.getElementById('lkpi-ss-monthly').textContent = fmt(ss);
