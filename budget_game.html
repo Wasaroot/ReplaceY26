@@ -197,6 +197,82 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#0f1923;color:#e2e8f0;mi
 .shake{animation:shake 0.3s ease}
 .back-intro-btn{width:100%;margin-top:10px;padding:9px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:9px;font-size:12px;font-weight:700;color:#64748b;cursor:pointer;transition:all 0.15s;text-align:center}
 .back-intro-btn:hover{background:rgba(255,255,255,0.1);color:#94a3b8}
+
+/* ===== MOBILE RESPONSIVE ===== */
+@media (max-width: 640px) {
+  /* Intro card */
+  .intro-card{padding:28px 22px;max-width:100%;border-radius:16px}
+  .intro-title{font-size:22px}
+  .intro-logo{font-size:36px}
+  .stats-row{gap:8px}
+  .stat-item .sv{font-size:18px}
+
+  /* Game header — compact */
+  .game-header{padding:8px 12px;gap:10px}
+  .game-title-sm{display:none}
+  .budget-bar-wrap{min-width:120px}
+  .hdr-stat .val{font-size:13px}
+  .hdr-stat .lbl{font-size:9px}
+
+  /* Game body — stack vertically */
+  .game-body{flex-direction:column;overflow:hidden}
+
+  /* Left panel — horizontal scrollable dept bar at top */
+  .panel-left{
+    width:100%; height:auto; max-height:150px;
+    border-right:none; border-bottom:1px solid rgba(255,255,255,0.08);
+    padding:8px 10px; overflow-y:auto; flex-shrink:0;
+  }
+  .panel-title{margin-bottom:6px;font-size:10px}
+  .dept-all-btn{padding:5px 8px;font-size:11px;margin-bottom:6px}
+  /* Dept items — 2-column grid on mobile */
+  .panel-left > .dept-item,
+  .panel-left > .dept-all-btn { display:flex; }
+  #dept-tracker{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+  .dept-item{padding:5px 7px;margin-bottom:0;border-radius:7px}
+  .dept-icon{width:22px;height:22px;font-size:10px;border-radius:5px}
+  .dept-name{font-size:11px}
+  .dept-prog{font-size:9px}
+  .dept-mini-bar{margin-top:2px}
+  /* Company section — horizontal */
+  .company-section{margin-top:8px;padding-top:8px}
+  .company-row{gap:6px}
+  .company-btn{padding:5px 4px;font-size:10px}
+
+  /* Stage — full width */
+  .stage{padding:10px 12px;justify-content:flex-start;overflow-y:auto;flex:1}
+  .progress-dots{gap:3px;margin-bottom:10px;max-width:100%}
+  .pdot{width:8px;height:8px}
+
+  /* Person card — full width, smaller */
+  .card-stage{max-width:100%}
+  .person-card{padding:16px;border-radius:14px}
+  .card-name{font-size:16px;margin-bottom:14px}
+  .cost-amount{font-size:24px}
+  .cost-display{margin-bottom:12px}
+  .card-equipment{padding:10px 12px;margin-bottom:10px}
+  .eq-label{font-size:11px}
+  .eq-val{font-size:12px}
+  .card-dept{margin-bottom:14px}
+  .dept-avatar{width:34px;height:34px;border-radius:9px;font-size:12px}
+  .dept-meta .dept-n{font-size:13px}
+  .upgrade-note{padding:6px 10px;font-size:10px;margin-bottom:10px}
+
+  /* Action buttons */
+  .action-buttons{max-width:100%;gap:8px}
+  .action-btn{padding:12px 6px;font-size:12px;border-radius:10px}
+
+  /* Right panel — hide on mobile (replaced by action result feedback) */
+  .panel-right{display:none}
+
+  /* Results */
+  .results-card{padding:24px 18px}
+  .results-title{font-size:20px}
+  .results-grid{grid-template-columns:1fr 1fr;gap:8px}
+  .result-item .rv{font-size:18px}
+  .results-actions{flex-direction:column;gap:8px}
+  .score-popup{right:8px;top:70px;font-size:12px;padding:8px 12px}
+}
 .approve-all-btn{width:100%;margin-top:6px;padding:9px;background:rgba(22,163,74,0.12);border:1px solid rgba(22,163,74,0.3);border-radius:9px;font-size:12px;font-weight:700;color:#4ade80;cursor:pointer;transition:all 0.15s;text-align:center}
 .approve-all-btn:hover{background:rgba(22,163,74,0.22);border-color:#16a34a}
 .report-link-btn{width:100%;margin-top:6px;padding:9px;background:rgba(37,99,168,0.12);border:1px solid rgba(37,99,168,0.3);border-radius:9px;font-size:12px;font-weight:700;color:#93c5fd;cursor:pointer;transition:all 0.15s;text-align:center;text-decoration:none;display:block}

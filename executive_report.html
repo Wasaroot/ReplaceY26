@@ -33,7 +33,8 @@
 
   .body { max-width: 1160px; margin: 0 auto; padding: 28px 20px; display: flex; flex-direction: column; gap: 22px; }
 
-  .kpi-row { display: grid; grid-template-columns: repeat(5,1fr); gap: 16px; }
+  .kpi-row { display: flex; flex-wrap: wrap; gap: 16px; }
+  .kpi-row .kpi { flex: 1; min-width: 160px; }
   .kpi-cb-row { display:flex; gap:10px; margin-top:9px; align-items:center; flex-wrap:wrap; border-top:1px solid rgba(0,0,0,0.07); padding-top:8px; }
   .kpi-cb-row label { display:flex; align-items:center; gap:4px; font-size:11px; font-weight:700; color:#475569; cursor:pointer; user-select:none; }
   .kpi-cb-row label:has(input:not(:checked)) { opacity:0.5; }
@@ -227,7 +228,8 @@
     .hdr { padding: 20px 28px; }
     .hdr-text h1 { font-size: 18px; }
     .body { padding: 20px 16px; gap: 18px; }
-    .kpi-row { grid-template-columns: repeat(3, 1fr); }
+    .kpi-row { flex-wrap: wrap; }
+    .kpi-row .kpi { min-width: 140px; }
     .charts-row { grid-template-columns: 1fr; }
     .dev-row { grid-template-columns: repeat(3, 1fr); gap: 12px; }
     .lease-kpi-row { grid-template-columns: repeat(2, 1fr); }
@@ -256,8 +258,9 @@
     /* Body */
     .body { padding: 12px 10px; gap: 12px; }
 
-    /* KPI 2×3 */
-    .kpi-row { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    /* KPI mobile */
+    .kpi-row { gap: 10px; }
+    .kpi-row .kpi { min-width: 130px; }
     .kpi { padding: 14px 14px; border-top-width: 4px; }
     .kpi-lbl { font-size: 9px; letter-spacing: 0.7px; margin-bottom: 6px; }
     .kpi-val { font-size: 21px; }
@@ -876,6 +879,7 @@ function updateKpiDisplay() {
   document.getElementById('kpi-grand').textContent = fmtK(newGrand);
   document.getElementById('kpi-ss').textContent    = fmtK(newSs);
   document.getElementById('kpi-sc').textContent    = fmtK(newSc);
+  document.getElementById('hdr-total').textContent = `งบรวม ${fmtK(newGrand)}`;
 
   [[activeSS,activeSSMon,'SS',newSsPct],[activeSC,activeSCMon,'SC',newScPct]].forEach(([ppl,mon,co,pct]) => {
     const ex = kpiExclude[co];
@@ -896,6 +900,10 @@ function updateKpiDisplay() {
   document.getElementById('cn-sc').textContent      = fmt(newSc);
   document.getElementById('cn-ss-meta').textContent = `${activeSS.length} เครื่อง / ${activeSSMon} จอ`;
   document.getElementById('cn-sc-meta').textContent = `${activeSC.length} เครื่อง / ${activeSCMon} จอ`;
+
+  // ซ่อน Monitor KPI เมื่อทั้ง SS และ SC ไม่รวมจอ
+  const monKpi = document.getElementById('kpi-monitor')?.closest('.kpi');
+  if (monKpi) monKpi.style.display = (kpiExclude.SS.mon && kpiExclude.SC.mon) ? 'none' : '';
 }
 
 function toggleKpiCat(company, cat) {
@@ -1001,9 +1009,7 @@ function renderDevCards() {
   document.getElementById('kpi-units-meta').textContent   = `${activeSS.length} SS · ${activeSC.length} SC`;
   document.getElementById('kpi-monitor').textContent      = monCnt;
   document.getElementById('kpi-monitor-meta').textContent = `SS ${ssMonCnt} จอ · SC ${scMonCnt} จอ`;
-  // Header total
-  const activeGrand = active.reduce((s,p) => s + personCost(p), 0);
-  document.getElementById('hdr-total').textContent = `งบรวม ${fmtK(activeGrand)}`;
+  // hdr-total จะถูก update ใน updateKpiDisplay() เพื่อให้แปรผันตาม checkbox จอ
 }
 
 function renderDeptChart() {
