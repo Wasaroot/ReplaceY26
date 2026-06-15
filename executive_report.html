@@ -617,8 +617,8 @@
     </div>
     <div class="lease-kpi" style="border-color:#64748b;">
       <div class="lkpi-lbl">อัตราดอกเบี้ย</div>
-      <div class="lkpi-val" style="color:#64748b;font-size:22px;">Flat Rate 0.37%</div>
-      <div class="lkpi-meta">ต่อปี · 3 ปี = 1.11% รวม · ไม่มีมัดจำ</div>
+      <div class="lkpi-val" style="color:#16a34a;font-size:22px;">0% ดอกเบี้ย</div>
+      <div class="lkpi-meta">ไม่มีดอกเบี้ย · ไม่มีมัดจำ · 36 งวด</div>
     </div>
   </div>
 
@@ -702,11 +702,11 @@
 <script>
 // ---- DATA ----
 const BASE_PRICES = {
-  'Laptop - Standard 14"': 31243,
-  'Laptop - Standard 16"': 31243,
+  'Laptop - Standard 14"': 30900,
+  'Laptop - Standard 16"': 30900,
   'Desktop - Graphic':     83555,
-  'Monitor 24"':           2679,
-  'Laptop - Pro':          41101,
+  'Monitor 24"':           2650,
+  'Laptop - Pro':          40650,
   'Laptop - Engineering':  36700
 };
 
@@ -935,7 +935,7 @@ typeCountMap['Monitor 24"'] = totalMonCount;
 typeCostMap['Monitor 24"']  = totalMonCount * BASE_PRICES['Monitor 24"'];
 const totalUnits = ALL_PEOPLE.length;
 
-// ---- LEASING (Dynamic — Addin Flat Rate 0.37%/yr × 36 เดือน) ----
+// ---- LEASING (Dynamic — Addin 0% ดอกเบี้ย · ราคา ÷ 36 เดือน) ----
 const LEASE_MONTHS  = 36;
 const yearBreakdown = { 2026: 4, 2027: 12, 2028: 12, 2029: 8 };
 
@@ -947,13 +947,13 @@ const leaseIncluded = {
   'Monitor 24"':           false  // default ไม่รวมจอ
 };
 
-// อัตราค่างวด/เดือน/เครื่อง จาก column H ของ Addin (Laptop_Compare_Vendor)
-// ใช้ค่านี้แทน BASE_PRICES/36 เพื่อให้ตรงกับ Excel ทุกบาท
+// อัตราค่างวด/เดือน/เครื่อง — Addin 0% ดอกเบี้ย (ราคา ÷ 36)
+// 14"/16": 30,900÷36  Pro: 40,650÷36  Monitor: 2,650÷36
 const LEASE_RATES = {
-  'Laptop - Standard 14"': 867.8608333333333,
-  'Laptop - Standard 16"': 867.8608333333333,
-  'Laptop - Pro':          1141.7004166666666,
-  'Monitor 24"':           74.42819444444443
+  'Laptop - Standard 14"': 858.3333333333334,
+  'Laptop - Standard 16"': 858.3333333333334,
+  'Laptop - Pro':          1129.1666666666667,
+  'Monitor 24"':           73.61111111111111
 };
 
 function calcLeasing() {
