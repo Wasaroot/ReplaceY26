@@ -33,7 +33,7 @@
   h1 { font-size: 19px; margin: 0; }
   .sub { font-size: 12.5px; color: var(--text-muted); margin: 6px 0 26px; }
 
-  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 22px; }
+  .row2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(228px, 1fr)); gap: 14px; margin-bottom: 22px; }
   .svc-card {
     background: var(--surface-1); border: 1px solid var(--border); border-radius: 14px;
     padding: 18px 20px;
@@ -44,11 +44,16 @@
   .svc-tag { font-size: 11px; color: var(--text-muted); }
 
   .meter-track { height: 8px; border-radius: 5px; background: var(--gridline); overflow: hidden; margin: 8px 0 6px; }
-  .meter-fill { height: 100%; border-radius: 5px; }
-  .meter-fill.onprem { background: var(--onprem); }
-  .meter-fill.sp { background: var(--sp-blue); }
+  .meter-fill { height: 100%; border-radius: 5px; transition: width .2s ease; }
+  .meter-fill.lvl-good     { background: #0ca30c; }
+  .meter-fill.lvl-warning  { background: #ec835a; }
+  .meter-fill.lvl-critical { background: #d03b3b; }
   .meter-label { font-size: 12px; color: var(--text-secondary); }
   .meter-label b { color: var(--text-primary); }
+  .meter-pct { font-weight: 700; }
+  .meter-pct.txt-good     { color: #0a7d0a; }
+  .meter-pct.txt-warning  { color: #b1502a; }
+  .meter-pct.txt-critical { color: #c0332f; }
 
   .calc-card {
     background: linear-gradient(180deg, #ffffff 0%, var(--surface-1) 100%);
@@ -58,7 +63,7 @@
   .calc-head-title { font-size: 15px; font-weight: 700; }
   .calc-head-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 18px; }
 
-  .tabs { display: flex; gap: 6px; margin-bottom: 20px; border-bottom: 1px solid var(--gridline); }
+  .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; border-bottom: 1px solid var(--gridline); }
   .tab-btn {
     font-family: inherit; font-size: 13px; font-weight: 600; color: var(--text-muted);
     background: none; border: none; padding: 9px 4px; cursor: pointer;
@@ -68,7 +73,34 @@
   .tab-btn[data-tab="onprem"].active { border-bottom-color: var(--onprem); }
   .tab-btn[data-tab="sp"].active { border-bottom-color: var(--sp-blue); }
   .tab-btn[data-tab="gdrive"].active { border-bottom-color: var(--gdrive); }
-  .tab-btn + .tab-btn { margin-left: 14px; }
+  .tab-btn[data-tab="g1"].active { border-bottom-color: #1a73e8; }
+  .hero-figure.g1 { color: #1a73e8; }
+  #g1StorageSlider::-webkit-slider-thumb, #g1StorageSlider::-moz-range-thumb { background: #1a73e8; }
+  table.tier-compare tr.best-g1 td { font-weight: 700; color: #1558b0; background: rgba(26,115,232,0.08); }
+  table.tier-compare tr.best-g1 td:first-child::after { content: " ✓ คุ้มสุด"; font-size: 11px; }
+  .warn-note {
+    font-size: 11.5px; color: #8a4b1f; background: rgba(236,131,90,0.12);
+    border: 1px solid rgba(236,131,90,0.35); border-radius: 8px; padding: 10px 12px; margin-bottom: 16px;
+  }
+  .tab-btn + .tab-btn { margin-left: 11px; }
+  .tab-btn[data-tab="cmp"].active { border-bottom-color: #12294a; }
+
+  .cmp-wrap { overflow-x: auto; margin-bottom: 12px; }
+  table.pros { width: 100%; border-collapse: collapse; font-size: 11.5px; min-width: 640px; }
+  table.pros th, table.pros td { padding: 7px 8px; text-align: left; border-bottom: 1px solid var(--gridline); vertical-align: top; line-height: 1.45; }
+  table.pros thead th { font-size: 11px; color: var(--text-muted); border-bottom: 2px solid var(--baseline); white-space: nowrap; }
+  table.pros th:first-child, table.pros td:first-child { font-weight: 600; color: var(--text-secondary); width: 128px; }
+  table.pros tbody tr:hover { background: #f4f6fa; }
+  .sdot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 5px; vertical-align: 1px; }
+  .sdot.g { background: #0ca30c; }
+  .sdot.w { background: #ec835a; }
+  .sdot.c { background: #d03b3b; }
+  .cmp-legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 11px; color: var(--text-secondary); margin-bottom: 14px; }
+  .cmp-verdict {
+    font-size: 12px; color: var(--text-secondary); background: var(--surface-1);
+    border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; line-height: 1.65;
+  }
+  .cmp-verdict b { color: var(--text-primary); }
 
   .panel { display: none; }
   .panel.active { display: block; }
@@ -190,8 +222,8 @@
           <div class="svc-tag">ใช้งานมาแล้ว 2 ปี · ของบริษัทเอง</div>
         </div>
       </div>
-      <div class="meter-track"><div class="meter-fill onprem" style="width:55.6%;"></div></div>
-      <div class="meter-label">ใช้ <b>5.55 TB</b> จาก <b>9.99 TB</b></div>
+      <div class="meter-track"><div class="meter-fill" data-used="5.55" data-total="9.99"></div></div>
+      <div class="meter-label">ใช้ <b>5.55 TB</b> จาก <b>9.99 TB</b> · <span class="meter-pct"></span></div>
     </div>
 
     <div class="svc-card">
@@ -202,11 +234,27 @@
         </svg>
         <div>
           <div class="svc-name">SharePoint Online</div>
-          <div class="svc-tag">รวมอยู่ใน M365 · Pool รวมทั้งองค์กร (1TB+10GB/user) · ยังไม่เคยซื้อเพิ่ม</div>
+          <div class="svc-tag">รวมอยู่ใน M365 · Pool รวมทั้งองค์กร (1TB+10GB/user)</div>
         </div>
       </div>
-      <div class="meter-track"><div class="meter-fill sp" style="width:73.6%;"></div></div>
-      <div class="meter-label">ใช้ <b>2.71 TB</b> จาก <b>3.68 TB</b></div>
+      <div class="meter-track"><div class="meter-fill" data-used="2.71" data-total="3.68"></div></div>
+      <div class="meter-label">ใช้ <b>2.71 TB</b> จาก <b>3.68 TB</b> · <span class="meter-pct"></span></div>
+    </div>
+
+    <div class="svc-card">
+      <div class="svc-head">
+        <svg class="svc-icon" viewBox="0 0 40 40" fill="none">
+          <path d="M20 7 L5 33 L20 24.3 Z" fill="#0f9d58"/>
+          <path d="M20 7 L35 33 L20 24.3 Z" fill="#fbbc04"/>
+          <path d="M5 33 L35 33 L20 24.3 Z" fill="#1a73e8"/>
+        </svg>
+        <div>
+          <div class="svc-name">GoogleOne</div>
+          <div class="svc-tag">Personal Account (Ai PRO)</div>
+        </div>
+      </div>
+      <div class="meter-track"><div class="meter-fill" data-used="0.006" data-total="5"></div></div>
+      <div class="meter-label">ใช้ <b>6 GB</b> จาก <b>5 TB</b> · <span class="meter-pct"></span></div>
     </div>
   </div>
 
@@ -219,7 +267,9 @@
     <div class="tabs">
       <button class="tab-btn active" data-tab="sp">SharePoint</button>
       <button class="tab-btn" data-tab="gdrive">Google Workspace</button>
+      <button class="tab-btn" data-tab="g1">Google One</button>
       <button class="tab-btn" data-tab="onprem">On-Premise</button>
+      <button class="tab-btn" data-tab="cmp">Comparison</button>
     </div>
 
     <!-- SharePoint panel -->
@@ -296,6 +346,44 @@
       </div>
     </div>
 
+    <!-- Google One panel -->
+    <div class="panel" id="panel-g1">
+      <div class="panel-sub">ราคาจาก <b>one.google.com/about/plans</b> (ราคาไทย, แบบเรียกเก็บรายปี) — 1 บัญชีแชร์พื้นที่ได้สูงสุด 6 คน (เจ้าของ + 5)</div>
+      <div class="warn-note"><b>ข้อควรระวัง:</b> Google One เป็นบัญชีส่วนบุคคล ไม่มี Shared Drive, ไม่มี Admin console, ไม่มี SSO/audit log และหลายบัญชี<b>ไม่รวมเป็น pool เดียวกัน</b> — พื้นที่จะแยกกันคนละก้อน บริษัทไม่ได้เป็นเจ้าของข้อมูล ตัวเลขด้านล่างใช้เปรียบเทียบราคาเท่านั้น</div>
+
+      <div class="gmode-toggle">
+        <button class="mode-btn active" data-g1mode="auto">แนะนำแพ็กเกจอัตโนมัติ</button>
+        <button class="mode-btn" data-g1mode="mix">ผสมแพ็กเกจเอง (Mix)</button>
+      </div>
+
+      <!-- Auto mode -->
+      <div id="g1mode-auto">
+        <div class="control-row">
+          <input type="range" id="g1StorageSlider" min="0" max="10000" step="100" value="0">
+          <input type="number" id="g1StorageInput" class="num-input" min="0" max="500000" step="100" value="0">
+          <span class="num-unit">GB ที่ต้องการ</span>
+        </div>
+        <table class="tier-compare">
+          <thead><tr><th>แพ็กเกจ</th><th>ต้องใช้</th><th>ค่าใช้จ่าย/ปี</th></tr></thead>
+          <tbody id="g1CmpBody"></tbody>
+        </table>
+      </div>
+
+      <!-- Mix mode -->
+      <div id="g1mode-mix" style="display:none;">
+        <div id="g1MixRows"></div>
+        <div class="mix-total-note" id="g1MixTotal">รวมทั้งหมด: 0 บัญชี</div>
+      </div>
+
+      <div class="hero-figure g1" id="g1Hero">0 บาท</div>
+      <div class="hero-caption" id="g1Caption">ต่อปี — แพ็กเกจที่คุ้มที่สุดสำหรับขนาดที่เลือก</div>
+      <div class="breakdown">
+        <div class="bd-item"><div class="bd-label">ต่อปี</div><div class="bd-value" id="g1Year">0 บาท</div></div>
+        <div class="bd-item"><div class="bd-label">จำนวนบัญชี</div><div class="bd-value" id="g1Accounts">0 บัญชี</div></div>
+        <div class="bd-item"><div class="bd-label">พื้นที่รวม (แยกก้อน)</div><div class="bd-value" id="g1Storage">0 GB</div></div>
+      </div>
+    </div>
+
     <!-- On-Premise panel -->
     <div class="panel" id="panel-onprem">
       <div class="panel-sub">ประมาณการจากต้นทุนเฉลี่ยของระบบปัจจุบัน (TCO ต่อ GB ≈ 7.98 บาท/ปี — คำนวณจาก hardware/ไฟ/license ที่กรอกไว้) ในทางปฏิบัติการขยาย on-prem มักซื้อเป็นก้อนใหญ่ ตัวเลขนี้เป็นค่าประมาณเพื่อเทียบเชิงเส้นเท่านั้น</div>
@@ -312,10 +400,87 @@
       </div>
     </div>
 
-    <div class="grand-total">
+    <!-- Pros & Cons panel -->
+    <div class="panel" id="panel-cmp">
+      <div class="warn-note">ประเมินตามสิทธิ์ที่บริษัทถืออยู่จริง คือ <b>Microsoft 365 Business Standard</b> ซึ่งยังไม่รวม DLP และ Conditional Access (ต้องอัปเกรดเป็น Business Premium ขึ้นไป) — ช่องสีส้มของ SharePoint คือส่วนที่ต้องลงทุนเพิ่มถ้าต้องการ</div>
+      <div class="cmp-wrap">
+        <table class="pros">
+          <thead>
+            <tr><th>ประเด็น</th><th>SharePoint</th><th>Google Workspace</th><th>Google One</th><th>On-Premise</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1. SSO กับ M365</td>
+              <td><span class="sdot g"></span>Native ไม่ต้องตั้งค่า</td>
+              <td><span class="sdot w"></span>SAML ดูแล 2 ระบบ</td>
+              <td><span class="sdot c"></span>ไม่มี — บัญชีส่วนตัว</td>
+              <td><span class="sdot w"></span>AD sync · นอกออฟฟิศต้อง VPN</td>
+            </tr>
+            <tr>
+              <td>2. MFA ตอน login / จำกัดตาม IP–อุปกรณ์</td>
+              <td><span class="sdot w"></span>MFA บังคับได้ · จำกัดตาม IP/อุปกรณ์ ต้องอัปเกรด</td>
+              <td><span class="sdot g"></span>บังคับได้ทั้งคู่จาก Admin</td>
+              <td><span class="sdot c"></span>บังคับไม่ได้เลย</td>
+              <td><span class="sdot w"></span>อยู่ในวงบริษัท/VPN · MFA ต้องติดตั้งเพิ่ม</td>
+            </tr>
+            <tr>
+              <td>3. ถอนสิทธิ์เมื่อลาออก</td>
+              <td><span class="sdot g"></span>ปิดบัญชี ข้อมูลยังอยู่</td>
+              <td><span class="sdot g"></span>ปิด + โอนไฟล์ได้</td>
+              <td><span class="sdot c"></span>ข้อมูลติดไปกับพนักงาน</td>
+              <td><span class="sdot g"></span>ปิด AD ได้ทันที</td>
+            </tr>
+            <tr>
+              <td>4. Audit log ย้อนหลัง</td>
+              <td><span class="sdot g"></span>มี audit log พื้นฐาน</td>
+              <td><span class="sdot g"></span>ครบ (Admin log)</td>
+              <td><span class="sdot c"></span>ไม่มีให้ดึง</td>
+              <td><span class="sdot g"></span>มี Windows Event Log</td>
+            </tr>
+            <tr>
+              <td>5. DLP กันข้อมูลรั่ว</td>
+              <td><span class="sdot w"></span>ไม่มีใน Business Standard · ต้องซื้อเพิ่ม</td>
+              <td><span class="sdot w"></span>ต้อง Business Plus ขึ้นไป</td>
+              <td><span class="sdot c"></span>ไม่มี</td>
+              <td><span class="sdot g"></span>มี DLP ใช้งานอยู่แล้ว</td>
+            </tr>
+            <tr>
+              <td>6. กรรมสิทธิ์ข้อมูล</td>
+              <td><span class="sdot g"></span>บริษัทเป็นเจ้าของ</td>
+              <td><span class="sdot g"></span>บริษัทเป็นเจ้าของ</td>
+              <td><span class="sdot c"></span>พนักงานเป็นเจ้าของ · เสี่ยง PDPA</td>
+              <td><span class="sdot g"></span>บริษัท 100%</td>
+            </tr>
+            <tr>
+              <td>7. กู้คืนไฟล์ / Ransomware</td>
+              <td><span class="sdot g"></span>ย้อนเวอร์ชัน + ถังขยะ 93 วัน</td>
+              <td><span class="sdot g"></span>ย้อนเวอร์ชัน + Vault</td>
+              <td><span class="sdot w"></span>ถังขยะ 30 วัน ไม่มี retention</td>
+              <td><span class="sdot g"></span>Backup ย้อนหลัง 3 เดือน</td>
+            </tr>
+            <tr>
+              <td>8. ต้นทุนต่อ GB</td>
+              <td><span class="sdot w"></span>83 บ./GB/ปี — แพงสุด</td>
+              <td><span class="sdot w"></span>ผูกกับ license ต่อคน</td>
+              <td><span class="sdot g"></span>~1.5 บ./GB/ปี — ถูกสุด</td>
+              <td><span class="sdot g"></span>~8 บ./GB/ปี แต่ต้อง CapEx</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="cmp-legend">
+        <span><span class="sdot g"></span>ดี / พร้อมใช้</span>
+        <span><span class="sdot w"></span>ทำได้ แต่มีเงื่อนไข</span>
+        <span><span class="sdot c"></span>ไม่มี / เป็นความเสี่ยง</span>
+      </div>
+      <div class="cmp-verdict">
+        <b>สรุป:</b> <b>SharePoint</b> ชนะเรื่อง identity เพราะผูกกับ Entra ID ที่ใช้อยู่แล้ว แต่บน Business Standard ยังขาด DLP และ Conditional Access ถ้าต้องการต้องอัปเกรด license · <b>Google Workspace</b> ความสามารถใกล้เคียงกัน แต่ต้องดูแล identity คู่ขนานและซ้ำซ้อนกับ M365 ที่จ่ายอยู่ · <b>Google One ถูกที่สุดแต่ตกทุกข้อด้านการกำกับดูแล</b> เหมาะกับงานส่วนตัวเท่านั้น ไม่ควรใช้เก็บข้อมูลบริษัท · <b>On-Premise</b> ปัจจุบันแข็งแรงกว่าที่คิด — มี DLP และ backup ย้อนหลัง 3 เดือนอยู่แล้ว ควบคุมข้อมูลได้เต็มที่ จุดอ่อนคือการเข้าถึงจากนอกออฟฟิศต้องพึ่ง VPN และภาระดูแลตกอยู่กับทีม IT ทั้งหมด
+      </div>
+    </div>
+
+    <div class="grand-total" id="grandTotalCard">
       <div>
         <div class="gt-label">รวมค่าใช้จ่ายเพิ่มทั้งหมด (ทุกบริการรวมกัน)</div>
-        <div class="gt-sub">SharePoint (รวม VAT) + Google Workspace + On-Premise (ประมาณการ)</div>
       </div>
       <div style="text-align:right;">
         <div class="gt-value" id="grandTotal">0 บาท</div>
@@ -325,7 +490,7 @@
   </div>
 
   <footer>
-    ราคา SharePoint อ้างอิงใบเสนอราคา Fujifilm Business Innovation Thailand No. MBP_2706202603 (28/6/2026) · ราคา On-Premise ประมาณจาก TCO Calculator ที่กรอกไว้ · ราคา Google Workspace อ้างอิงราคา list price ปัจจุบัน แปลงเป็นบาทที่ 33 THB/USD — ราคาจริงควรตรวจสอบกับผู้ให้บริการก่อนอนุมัติงบ
+    ราคา SharePoint อ้างอิงใบเสนอราคา Fujifilm Business Innovation Thailand No. MBP_2706202603 (28/6/2026) · ราคา On-Premise ประมาณจาก TCO Calculator ที่กรอกไว้ · ราคา Google Workspace อ้างอิงราคา list price ปัจจุบัน แปลงเป็นบาทที่ 33 THB/USD · ราคา Google One อ้างอิง one.google.com/about/plans (ราคาไทย แบบเรียกเก็บรายปี; AI Ultra คิดจากราคารายเดือน 9,400 บาท × 12) — ราคาจริงควรตรวจสอบกับผู้ให้บริการก่อนอนุมัติงบ
   </footer>
 
 </div>
@@ -454,9 +619,9 @@
   }
   Object.values(mixInputs).forEach(inp => inp.addEventListener('input', recalcMix));
 
-  document.querySelectorAll('.mode-btn').forEach(btn => {
+  document.querySelectorAll('#panel-gdrive .mode-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('#panel-gdrive .mode-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       gMode = btn.dataset.gmode;
       document.getElementById('gmode-auto').style.display = gMode === 'auto' ? 'block' : 'none';
@@ -469,12 +634,120 @@
     });
   });
 
+  // ---------- Google One (ราคาไทย, เรียกเก็บรายปี — one.google.com/about/plans) ----------
+  const G1_TIERS = [
+    { key: '100gb', label: '100 GB',           storage: 100,   year: 700 },
+    { key: '200gb', label: '200 GB',           storage: 200,   year: 990 },
+    { key: '2tb',   label: '2 TB',             storage: 2048,  year: 3500 },
+    { key: 'aipro', label: 'AI Pro · 5 TB',    storage: 5120,  year: 7500 },
+    { key: 'ultra', label: 'AI Ultra · 30 TB', storage: 30720, year: 112800 }
+  ];
+  const g1StorageSlider = document.getElementById('g1StorageSlider');
+  const g1StorageInput = document.getElementById('g1StorageInput');
+  let g1Mode = 'auto';
+  let g1YearTotal = 0, g1StorageTotal = 0, g1AccountsTotal = 0;
+
+  // build the two dynamic UIs from the tier list
+  document.getElementById('g1CmpBody').innerHTML = G1_TIERS.map(t =>
+    `<tr id="g1Row-${t.key}"><td>${t.label}</td><td id="g1Acc-${t.key}">0 บัญชี</td><td id="g1Cost-${t.key}">0 บาท</td></tr>`
+  ).join('');
+  document.getElementById('g1MixRows').innerHTML = G1_TIERS.map(t =>
+    `<div class="mix-row">
+       <div class="mix-label">${t.label}<span class="mix-meta">${t.year.toLocaleString('th-TH')} บาท/บัญชี/ปี</span></div>
+       <input type="number" id="g1Mix-${t.key}" class="num-input" min="0" max="300" step="1" value="0">
+       <span class="num-unit">บัญชี</span>
+       <div class="mix-sub" id="g1MixSub-${t.key}">0 บาท/ปี · 0 GB</div>
+     </div>`
+  ).join('');
+
+  function applyG1Result() {
+    document.getElementById('g1Hero').textContent = fmt(g1YearTotal);
+    document.getElementById('g1Year').textContent = fmt(g1YearTotal);
+    document.getElementById('g1Accounts').textContent = g1AccountsTotal.toLocaleString('th-TH') + ' บัญชี';
+    document.getElementById('g1Storage').textContent = fmtGB(g1StorageTotal);
+    updateGrandTotal();
+  }
+
+  function recalcG1Auto(desiredGB) {
+    let best = null;
+    G1_TIERS.forEach(t => {
+      const acc = desiredGB > 0 ? Math.ceil(desiredGB / t.storage) : 0;
+      const cost = acc * t.year;
+      document.getElementById('g1Acc-' + t.key).textContent = acc.toLocaleString('th-TH') + ' บัญชี';
+      document.getElementById('g1Cost-' + t.key).textContent = fmt(cost);
+      document.getElementById('g1Row-' + t.key).classList.remove('best-g1');
+      if (desiredGB > 0 && (best === null || cost < best.cost)) {
+        best = { key: t.key, acc, cost, storage: acc * t.storage };
+      }
+    });
+    if (best) {
+      document.getElementById('g1Row-' + best.key).classList.add('best-g1');
+      g1YearTotal = best.cost; g1AccountsTotal = best.acc; g1StorageTotal = best.storage;
+    } else {
+      g1YearTotal = 0; g1AccountsTotal = 0; g1StorageTotal = 0;
+    }
+    applyG1Result();
+  }
+  function setG1Storage(gb) {
+    gb = Math.max(0, Math.min(500000, gb));
+    g1StorageSlider.value = Math.min(10000, gb);
+    g1StorageInput.value = gb;
+    recalcG1Auto(gb);
+  }
+  g1StorageSlider.addEventListener('input', () => setG1Storage(Number(g1StorageSlider.value)));
+  g1StorageInput.addEventListener('input', () => setG1Storage(Number(g1StorageInput.value) || 0));
+
+  function recalcG1Mix() {
+    let cost = 0, storage = 0, acc = 0;
+    G1_TIERS.forEach(t => {
+      const el = document.getElementById('g1Mix-' + t.key);
+      const n = Math.max(0, Math.min(300, Number(el.value) || 0));
+      el.value = n;
+      document.getElementById('g1MixSub-' + t.key).textContent = fmt(n * t.year) + ' · ' + fmtGB(n * t.storage);
+      cost += n * t.year; storage += n * t.storage; acc += n;
+    });
+    document.getElementById('g1MixTotal').textContent = 'รวมทั้งหมด: ' + acc.toLocaleString('th-TH') + ' บัญชี';
+    g1YearTotal = cost; g1AccountsTotal = acc; g1StorageTotal = storage;
+    applyG1Result();
+  }
+  G1_TIERS.forEach(t => document.getElementById('g1Mix-' + t.key).addEventListener('input', recalcG1Mix));
+
+  document.querySelectorAll('#panel-g1 .mode-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#panel-g1 .mode-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      g1Mode = btn.dataset.g1mode;
+      document.getElementById('g1mode-auto').style.display = g1Mode === 'auto' ? 'block' : 'none';
+      document.getElementById('g1mode-mix').style.display = g1Mode === 'mix' ? 'block' : 'none';
+      document.getElementById('g1Caption').textContent = g1Mode === 'auto'
+        ? 'ต่อปี — แพ็กเกจที่คุ้มที่สุดสำหรับขนาดที่เลือก'
+        : 'ต่อปี — รวมทุกแพ็กเกจที่ผสมไว้';
+      if (g1Mode === 'auto') recalcG1Auto(Number(g1StorageInput.value));
+      else recalcG1Mix();
+    });
+  });
+
   // ---------- Grand total ----------
   function updateGrandTotal() {
     const spYear = Number(gbInput.value || 0) * SP_RATE * (1 + VAT);
     const onpremYear = Number(onpremInput.value || 0) * ONPREM_RATE;
-    document.getElementById('grandTotal').textContent = fmt(spYear + onpremYear + gYearTotal);
+    document.getElementById('grandTotal').textContent = fmt(spYear + onpremYear + gYearTotal + g1YearTotal);
   }
+
+  // ---------- Usage meters (0-79% เขียว · 80-90% ส้ม · 91-100% แดง) ----------
+  document.querySelectorAll('.meter-fill').forEach(el => {
+    const used = Number(el.dataset.used) || 0;
+    const total = Number(el.dataset.total) || 0;
+    const pct = total > 0 ? (used / total) * 100 : 0;
+    const lvl = pct >= 91 ? 'critical' : pct >= 80 ? 'warning' : 'good';
+    el.style.width = Math.max(1.5, Math.min(100, pct)) + '%';
+    el.classList.add('lvl-' + lvl);
+    const lbl = el.closest('.svc-card').querySelector('.meter-pct');
+    if (lbl) {
+      lbl.textContent = (pct > 0 && pct < 1 ? pct.toFixed(1) : Math.round(pct)) + '%';
+      lbl.classList.add('txt-' + lvl);
+    }
+  });
 
   // ---------- Tabs ----------
   document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -483,6 +756,9 @@
       document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
       btn.classList.add('active');
       document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+      // ยอดรวมไม่เกี่ยวกับแท็บเปรียบเทียบ จึงซ่อนไว้
+      document.getElementById('grandTotalCard').style.display =
+        btn.dataset.tab === 'cmp' ? 'none' : 'flex';
     });
   });
 
@@ -490,6 +766,7 @@
   recalcSP(Number(gbSlider.value));
   recalcOnprem(Number(onpremSlider.value));
   recalcAuto(Number(gStorageSlider.value));
+  recalcG1Auto(Number(g1StorageSlider.value));
 </script>
 </body>
 </html>
