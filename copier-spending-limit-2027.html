@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>วงเงินค่าถ่ายเอกสาร 2027 – Ricoh</title>
+<style>
+:root{
+  --bg:#F2F4F7; --paper:#FFFFFF; --ink:#1A2230; --muted:#667085; --line:#E1E5EB;
+  --accent:#1F4E9E; --accent-soft:#E8EEF8; --bw:#46648C; --color:#B23E6A; --sticker:#C58A12; --est:#9A7800;
+  --bad:#B42318; --ok:#1E7A4C;
+  color-scheme: light;
+  font-family:"Leelawadee UI","Noto Sans Thai","Sarabun","Tahoma",system-ui,sans-serif;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#11161E; --paper:#19202B; --ink:#E6EAF0; --muted:#98A2B3; --line:#2A3341;
+    --accent:#86A9E8; --accent-soft:#1F2C42; --bw:#8FAAD0; --color:#E07FA3; --sticker:#E0AD48; --est:#E0C25A;
+    --bad:#F2867A; --ok:#5CC28E; color-scheme: dark;
+  }
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.5}
+.wrap{max-width:1180px;margin:0 auto;padding:20px 16px 40px;display:flex;flex-direction:column;gap:12px}
+.top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:8px}
+h1{font-size:20px;margin:0;font-weight:700}
+.top p{margin:2px 0 0;color:var(--muted);font-size:13px}
+.btns{display:flex;gap:6px}
+.btn{font:inherit;font-size:13px;padding:6px 12px;border-radius:7px;border:1px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 18px}
+.bar label{display:inline-flex;align-items:center;gap:6px;color:var(--muted);font-size:13px}
+.bar select,.bar input[type=number]{font:inherit;font-size:13px;padding:4px 6px;border:1px solid var(--line);border-radius:6px;background:var(--paper);color:var(--ink)}
+.bar input[type=number]{width:76px;text-align:right}
+.bar input[type=checkbox]{accent-color:var(--accent)}
+details.card summary{cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+details.card summary::-webkit-details-marker{display:none}
+details.card summary::before{content:"▸";margin-right:6px;color:var(--muted)}
+details.card[open] summary::before{content:"▾"}
+details.card summary .sm{font-weight:400;color:var(--muted);font-size:13px;margin-left:auto}
+details.card .bar{margin-top:10px}
+.hint{color:var(--muted);font-size:12.5px;margin:6px 0 0}
+.sum{display:grid;grid-template-columns:1.1fr 1fr 1.2fr;gap:12px}
+@media (max-width:860px){.sum{grid-template-columns:1fr}}
+.kpi .k{color:var(--muted);font-size:13px}
+.kpi .v{font-size:30px;font-weight:700;line-height:1.15;font-variant-numeric:tabular-nums}
+.kpi .s{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.kpi.main{border:2px solid var(--accent);background:var(--accent-soft)}
+.kpi.main .v{color:var(--accent)}
+.split{display:flex;gap:14px;flex-wrap:wrap;margin-top:6px;font-size:13px;font-variant-numeric:tabular-nums}
+.sw{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px}
+.calc{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
+.calc td{padding:2px 0}
+.calc td:last-child{text-align:right;white-space:nowrap}
+.calc tr.g td{color:var(--muted);font-weight:600;padding-top:5px}
+.calc tr.t td{border-top:1px solid var(--line);font-weight:700;padding-top:4px}
+.warn{font-size:13px;color:var(--est);margin:0}
+.head{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.head h2{font-size:15px;margin:0}
+.segs{display:inline-flex;border:1px solid var(--line);border-radius:7px;overflow:hidden}
+.seg{font:inherit;font-size:12.5px;border:0;background:transparent;color:var(--muted);padding:4px 10px;cursor:pointer}
+.seg[aria-pressed="true"]{background:var(--accent);color:#fff}
+.scroll{overflow-x:auto}
+table.t{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums}
+table.t th{color:var(--muted);font-weight:600;text-align:right;padding:5px 6px;border-bottom:1px solid var(--line);white-space:nowrap}
+table.t td{text-align:right;padding:5px 6px;border-bottom:1px solid var(--line);white-space:nowrap}
+table.t th.l,table.t td.l{text-align:left}
+table.t td.nm b{font-weight:600}
+table.t td.nm small{display:block;color:var(--muted);font-size:12px}
+table.t td.nm small.exp{color:var(--bad)}
+table.t tr.off td{opacity:.45}
+table.t tr.grp td{background:var(--accent-soft);font-weight:600}
+table.t tr.tot td{font-weight:700;border-top:2px solid var(--line);border-bottom:0}
+table.t select{font:inherit;font-size:12.5px;padding:2px 4px;border:1px solid var(--line);border-radius:5px;background:var(--paper);color:var(--ink)}
+table.t input[type=checkbox]{accent-color:var(--accent);width:15px;height:15px}
+.est{color:var(--est);font-weight:700}
+.chart{position:relative}
+.chart svg{display:block;width:100%;height:auto}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);margin-top:4px}
+.tip{position:absolute;pointer-events:none;background:var(--paper);border:1px solid var(--line);border-radius:7px;box-shadow:0 4px 14px rgba(0,0,0,.12);padding:6px 9px;font-size:12.5px;white-space:nowrap;font-variant-numeric:tabular-nums;z-index:2}
+.tip b{display:block}
+.notes{margin:8px 0 0;padding-left:18px;color:var(--muted);font-size:13px}
+.notes li{margin:2px 0}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media print{
+  body{background:#fff;font-size:11px}
+  .btns,.bar,.segs{display:none}
+  details.card{display:block}
+  details.card > *{display:block}
+  .card{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div>
+      <h1>วงเงินค่าถ่ายเอกสารต่อเดือน ปี 2027</h1>
+      <p>ฐานจากจำนวนแผ่นจริงของ SSONS · SH · SC คิดราคาตามใบเสนอราคา Ricoh BCS-Q-26/002490</p>
+    </div>
+    <div class="btns">
+      <button class="btn" type="button" id="dlCsv">ดาวน์โหลด CSV</button>
+      <button class="btn" type="button" id="doPrint">พิมพ์ / PDF</button>
+    </div>
+  </div>
+
+  <div class="card bar" role="group" aria-label="ตัวเลือกการคำนวณ">
+    <label>ปีฐาน
+      <select id="year"><option value="2025" selected>2025</option><option value="2024">2024</option><option value="avg">เฉลี่ย 2024–25</option></select></label>
+    <label>ตั้งวงเงินจาก
+      <select id="basis"><option value="avg" selected>ค่าเฉลี่ยต่อเดือน</option><option value="peak">เดือนสูงสุด</option></select></label>
+    <label>เผื่อเพิ่ม <input id="buffer" type="number" min="0" step="1" value="10"> %</label>
+    <label>ปัดขึ้น
+      <select id="round"><option value="1">ไม่ปัด</option><option value="100">100</option><option value="500">500</option><option value="1000" selected>1,000</option></select></label>
+    <label><input id="vat" type="checkbox" checked> รวม VAT 7%</label>
+    <label><input id="useSticker" type="checkbox" checked> รวมสติกเกอร์</label>
+  </div>
+
+  <details class="card">
+    <summary>ราคา Ricoh และค่าเช่า <span class="sm" id="priceSum"></span></summary>
+    <div class="bar">
+      <label>ขาว/ดำ <input id="rBw" type="number" min="0" step="0.01" value="0.22"> บาท/แผ่น</label>
+      <label>สี <input id="rColor" type="number" min="0" step="0.01" value="2.20"> บาท/แผ่น</label>
+      <label>ค่าเช่ารวม <input id="rRent" type="number" min="0" step="100" value="18900" style="width:90px"> บาท/เดือน</label>
+      <label>สติกเกอร์ <input id="rSticker" type="number" min="0" step="0.01" value="0.40"> บาท/แผ่น</label>
+    </div>
+    <p class="hint">ราคาก่อน VAT ตามใบเสนอราคา (IM C2510, สัญญา 4 ปี) ค่าเช่า 18,900 บาทตีความเป็นค่าเช่ารวมต่อเดือนของ 9 เครื่อง ควรยืนยันกับ Ricoh · งานสติกเกอร์ไม่อยู่ในใบเสนอราคา จึงใช้ราคาเดิม</p>
+  </details>
+
+  <div class="sum">
+    <div class="card kpi main" aria-live="polite">
+      <div class="k" id="kLimitLbl">วงเงินต่อเดือน</div>
+      <div class="v" id="kLimit">–</div>
+      <div class="s" id="kYear">–</div>
+      <div class="s" id="kOld">–</div>
+    </div>
+    <div class="card kpi">
+      <div class="k" id="kPagesLbl">จำนวนแผ่นเฉลี่ยต่อเดือน</div>
+      <div class="v" id="kPages">–</div>
+      <div class="split" id="kSplit"></div>
+      <div class="s" id="kYearPages" style="margin-top:4px">–</div>
+    </div>
+    <div class="card">
+      <table class="calc"><tbody id="calc"></tbody></table>
+    </div>
+  </div>
+  <p class="warn" id="warn" hidden></p>
+
+  <section class="card">
+    <div class="head">
+      <h2>รายเครื่องและจุดตั้ง</h2>
+      <span class="hint" style="margin:0">ติ๊กเพื่อนำมาคิด · เลือกแผนปี 2027 ได้รายเครื่อง</span>
+    </div>
+    <div class="scroll">
+      <table class="t">
+        <thead><tr>
+          <th class="l"></th><th class="l">เครื่อง / จุดตั้ง</th><th class="l">แผน 2027</th>
+          <th>ขาว/ดำ</th><th>สี</th><th>สติกเกอร์</th><th>รวม/เดือน</th><th id="thYear">ทั้งปี</th><th id="thCost">ค่าใช้จ่าย/เดือน</th>
+        </tr></thead>
+        <tbody id="mBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="head">
+      <h2>รายเดือน</h2>
+      <div class="segs" role="group" aria-label="มุมมองรายเดือน">
+        <button class="seg" type="button" data-v="chart" aria-pressed="true">กราฟ</button>
+        <button class="seg" type="button" data-v="table" aria-pressed="false">ตาราง 12 เดือน</button>
+      </div>
+    </div>
+    <div id="monthView"></div>
+  </section>
+
+  <details class="card">
+    <summary>วิธีคิดและหมายเหตุข้อมูล</summary>
+    <ul class="notes">
+      <li>จำนวนแผ่นคือ "จำนวนที่ใช้" ตามใบแจ้งหนี้ (หักกระดาษเสีย 2% แล้ว) งานสีรวม A4 และ A3 เพราะราคาเท่ากัน</li>
+      <li>ต่อเดือน = ยอดทั้งปี ÷ เดือนที่ใช้งาน (12 ยกเว้น Fuji ชั้น 7 SSONS ปี 2024 = 7 และ Fuji ชั้น 12 ปี 2025 = 5)</li>
+      <li>แผน Ricoh: แผ่น × ราคา Ricoh และค่าเช่ารวมคิดครั้งเดียว · แผนสัญญาเดิม: แผ่น × ราคาเดิมของเครื่อง + ค่าเช่าเดิม (Canon ซื้อขาดแล้ว ไม่มีค่าเช่า) · ค่าเช่าเดิมถือเป็นยอดก่อน VAT</li>
+      <li>วงเงิน = ผลรวม × (1 + เผื่อเพิ่ม) × VAT แล้วปัดขึ้น</li>
+      <li><span class="est">*</span> ประมาณการ: Canon ชั้น 12 ต.ค.–พ.ย. 2025 (คิดจากยอดเงิน ÷ 0.39), Canon โรงงาน 2 และ 5 ธ.ค. 2025 (ครึ่งหนึ่งของมิเตอร์ที่เดินช่วง ธ.ค.–ม.ค.), Fuji ชั้น 12 ส.ค.–ธ.ค. 2025 (ยอดใน SAP ÷ 1.07 ÷ 0.25 ถือเป็นขาว/ดำทั้งหมด)</li>
+      <li>Fuji ชั้น 12 สัญญาจบ 31/12/2025 และไม่มีการเรียกเก็บหลังจากนั้น จึงไม่ถูกติ๊กไว้ · Fuji ชั้น 7 (SH) มี 13 งวดในปี 2025 ทำให้ พ.ย. สูงกว่าปกติ</li>
+      <li>สติกเกอร์คือใบแจ้งหนี้อัตรา 0.40 บาท/แผ่นของ Fuji ฝั่ง SC (เริ่ม ก.ย. 2025)</li>
+    </ul>
+  </details>
+</div>
+
+<script>
+const DATA = {"machines":[{"name":"Fuji ชั้น 11 (SSONS)","company":"SSONS","basis":{"2024":12,"2025":12},"model":"C3376R","sn":"931946","end":"2026-10-20","rent":3000,"rbw":0.25,"rc":2.5,"own":"เช่าซื้อ","manual":false,"loc":"ชั้น 11","defOn":true},{"name":"Fuji ชั้น 7 (SSONS)","company":"SSONS","basis":{"2024":7,"2025":12},"model":"C3371","sn":"523003","end":"2028-06-06","rent":3000,"rbw":0.25,"rc":2.5,"own":"เช่าซื้อ","manual":false,"loc":"ชั้น 7","defOn":true},{"name":"Canon ชั้น 12 (SSONS)","company":"SSONS","basis":{"2024":12,"2025":12},"model":"IR2004","sn":"WDQ06291","end":"2026-09-24","rent":0,"rbw":0.39,"rc":0,"own":"ซื้อขาด","manual":false,"loc":"ชั้น 12 (ห้อง CS)","defOn":true},{"name":"Fuji ชั้น 7 (SH)","company":"SH","basis":{"2024":12,"2025":12},"model":"C3376R","sn":"931276","end":"2026-11-13","rent":3000,"rbw":0.25,"rc":2.5,"own":"เช่าซื้อ","manual":false,"loc":"ชั้น 7 (ฝั่ง CHM&BD)","defOn":true},{"name":"Fuji โกดัง 5 (SC)","company":"SC","basis":{"2024":12,"2025":12},"model":"C3376R","sn":"932062","end":"2026-08-25","rent":2710,"rbw":0.25,"rc":2.5,"own":"เช่าซื้อ","manual":false,"loc":"โรงงาน 5","defOn":true},{"name":"Fuji โกดัง 1 (SC)","company":"SC","basis":{"2024":12,"2025":12},"model":"C3376R","sn":"932000","end":"2026-08-25","rent":2710,"rbw":0.25,"rc":2.5,"own":"เช่าซื้อ","manual":false,"loc":"โรงงาน 1","defOn":true},{"name":"Fuji โกดัง 3 (SC)","company":"SC","basis":{"2024":12,"2025":12},"model":"C3376R","sn":"932064","end":"2026-08-25","rent":3000,"rbw":0.25,"rc":2.5,"own":"เช่าซื้อ","manual":false,"loc":"โรงงาน 3","defOn":true},{"name":"Fuji โกดัง 4 (SC)","company":"SC","basis":{"2024":12,"2025":12},"model":"C3376R","sn":"932001","end":"2026-08-25","rent":3000,"rbw":0.25,"rc":2.5,"own":"เช่าซื้อ","manual":false,"loc":"โรงงาน 4","defOn":true},{"name":"Canon โกดัง 2 (SC)","company":"SC","basis":{"2024":12,"2025":12},"model":"IR2006","sn":"2FF11004","end":"2027-12-15","rent":0,"rbw":0.39,"rc":0,"own":"ซื้อขาด","manual":false,"loc":"โรงงาน 2","defOn":true},{"name":"Canon โกดัง 5 (SC)","company":"SC","basis":{"2024":12,"2025":12},"model":"IR2006","sn":"2FF06393","end":"2027-12-18","rent":0,"rbw":0.39,"rc":0,"own":"ซื้อขาด","manual":false,"loc":"โรงงาน 5","defOn":true},{"name":"Fuji ชั้น 12 (SSONS)","company":"SSONS","basis":{"2025":5},"model":"C3375","sn":"715536","end":"2025-12-31","rent":3000,"rbw":0.25,"rc":2.5,"own":"เช่าซื้อ","manual":false,"loc":"ชั้น 12","defOn":false}],"rows":[[2,"2024-01",506,0,0,211.15,0],[2,"2024-02",686,0,0,286.27,0],[2,"2024-03",773,0,0,322.57,0],[2,"2024-04",735,0,0,306.72,0],[2,"2024-08",418,0,0,174.43,0],[2,"2024-09",220,0,0,91.81,0],[2,"2024-10",121,0,0,50.49,0],[2,"2025-02",1176,0,0,490.74,0],[2,"2025-03",2605,0,0,1087.07,0],[2,"2025-04",4410,0,0,1840.29,0],[2,"2025-05",1127,0,0,470.3,0],[2,"2025-06",2694,0,0,1124.21,0],[2,"2025-07",2563,0,0,1069.54,0],[2,"2025-08",3225,0,0,1345.79,0],[2,"2025-09",2327,0,0,971.06,0],[2,"2025-10",2926,0,0,1221.02,1],[2,"2025-11",3271,0,0,1364.99,1],[2,"2025-12",3205,0,0,1337.45,0],[8,"2024-01",3347,0,0,1074.39,0],[8,"2024-02",2797,0,0,897.84,0],[8,"2024-03",4081,0,0,1310.0,0],[8,"2024-04",2581,0,0,828.5,0],[8,"2024-05",2048,0,0,657.41,0],[8,"2024-06",2930,0,0,940.53,0],[8,"2024-07",2163,0,0,694.32,0],[8,"2024-08",2864,0,0,919.34,0],[8,"2024-09",3381,0,0,1085.3,0],[8,"2024-10",2333,0,0,748.89,0],[8,"2024-11",3547,0,0,1138.59,0],[8,"2024-12",2412,0,0,774.25,0],[8,"2025-01",2432,0,0,780.67,0],[8,"2025-02",2475,0,0,794.48,0],[8,"2025-03",2721,0,0,873.44,0],[8,"2025-04",2267,0,0,727.71,0],[8,"2025-05",1879,0,0,603.16,0],[8,"2025-06",2422,0,0,777.46,0],[8,"2025-07",3259,0,0,1046.14,0],[8,"2025-08",3636,0,0,1167.16,0],[8,"2025-09",8105,0,0,2601.7,0],[8,"2025-10",4266,0,0,1369.39,0],[8,"2025-11",5480,0,0,1759.08,0],[8,"2025-12",5954,0,0,2484.6,1],[9,"2024-01",2268,0,0,728.03,0],[9,"2024-02",1701,0,0,546.02,0],[9,"2024-03",2287,0,0,734.13,0],[9,"2024-04",1886,0,0,605.41,0],[9,"2024-05",1407,0,0,451.65,0],[9,"2024-06",1796,0,0,576.52,0],[9,"2024-07",1956,0,0,627.88,0],[9,"2024-08",2727,0,0,875.37,0],[9,"2024-09",2974,0,0,954.65,0],[9,"2024-10",1487,0,0,477.33,0],[9,"2024-11",2566,0,0,823.69,0],[9,"2024-12",1842,0,0,591.28,0],[9,"2025-01",2793,0,0,1165.52,0],[9,"2025-02",1538,0,0,641.81,0],[9,"2025-03",1258,0,0,524.96,0],[9,"2025-04",1091,0,0,455.27,0],[9,"2025-05",1011,0,0,421.89,0],[9,"2025-06",870,0,0,363.05,0],[9,"2025-07",1106,0,0,461.53,0],[9,"2025-08",2553,0,0,1065.37,0],[9,"2025-09",2368,0,0,988.17,0],[9,"2025-10",2695,0,0,1124.62,0],[9,"2025-11",4474,0,0,1867.0,0],[9,"2025-12",3778,0,0,1576.56,1],[0,"2024-01",19419,169,0,5646.66,0],[0,"2024-02",19569,172,0,5694.81,0],[0,"2024-03",23326,311,0,7071.63,0],[0,"2024-04",23729,223,0,6944.03,0],[0,"2024-05",20065,335,0,6263.51,0],[0,"2024-06",25250,133,0,7110.15,0],[0,"2024-07",19813,119,0,5618.3,0],[0,"2024-08",20905,207,0,6145.81,0],[0,"2024-09",36177,307,0,10498.57,0],[0,"2024-10",22132,30,0,6000.56,0],[0,"2024-11",42751,225,0,12037.77,0],[0,"2024-12",20901,125,0,5925.39,0],[0,"2025-01",21215,46,0,5798.06,0],[0,"2025-02",22101,63,0,6080.54,0],[0,"2025-03",18827,52,0,5175.32,0],[0,"2025-04",17367,24,0,4709.87,0],[0,"2025-05",23624,67,0,6498.65,0],[0,"2025-06",20310,26,0,5502.48,0],[0,"2025-07",23666,80,0,6544.65,0],[0,"2025-08",23601,32,0,6398.87,0],[0,"2025-09",18865,66,0,5222.94,0],[0,"2025-10",20752,120,0,5872.16,0],[0,"2025-11",18189,12,0,4897.66,0],[0,"2025-12",19137,6,0,5135.2,0],[3,"2024-01",10378,730,0,4728.86,0],[3,"2024-02",9574,706,0,4449.6,0],[3,"2024-03",12094,723,0,5169.17,0],[3,"2024-04",15691,813,0,6372.12,0],[3,"2024-05",14638,784,0,6012.86,0],[3,"2024-06",16905,462,0,5757.94,0],[3,"2024-07",13940,660,0,5494.45,0],[3,"2024-08",13494,644,0,5332.35,0],[3,"2024-09",11796,671,0,4950.35,0],[3,"2024-10",12835,392,0,4481.96,0],[3,"2024-11",14958,508,0,5360.16,0],[3,"2024-12",18488,600,0,6550.54,0],[3,"2025-01",10450,1329,0,6350.45,0],[3,"2025-02",8455,474,0,3529.66,0],[3,"2025-03",2261,601,0,2212.49,0],[3,"2025-04",1874,846,0,2764.34,0],[3,"2025-05",2747,513,0,2107.1,0],[3,"2025-06",1813,390,0,1528.23,0],[3,"2025-07",3691,598,0,2586.99,0],[3,"2025-08",1974,746,0,2523.59,0],[3,"2025-09",3042,732,0,2771.84,0],[3,"2025-10",2566,730,0,2639.16,0],[3,"2025-11",3620,1585,0,5208.23,0],[3,"2025-12",2590,717,0,2610.8,0],[1,"2024-06",1026,22,0,333.31,0],[1,"2024-07",3057,123,0,1146.77,0],[1,"2024-08",2040,68,0,727.6,0],[1,"2024-09",2026,56,0,691.75,0],[1,"2024-11",1349,26,0,430.41,0],[1,"2024-12",1640,24,0,502.9,0],[1,"2025-01",1621,252,0,1107.72,0],[1,"2025-02",2250,173,0,1064.65,0],[1,"2025-03",1518,41,0,515.74,0],[1,"2025-04",2109,107,0,850.38,0],[1,"2025-05",2340,43,0,740.98,0],[1,"2025-06",2043,90,0,787.25,0],[1,"2025-07",2712,100,0,992.96,0],[1,"2025-08",2054,130,0,897.2,0],[1,"2025-09",1722,65,0,634.51,0],[1,"2025-10",1962,59,0,682.66,0],[1,"2025-11",1568,106,0,702.99,0],[1,"2025-12",1173,103,0,589.3,0],[5,"2024-01",9025,201,0,2951.86,0],[5,"2024-03",4649,111,0,1540.53,0],[5,"2024-04",4031,42,0,1190.64,0],[5,"2024-05",3819,61,0,1184.76,0],[5,"2024-06",4995,159,0,1761.49,0],[5,"2024-07",5404,244,0,2098.27,0],[5,"2024-08",4508,73,0,1401.16,0],[5,"2024-09",4787,93,0,1529.3,0],[5,"2024-10",3897,68,0,1224.35,0],[5,"2024-11",3825,48,0,1151.59,0],[5,"2024-12",5333,62,0,1592.43,0],[5,"2025-01",4627,59,0,1395.55,0],[5,"2025-02",4459,175,0,1660.91,0],[5,"2025-03",4936,161,0,1751.06,0],[5,"2025-04",4398,437,0,2345.44,0],[5,"2025-05",6847,304,0,2644.77,0],[5,"2025-06",5616,458,0,2727.43,0],[5,"2025-07",5732,479,0,2814.64,0],[5,"2025-08",5685,95,0,1774.86,0],[5,"2025-09",4833,224,2050,2769.43,0],[5,"2025-10",3478,195,7497,4660.71,0],[5,"2025-11",3140,225,6080,4044.06,0],[5,"2025-12",4682,249,4837,3988.75,0],[6,"2024-01",5379,266,0,2150.43,0],[6,"2024-02",4705,289,0,2031.66,0],[6,"2024-03",5024,148,0,1739.82,0],[6,"2024-04",3494,133,0,1290.42,0],[6,"2024-05",3616,122,0,1293.63,0],[6,"2024-06",3011,98,0,1067.59,0],[6,"2024-07",4411,458,0,2405.09,0],[6,"2024-08",4843,171,0,1752.93,0],[6,"2024-09",4880,299,0,2105.22,0],[6,"2024-10",4672,258,0,1939.91,0],[6,"2024-11",5348,86,0,1660.64,0],[6,"2024-12",3914,136,0,1410.8,0],[6,"2025-01",5506,50,0,1606.61,0],[6,"2025-02",6136,245,0,2296.76,0],[6,"2025-03",4558,80,0,1433.27,0],[6,"2025-04",3533,108,0,1233.98,0],[6,"2025-05",3733,60,0,1159.08,0],[6,"2025-06",10770,50,0,3014.72,0],[6,"2025-07",5480,79,0,1677.22,0],[6,"2025-08",7410,189,0,2487.75,0],[6,"2025-09",7053,190,126,2448.86,0],[6,"2025-10",7134,167,31,2368.34,0],[6,"2025-11",6280,52,2,1819.86,0],[6,"2025-12",4902,231,0,1929.21,0],[7,"2024-01",6551,385,0,2782.27,0],[7,"2024-02",5413,182,0,1934.83,0],[7,"2024-03",5552,38,0,1586.81,0],[7,"2024-04",7404,52,0,2119.67,0],[7,"2024-05",6836,77,0,2034.61,0],[7,"2024-06",7180,120,0,2241.65,0],[7,"2024-07",5315,232,0,2042.36,0],[7,"2024-08",4403,105,0,1458.68,0],[7,"2024-09",3818,177,0,1494.79,0],[7,"2024-10",4099,126,0,1433.53,0],[7,"2024-11",3942,73,0,1249.76,0],[7,"2024-12",6287,125,0,2016.15,0],[7,"2025-01",5306,71,0,1609.28,0],[7,"2025-02",4942,46,0,1445.04,0],[7,"2025-03",6018,88,0,1845.21,0],[7,"2025-04",5562,115,0,1795.46,0],[7,"2025-05",4469,35,0,1289.08,0],[7,"2025-06",6398,189,0,2217.04,0],[7,"2025-07",8280,64,0,2386.1,0],[7,"2025-08",4266,68,0,1323.06,0],[7,"2025-09",4314,54,1177,1802.2,0],[7,"2025-10",2567,55,23,843.64,0],[7,"2025-11",3582,52,2,1098.14,0],[7,"2025-12",4710,157,0,1679.9,0],[4,"2024-01",77870,145,0,21218.1,0],[4,"2024-03",33156,159,0,9294.56,0],[4,"2024-04",39207,97,0,10747.35,0],[4,"2024-05",38788,135,0,10736.92,0],[4,"2024-06",55437,90,0,15070.15,0],[4,"2024-07",57616,272,0,16139.88,0],[4,"2024-08",51791,152,0,14260.69,0],[4,"2024-09",46723,117,0,12811.38,0],[4,"2024-10",46175,252,0,13025.91,0],[4,"2024-11",57297,491,0,16640.37,0],[4,"2024-12",78710,142,0,21434.78,0],[4,"2025-01",46471,134,0,12789.44,0],[4,"2025-02",39391,59,0,10694.92,0],[4,"2025-03",40830,43,0,11037.05,0],[4,"2025-04",40992,134,0,11323.81,0],[4,"2025-05",37073,78,0,10125.68,0],[4,"2025-06",39536,83,0,10797.91,0],[4,"2025-07",37510,76,0,10237.23,0],[4,"2025-08",43761,61,0,11869.24,0],[4,"2025-09",41297,11,1831,11860.04,0],[4,"2025-10",40191,90,1959,11830.29,0],[4,"2025-11",47962,21,1465,13513.03,0],[4,"2025-12",33896,51,1432,9816.5,0],[10,"2025-08",9255,0,0,2475.71,1],[10,"2025-09",11607,0,0,3104.87,1],[10,"2025-10",12842,0,0,3435.24,1],[10,"2025-11",7868,0,0,2104.69,1],[10,"2025-12",7063,0,0,1889.35,1]]};
+(function () {
+  const TH = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  const nf0 = new Intl.NumberFormat('en-US', {maximumFractionDigits: 0});
+  const nf2 = new Intl.NumberFormat('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  const pct = new Intl.NumberFormat('en-US', {style: 'percent', maximumFractionDigits: 1});
+  const $ = (id) => document.getElementById(id);
+  const M = DATA.machines;
+  const CO = {SSONS: 'SSONS', SH: 'SH', SC: 'SC'};
+  const TODAY = '2026-11-06';
+  const state = {on: {}, plan: {}, view: 'chart'};
+  M.forEach((m, i) => { state.on[i] = m.defOn !== false; state.plan[i] = m.end < '2027-01-01' ? 'ricoh' : 'stay'; });
+  const num = (id) => { const v = parseFloat($(id).value); return isFinite(v) && v >= 0 ? v : 0; };
+  const sum = (a, f) => a.reduce((t, o) => t + o[f], 0);
+  const fmtDate = (s) => { const p = s.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; };
+  const sPct = (v) => (v > 0 ? '+' : v < 0 ? '−' : '') + pct.format(Math.abs(v));
+  const el = (tag, txt, cls) => { const e = document.createElement(tag); if (txt !== undefined && txt !== null) e.textContent = txt; if (cls) e.className = cls; return e; };
+
+  function compute() {
+    const ysel = $('year').value, years = ysel === 'avg' ? ['2024', '2025'] : [ysel], n = years.length;
+    const useSt = $('useSticker').checked;
+    const ric = {bw: num('rBw'), c: num('rColor'), s: useSt ? num('rSticker') : 0, rent: num('rRent')};
+    const rate = (i) => state.plan[i] === 'ricoh' ? {bw: ric.bw, c: ric.c, s: ric.s, rent: 0} : {bw: M[i].rbw, c: M[i].rc, s: ric.s, rent: M[i].rent};
+    const per = M.map((m, i) => {
+      let bw = 0, c = 0, s = 0, cost = 0, base = 0;
+      const mon = new Array(12).fill(0), est = new Array(12).fill(false);
+      years.forEach((y) => {
+        const rows = DATA.rows.filter((q) => q[0] === i && q[1].slice(0, 4) === y);
+        if (!rows.length) return;
+        rows.forEach((q) => { const st = useSt ? q[4] : 0; bw += q[2]; c += q[3]; s += st; cost += q[5]; const mi = +q[1].slice(5) - 1; mon[mi] += (q[2] + q[3] + st) / n; if (q[6]) est[mi] = true; });
+        base += m.basis[y] || 12;
+      });
+      const k = base || 1, r = rate(i);
+      const o = {i, m, on: state.on[i], plan: state.plan[i], bw: bw / k, c: c / k, s: s / k, actual: cost / k, mon, est, year: mon.reduce((a, v) => a + v, 0), hasData: base > 0};
+      o.var = o.bw * r.bw + o.c * r.c + o.s * r.s;
+      o.rent = r.rent;
+      return o;
+    });
+    const on = per.filter((p) => p.on);
+    const ricOn = on.filter((p) => p.plan === 'ricoh'), stayOn = on.filter((p) => p.plan !== 'ricoh');
+    const rentRic = ricOn.length ? ric.rent : 0, rentStay = sum(stayOn, 'rent');
+    // month-level cost for the peak option
+    const months = TH.map((lbl, mi) => {
+      const mo = {lbl, bw: 0, c: 0, s: 0, est: false, rb: 0, rc: 0, rs: 0, stayVar: 0};
+      years.forEach((y) => {
+        const ym = y + '-' + String(mi + 1).padStart(2, '0');
+        DATA.rows.forEach((q) => {
+          if (q[1] !== ym || !state.on[q[0]]) return;
+          const st = useSt ? q[4] : 0, r = rate(q[0]);
+          mo.bw += q[2] / n; mo.c += q[3] / n; mo.s += st / n; if (q[6]) mo.est = true;
+          if (state.plan[q[0]] === 'ricoh') { mo.rb += q[2] / n; mo.rc += q[3] / n; mo.rs += st / n; }
+          else mo.stayVar += (q[2] * r.bw + q[3] * r.c + st * r.s) / n;
+        });
+      });
+      mo.cost = mo.rb * ric.bw + mo.rc * ric.c + mo.rs * ric.s + mo.stayVar + rentRic + rentStay;
+      return mo;
+    });
+    const peak = months.reduce((a, b) => (b.cost > a.cost ? b : a), months[0]);
+    const avgB = {rb: sum(ricOn, 'bw'), rc: sum(ricOn, 'c'), rs: sum(ricOn, 's'), stayVar: sum(stayOn, 'var')};
+    return {ysel, years, useSt, ric, per, on, ricOn, stayOn, rentRic, rentStay, months, peak, avgB,
+      tot: {bw: sum(on, 'bw'), c: sum(on, 'c'), s: sum(on, 's'), actual: sum(on, 'actual'), year: sum(on, 'year')}};
+  }
+
+  function render() {
+    const R = compute();
+    const buf = num('buffer') / 100, vatOn = $('vat').checked, vat = vatOn ? 1.07 : 1, step = +$('round').value;
+    const isPeak = $('basis').value === 'peak', B = isPeak ? R.peak : R.avgB;
+    const cb = B.rb * R.ric.bw, cc = B.rc * R.ric.c, cs = B.rs * R.ric.s;
+    const sub = cb + cc + cs + R.rentRic + B.stayVar + R.rentStay;
+    const wb = sub * (1 + buf), wv = wb * vat;
+    const limit = step > 1 ? Math.ceil(wv / step) * step : wv;
+    const yl = R.ysel === 'avg' ? 'เฉลี่ยปี 2024–2025' : 'ปี ' + R.ysel;
+    const oldTotal = R.tot.actual + R.on.reduce((t, p) => t + p.m.rent, 0) * 1.07;
+
+    $('priceSum').textContent = 'ขาว/ดำ ' + nf2.format(R.ric.bw) + ' · สี ' + nf2.format(R.ric.c) + ' · ค่าเช่ารวม ' + nf0.format(R.ric.rent) + ' บาท/เดือน';
+    $('kLimitLbl').textContent = 'วงเงินต่อเดือน' + (vatOn ? ' (รวม VAT)' : ' (ก่อน VAT)');
+    $('kLimit').textContent = nf0.format(limit) + ' บาท';
+    $('kYear').textContent = 'ทั้งปี 2027 = ' + nf0.format(limit * 12) + ' บาท · ฐาน' + (isPeak ? 'เดือนสูงสุด (' + R.peak.lbl + ')' : 'ค่าเฉลี่ย') + ' ' + yl;
+    $('kOld').textContent = 'เดิมจ่ายจริง ' + nf0.format(oldTotal) + ' บาท/เดือน (มิเตอร์ + ค่าเช่า) · ' + (oldTotal ? sPct(limit / oldTotal - 1) : '–');
+    $('kPagesLbl').textContent = 'จำนวนแผ่นเฉลี่ยต่อเดือน · ' + yl;
+    $('kPages').textContent = nf0.format(R.tot.bw + R.tot.c + R.tot.s) + ' แผ่น';
+    const sp = $('kSplit'); sp.replaceChildren();
+    [['ขาว/ดำ', R.tot.bw, 'var(--bw)'], ['สี', R.tot.c, 'var(--color)'], ['สติกเกอร์', R.tot.s, 'var(--sticker)']].forEach(([k, v, col]) => {
+      if (k === 'สติกเกอร์' && !R.useSt) return;
+      const s = el('span'); const w = el('i', null, 'sw'); w.style.background = col; s.appendChild(w); s.appendChild(document.createTextNode(k + ' ' + nf0.format(v))); sp.appendChild(s);
+    });
+    $('kYearPages').textContent = 'ทั้งปี ' + nf0.format(R.tot.year) + ' แผ่น · ' + R.on.length + ' จาก ' + M.length + ' เครื่อง';
+
+    const calc = $('calc'); calc.replaceChildren();
+    const line = (a, b, cls) => { const tr = el('tr', null, cls); tr.appendChild(el('td', a)); tr.appendChild(el('td', b)); calc.appendChild(tr); };
+    if (R.ricOn.length) {
+      line('Ricoh ' + R.ricOn.length + ' เครื่อง', '', 'g');
+      line('ขาว/ดำ ' + nf0.format(B.rb) + ' × ' + nf2.format(R.ric.bw), nf2.format(cb));
+      line('สี ' + nf0.format(B.rc) + ' × ' + nf2.format(R.ric.c), nf2.format(cc));
+      if (R.useSt && B.rs) line('สติกเกอร์ ' + nf0.format(B.rs) + ' × ' + nf2.format(R.ric.s), nf2.format(cs));
+      line('ค่าเช่ารวม', nf2.format(R.rentRic));
+    }
+    if (R.stayOn.length) {
+      line('สัญญาเดิม ' + R.stayOn.length + ' เครื่อง', '', 'g');
+      line('ค่ามิเตอร์ราคาเดิม', nf2.format(B.stayVar));
+      if (R.rentStay) line('ค่าเช่าเดิม', nf2.format(R.rentStay));
+    }
+    line('รวมก่อนเผื่อ', nf2.format(sub), 't');
+    line('เผื่อ ' + nf0.format(buf * 100) + '%' + (vatOn ? ' + VAT 7%' : ''), nf2.format(wv - sub));
+    line('วงเงิน' + (step > 1 ? ' (ปัดขึ้น)' : ''), nf2.format(limit), 't');
+
+    const w = [];
+    if (!R.on.length) w.push('ยังไม่ได้เลือกเครื่อง');
+    const em = R.months.filter((m) => m.est).map((m) => m.lbl);
+    if (em.length) w.push('* เดือน ' + em.join(', ') + ' มีตัวเลขประมาณการ');
+    $('warn').textContent = w.join(' · '); $('warn').hidden = !w.length;
+
+    renderMachines(R, vat);
+    renderMonths(R);
+    window.__last = {R, limit, buf, vat, yl, isPeak};
+  }
+
+  function renderMachines(R, vat) {
+    $('thYear').textContent = 'ทั้งปี ' + (R.ysel === 'avg' ? '(เฉลี่ย)' : R.ysel);
+    $('thCost').textContent = 'มิเตอร์ 2027/เดือน' + (vat > 1 ? ' รวม VAT' : '');
+    const tb = $('mBody'); tb.replaceChildren();
+    const td = (tr, v, cls) => { const t = el('td', v, cls); tr.appendChild(t); return t; };
+    ['SSONS', 'SH', 'SC'].forEach((co) => {
+      const g = R.per.filter((p) => p.m.company === co).sort((a, b) => (b.bw + b.c + b.s) - (a.bw + a.c + a.s));
+      const gon = g.filter((p) => p.on);
+      g.forEach((p) => {
+        const tr = el('tr', null, p.on ? '' : 'off');
+        const cbx = el('input'); cbx.type = 'checkbox'; cbx.checked = p.on; cbx.setAttribute('aria-label', 'นำ ' + p.m.name + ' มาคิด');
+        cbx.addEventListener('change', () => { state.on[p.i] = cbx.checked; render(); });
+        td(tr, '', 'l').appendChild(cbx);
+        const nm = td(tr, '', 'l nm');
+        nm.appendChild(el('b', p.m.name));
+        nm.appendChild(el('small', p.m.loc + ' · สัญญาถึง ' + fmtDate(p.m.end), p.m.end < TODAY ? 'exp' : ''));
+        const sel = el('select'); sel.setAttribute('aria-label', 'แผน 2027 ของ ' + p.m.name);
+        [['ricoh', 'Ricoh'], ['stay', 'สัญญาเดิม']].forEach(([v, t]) => { const o = el('option', t); o.value = v; if (p.plan === v) o.selected = true; sel.appendChild(o); });
+        sel.addEventListener('change', () => { state.plan[p.i] = sel.value; render(); });
+        td(tr, '', 'l').appendChild(sel);
+        td(tr, nf0.format(p.bw)); td(tr, nf0.format(p.c)); td(tr, nf0.format(p.s));
+        td(tr, nf0.format(p.bw + p.c + p.s));
+        const y = td(tr, p.hasData ? nf0.format(p.year) : '–');
+        if (p.est.some(Boolean)) y.appendChild(el('span', ' *', 'est'));
+        td(tr, nf0.format((p.var + p.rent) * vat));
+        tb.appendChild(tr);
+      });
+      if (gon.length) {
+        const tr = el('tr', null, 'grp');
+        td(tr, ''); td(tr, 'รวม ' + CO[co] + ' (' + gon.length + ' เครื่อง)', 'l'); td(tr, '');
+        td(tr, nf0.format(sum(gon, 'bw'))); td(tr, nf0.format(sum(gon, 'c'))); td(tr, nf0.format(sum(gon, 's')));
+        td(tr, nf0.format(sum(gon, 'bw') + sum(gon, 'c') + sum(gon, 's'))); td(tr, nf0.format(sum(gon, 'year')));
+        td(tr, nf0.format(gon.reduce((t, p) => t + p.var + p.rent, 0) * vat));
+        tb.appendChild(tr);
+      }
+    });
+    const tr = el('tr', null, 'tot');
+    td(tr, ''); td(tr, 'รวมทั้งหมด', 'l'); td(tr, '');
+    td(tr, nf0.format(R.tot.bw)); td(tr, nf0.format(R.tot.c)); td(tr, nf0.format(R.tot.s));
+    td(tr, nf0.format(R.tot.bw + R.tot.c + R.tot.s)); td(tr, nf0.format(R.tot.year));
+    td(tr, nf0.format(R.on.reduce((t, p) => t + p.var + p.rent, 0) * vat));
+    tb.appendChild(tr);
+    if (R.rentRic) {
+      const r2 = el('tr', null, 'tot');
+      td(r2, ''); td(r2, '+ ค่าเช่า Ricoh รวม', 'l'); [0, 1, 2, 3, 4, 5].forEach(() => td(r2, ''));
+      td(r2, nf0.format(R.rentRic * vat));
+      tb.appendChild(r2);
+    }
+  }
+
+  function renderMonths(R) {
+    const box = $('monthView'); box.replaceChildren();
+    if (state.view === 'table') {
+      const wrap = el('div', null, 'scroll'), t = el('table', null, 't'), th = el('tr');
+      ['เครื่อง'].concat(TH, ['รวม']).forEach((h, k) => th.appendChild(el('th', h, k ? '' : 'l')));
+      const thead = el('thead'); thead.appendChild(th); t.appendChild(thead);
+      const tb = el('tbody'); const tot = new Array(12).fill(0);
+      R.on.slice().sort((a, b) => b.year - a.year).forEach((p) => {
+        const tr = el('tr'); tr.appendChild(el('td', p.m.name, 'l'));
+        p.mon.forEach((v, mi) => { const c = el('td', v ? nf0.format(v) : '–'); if (p.est[mi]) c.appendChild(el('span', '*', 'est')); tr.appendChild(c); tot[mi] += v; });
+        tr.appendChild(el('td', nf0.format(p.year))); tb.appendChild(tr);
+      });
+      const tr = el('tr', null, 'tot'); tr.appendChild(el('td', 'รวม', 'l'));
+      tot.forEach((v) => tr.appendChild(el('td', nf0.format(v)))); tr.appendChild(el('td', nf0.format(tot.reduce((a, v) => a + v, 0))));
+      tb.appendChild(tr); t.appendChild(tb); wrap.appendChild(t); box.appendChild(wrap);
+      return;
+    }
+    const c = el('div', null, 'chart'); box.appendChild(c);
+    const W = Math.max(c.clientWidth || 700, 300), H = 220, ml = 46, mr = 8, mt = 10, mb = 24;
+    const NS = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(NS, 'svg'); svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H); svg.setAttribute('role', 'img'); svg.setAttribute('aria-label', 'จำนวนแผ่นรายเดือน');
+    const mk = (tag, a) => { const e = document.createElementNS(NS, tag); Object.keys(a).forEach((k) => { if (k === 'fill' || k === 'stroke') e.style[k] = a[k]; else e.setAttribute(k, a[k]); }); svg.appendChild(e); return e; };
+    const avg = R.tot.bw + R.tot.c + R.tot.s;
+    let ymax = Math.max(1, avg, ...R.months.map((m) => m.bw + m.c + m.s));
+    const mag = Math.pow(10, Math.floor(Math.log10(ymax))); ymax = Math.ceil(ymax / mag * 2) / 2 * mag;
+    const y = (v) => mt + (H - mt - mb) * (1 - v / ymax);
+    const bw = (W - ml - mr) / 12, barW = Math.min(30, bw * 0.62);
+    const comp = new Intl.NumberFormat('en-US', {notation: 'compact', maximumFractionDigits: 1});
+    for (let k = 0; k <= 4; k++) { const v = ymax * k / 4; mk('line', {x1: ml, x2: W - mr, y1: y(v), y2: y(v), stroke: 'var(--line)'}); const t = mk('text', {x: ml - 6, y: y(v) + 4, 'text-anchor': 'end', 'font-size': 11, fill: 'var(--muted)'}); t.textContent = comp.format(v); }
+    const tip = el('div', null, 'tip'); tip.hidden = true;
+    R.months.forEach((m, i) => {
+      const x = ml + bw * i + (bw - barW) / 2; let acc = 0;
+      [['bw', 'var(--bw)'], ['c', 'var(--color)'], ['s', 'var(--sticker)']].forEach(([f, col]) => { const v = m[f]; if (v <= 0) return; mk('rect', {x, y: y(acc + v), width: barW, height: Math.max(0, y(acc) - y(acc + v)), fill: col, rx: 2}); acc += v; });
+      const lt = mk('text', {x: ml + bw * i + bw / 2, y: H - 7, 'text-anchor': 'middle', 'font-size': 11, fill: 'var(--muted)'}); lt.textContent = m.lbl + (m.est ? '*' : '');
+      const hit = mk('rect', {x: ml + bw * i, y: mt, width: bw, height: H - mt - mb, fill: 'transparent'});
+      hit.addEventListener('mousemove', (ev) => {
+        tip.replaceChildren(); tip.appendChild(el('b', m.lbl + (m.est ? ' (มีประมาณการ)' : '')));
+        tip.appendChild(el('div', 'ขาว/ดำ ' + nf0.format(m.bw) + ' · สี ' + nf0.format(m.c) + (R.useSt ? ' · สติกเกอร์ ' + nf0.format(m.s) : '')));
+        tip.appendChild(el('div', 'รวม ' + nf0.format(m.bw + m.c + m.s) + ' แผ่น'));
+        tip.hidden = false;
+        const r = c.getBoundingClientRect();
+        tip.style.left = Math.max(0, Math.min(ev.clientX - r.left + 12, c.clientWidth - tip.offsetWidth - 4)) + 'px';
+        tip.style.top = Math.max(0, ev.clientY - r.top - tip.offsetHeight - 8) + 'px';
+      });
+      hit.addEventListener('mouseleave', () => { tip.hidden = true; });
+    });
+    mk('line', {x1: ml, x2: W - mr, y1: y(avg), y2: y(avg), stroke: 'var(--accent)', 'stroke-width': 2, 'stroke-dasharray': '6 4'});
+    c.appendChild(svg); c.appendChild(tip);
+    const lg = el('div', null, 'legend');
+    [['ขาว/ดำ', 'var(--bw)'], ['สี', 'var(--color)'], ['สติกเกอร์', 'var(--sticker)'], ['- - ค่าเฉลี่ย', null]].forEach(([k, col]) => { const s = el('span'); if (col) { const w = el('i', null, 'sw'); w.style.background = col; s.appendChild(w); } s.appendChild(document.createTextNode(k)); lg.appendChild(s); });
+    box.appendChild(lg);
+  }
+
+  document.querySelectorAll('.seg').forEach((b) => b.addEventListener('click', () => {
+    state.view = b.dataset.v;
+    document.querySelectorAll('.seg').forEach((o) => o.setAttribute('aria-pressed', o === b ? 'true' : 'false'));
+    render();
+  }));
+  ['year', 'basis', 'buffer', 'round', 'vat', 'useSticker', 'rBw', 'rColor', 'rRent', 'rSticker'].forEach((id) => { $(id).addEventListener('input', render); $(id).addEventListener('change', render); });
+
+  $('dlCsv').addEventListener('click', () => {
+    const L = window.__last; if (!L) return; const R = L.R;
+    const q = (v) => '"' + String(v).replace(/"/g, '""') + '"', out = [];
+    out.push(q('วงเงินค่าถ่ายเอกสารปี 2027 (Ricoh BCS-Q-26/002490)'));
+    out.push([q('ฐาน'), q(L.yl + (L.isPeak ? ' เดือนสูงสุด' : ' ค่าเฉลี่ย'))].join(','));
+    out.push([q('ราคา Ricoh ขาว/ดำ, สี (บาท/แผ่น)'), R.ric.bw, R.ric.c].join(','));
+    out.push([q('ค่าเช่า Ricoh รวม/เดือน'), R.ric.rent].join(','));
+    out.push([q('เผื่อเพิ่ม %'), L.buf * 100].join(','));
+    out.push([q('รวม VAT'), q(L.vat > 1 ? 'ใช่' : 'ไม่')].join(','));
+    out.push([q('วงเงินต่อเดือน'), Math.round(L.limit)].join(','));
+    out.push([q('วงเงินทั้งปี 2027'), Math.round(L.limit * 12)].join(','));
+    out.push('');
+    out.push(['เครื่อง', 'บริษัท', 'จุดตั้ง', 'สัญญาถึง', 'นำมาคิด', 'แผน 2027', 'ขาวดำ/เดือน', 'สี/เดือน', 'สติกเกอร์/เดือน', 'รวม/เดือน', 'ทั้งปี'].concat(TH).map(q).join(','));
+    R.per.forEach((p) => out.push([q(p.m.name), q(p.m.company), q(p.m.loc), q(p.m.end), q(p.on ? 'ใช่' : 'ไม่'), q(p.plan === 'ricoh' ? 'Ricoh' : 'สัญญาเดิม'),
+      Math.round(p.bw), Math.round(p.c), Math.round(p.s), Math.round(p.bw + p.c + p.s), Math.round(p.year)].concat(p.mon.map((v) => Math.round(v))).join(',')));
+    const blob = new Blob(['\ufeff' + out.join('\r\n')], {type: 'text/csv;charset=utf-8'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'copier-limit-2027.csv';
+    document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  });
+  $('doPrint').addEventListener('click', () => window.print());
+  let rt; window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(render, 150); });
+  render();
+})();
+</script>
+</body>
+</html>
