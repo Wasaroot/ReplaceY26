@@ -70,6 +70,7 @@ table.t th.l,table.t td.l{text-align:left}
 table.t td.nm b{font-weight:600}
 table.t td.nm small{display:block;color:var(--muted);font-size:12px}
 table.t td.nm small.exp{color:var(--bad)}
+table.t th.gh{text-align:center;color:var(--ink);border-bottom:2px solid var(--accent)}
 table.t tr.off td{opacity:.45}
 table.t tr.grp td{background:var(--accent-soft);font-weight:600}
 table.t tr.tot td{font-weight:700;border-top:2px solid var(--line);border-bottom:0}
@@ -153,12 +154,16 @@ table.t input[type=checkbox]{accent-color:var(--accent);width:15px;height:15px}
       <h2>รายเครื่องและจุดตั้ง</h2>
       <span class="hint" style="margin:0">ติ๊กเพื่อนำมาคิด · เลือกแผนปี 2027 ได้รายเครื่อง</span>
     </div>
+    <div class="bar" style="margin-bottom:8px" role="group" aria-label="เลือกคอลัมน์ยอดทั้งปี">
+      <span style="color:var(--muted);font-size:13px">แสดงยอดทั้งปี:</span>
+      <label><input type="checkbox" data-yc="bw" checked> ขาว/ดำ</label>
+      <label><input type="checkbox" data-yc="c" checked> สี</label>
+      <label><input type="checkbox" data-yc="s" checked> สติกเกอร์</label>
+      <label><input type="checkbox" data-yc="t" checked> รวมทุกประเภท</label>
+    </div>
     <div class="scroll">
       <table class="t">
-        <thead><tr>
-          <th class="l"></th><th class="l">เครื่อง / จุดตั้ง</th><th class="l">แผน 2027</th>
-          <th>ขาว/ดำ</th><th>สี</th><th>สติกเกอร์</th><th>รวม/เดือน</th><th id="thYear">ทั้งปี</th><th id="thCost">ค่าใช้จ่าย/เดือน</th>
-        </tr></thead>
+        <thead id="mHead"></thead>
         <tbody id="mBody"></tbody>
       </table>
     </div>
@@ -180,6 +185,7 @@ table.t input[type=checkbox]{accent-color:var(--accent);width:15px;height:15px}
     <ul class="notes">
       <li>จำนวนแผ่นคือ "จำนวนที่ใช้" ตามใบแจ้งหนี้ (หักกระดาษเสีย 2% แล้ว) งานสีรวม A4 และ A3 เพราะราคาเท่ากัน</li>
       <li>ต่อเดือน = ยอดทั้งปี ÷ เดือนที่ใช้งาน (12 ยกเว้น Fuji ชั้น 7 SSONS ปี 2024 = 7 และ Fuji ชั้น 12 ปี 2024 = 11 เพราะไม่มีงวดตุลาคม)</li>
+      <li>ราคาต่อแผ่นที่ใช้ในตาราง: Canon 0.39 บาท (ขาว/ดำ A4/A3 ไม่มีสี) · Fuji เดิม 0.25 (ขาว/ดำ) / 2.50 (สี) · Ricoh ตามช่องราคาด้านบน ราคาเปลี่ยนตามแผนที่เลือก</li>
       <li>แผน Ricoh: แผ่น × ราคา Ricoh และค่าเช่ารวมคิดครั้งเดียว · แผนสัญญาเดิม: แผ่น × ราคาเดิมของเครื่อง + ค่าเช่าเดิม (Canon ซื้อขาดแล้ว ไม่มีค่าเช่า) · ค่าเช่าเดิมถือเป็นยอดก่อน VAT</li>
       <li>วงเงิน = ผลรวม × (1 + เผื่อเพิ่ม) × VAT แล้วปัดขึ้น</li>
       <li><span class="est">*</span> ประมาณการ: Canon ชั้น 12 ต.ค.–พ.ย. 2025 (คิดจากยอดเงิน ÷ 0.39), Canon โรงงาน 2 และ 5 ธ.ค. 2025 (ครึ่งหนึ่งของมิเตอร์ที่เดินช่วง ธ.ค.–ม.ค.), Fuji ชั้น 12 ก.พ.–ส.ค. 2025 (งวดเดียวที่บันทึก 1 ก.ย. 2025 ครอบคลุมตั้งแต่ 16 ม.ค. ผมเฉลี่ยเท่ากัน 7 เดือน)</li>
@@ -200,7 +206,7 @@ const DATA = {"machines":[{"name":"Fuji ชั้น 11 (SSONS)","company":"SSON
   const M = DATA.machines;
   const CO = {SSONS: 'SSONS', SH: 'SH', SC: 'SC'};
   const TODAY = '2026-11-06';
-  const state = {on: {}, plan: {}, view: 'chart'};
+  const state = {on: {}, plan: {}, view: 'chart', cols: {bw: true, c: true, s: true, t: true}};
   M.forEach((m, i) => { state.on[i] = m.defOn !== false; state.plan[i] = m.end < '2027-01-01' ? 'ricoh' : 'stay'; });
   const num = (id) => { const v = parseFloat($(id).value); return isFinite(v) && v >= 0 ? v : 0; };
   const sum = (a, f) => a.reduce((t, o) => t + o[f], 0);
@@ -223,7 +229,7 @@ const DATA = {"machines":[{"name":"Fuji ชั้น 11 (SSONS)","company":"SSON
         base += m.basis[y] || 12;
       });
       const k = base || 1, r = rate(i);
-      const o = {i, m, on: state.on[i], plan: state.plan[i], bw: bw / k, c: c / k, s: s / k, actual: cost / k, mon, est, year: mon.reduce((a, v) => a + v, 0), hasData: base > 0};
+      const o = {i, m, on: state.on[i], plan: state.plan[i], bw: bw / k, c: c / k, s: s / k, ybw: bw / n, yc: c / n, ys: s / n, actual: cost / k, mon, est, year: mon.reduce((a, v) => a + v, 0), hasData: base > 0};
       o.var = o.bw * r.bw + o.c * r.c + o.s * r.s;
       o.rent = r.rent;
       return o;
@@ -250,7 +256,7 @@ const DATA = {"machines":[{"name":"Fuji ชั้น 11 (SSONS)","company":"SSON
     const peak = months.reduce((a, b) => (b.cost > a.cost ? b : a), months[0]);
     const avgB = {rb: sum(ricOn, 'bw'), rc: sum(ricOn, 'c'), rs: sum(ricOn, 's'), stayVar: sum(stayOn, 'var')};
     return {ysel, years, useSt, ric, per, on, ricOn, stayOn, rentRic, rentStay, months, peak, avgB,
-      tot: {bw: sum(on, 'bw'), c: sum(on, 'c'), s: sum(on, 's'), actual: sum(on, 'actual'), year: sum(on, 'year')}};
+      tot: {bw: sum(on, 'bw'), c: sum(on, 'c'), s: sum(on, 's'), ybw: sum(on, 'ybw'), yc: sum(on, 'yc'), ys: sum(on, 'ys'), actual: sum(on, 'actual'), year: sum(on, 'year')}};
   }
 
   function render() {
@@ -308,10 +314,23 @@ const DATA = {"machines":[{"name":"Fuji ชั้น 11 (SSONS)","company":"SSON
   }
 
   function renderMachines(R, vat) {
-    $('thYear').textContent = 'ทั้งปี ' + (R.ysel === 'avg' ? '(เฉลี่ย)' : R.ysel);
-    $('thCost').textContent = 'มิเตอร์ 2027/เดือน' + (vat > 1 ? ' รวม VAT' : '');
+    const yl = R.ysel === 'avg' ? 'เฉลี่ย 2024–25' : R.ysel;
+    const yc = [['bw', 'ขาว/ดำ', 'ybw'], ['c', 'สี', 'yc'], ['s', 'สติกเกอร์', 'ys'], ['t', 'รวม', 'year']].filter((x) => state.cols[x[0]] && (x[0] !== 's' || R.useSt));
+    const head = $('mHead'); head.replaceChildren();
+    const h1 = el('tr'), h2 = el('tr');
+    const th = (tr, txt, cls, span) => { const e = el('th', txt, cls); if (span) e.colSpan = span; tr.appendChild(e); };
+    th(h1, '', '', 4); th(h1, 'เฉลี่ยต่อเดือน', 'gh', 4);
+    if (yc.length) th(h1, 'ทั้งปี ' + yl, 'gh', yc.length);
+    th(h1, '', '');
+    th(h2, '', 'l'); th(h2, 'เครื่อง / จุดตั้ง', 'l'); th(h2, 'แผน 2027', 'l'); th(h2, 'บาท/แผ่น');
+    ['ขาว/ดำ', 'สี', 'สติกเกอร์', 'รวม'].forEach((x) => th(h2, x));
+    yc.forEach((x) => th(h2, x[1]));
+    th(h2, 'มิเตอร์ 2027/เดือน' + (vat > 1 ? ' รวม VAT' : ''));
+    head.appendChild(h1); head.appendChild(h2);
+
     const tb = $('mBody'); tb.replaceChildren();
     const td = (tr, v, cls) => { const t = el('td', v, cls); tr.appendChild(t); return t; };
+    const addY = (tr, o, has, est) => yc.forEach((x) => { const c = td(tr, has ? nf0.format(o[x[2]]) : '–'); if (est && has) c.appendChild(el('span', ' *', 'est')); });
     ['SSONS', 'SH', 'SC'].forEach((co) => {
       const g = R.per.filter((p) => p.m.company === co).sort((a, b) => (b.bw + b.c + b.s) - (a.bw + a.c + a.s));
       const gon = g.filter((p) => p.on);
@@ -324,34 +343,36 @@ const DATA = {"machines":[{"name":"Fuji ชั้น 11 (SSONS)","company":"SSON
         nm.appendChild(el('b', p.m.name));
         nm.appendChild(el('small', p.m.loc + ' · สัญญาถึง ' + fmtDate(p.m.end), p.m.end < TODAY ? 'exp' : ''));
         const sel = el('select'); sel.setAttribute('aria-label', 'แผน 2027 ของ ' + p.m.name);
-        [['ricoh', 'Ricoh'], ['stay', 'สัญญาเดิม']].forEach(([v, t]) => { const o = el('option', t); o.value = v; if (p.plan === v) o.selected = true; sel.appendChild(o); });
+        [['ricoh', 'Ricoh'], ['stay', 'สัญญาเดิม']].forEach((x) => { const o = el('option', x[1]); o.value = x[0]; if (p.plan === x[0]) o.selected = true; sel.appendChild(o); });
         sel.addEventListener('change', () => { state.plan[p.i] = sel.value; render(); });
         td(tr, '', 'l').appendChild(sel);
-        td(tr, nf0.format(p.bw)); td(tr, nf0.format(p.c)); td(tr, nf0.format(p.s));
-        td(tr, nf0.format(p.bw + p.c + p.s));
-        const y = td(tr, p.hasData ? nf0.format(p.year) : '–');
-        if (p.est.some(Boolean)) y.appendChild(el('span', ' *', 'est'));
+        const rt = p.plan === 'ricoh' ? {bw: R.ric.bw, c: R.ric.c} : {bw: p.m.rbw, c: p.m.rc};
+        td(tr, nf2.format(rt.bw) + (rt.c > 0 ? ' / ' + nf2.format(rt.c) : ''));
+        td(tr, nf0.format(p.bw)); td(tr, nf0.format(p.c)); td(tr, nf0.format(p.s)); td(tr, nf0.format(p.bw + p.c + p.s));
+        addY(tr, p, p.hasData, p.est.some(Boolean));
         td(tr, nf0.format((p.var + p.rent) * vat));
         tb.appendChild(tr);
       });
       if (gon.length) {
         const tr = el('tr', null, 'grp');
-        td(tr, ''); td(tr, 'รวม ' + CO[co] + ' (' + gon.length + ' เครื่อง)', 'l'); td(tr, '');
+        td(tr, ''); td(tr, 'รวม ' + CO[co] + ' (' + gon.length + ' เครื่อง)', 'l'); td(tr, ''); td(tr, '');
         td(tr, nf0.format(sum(gon, 'bw'))); td(tr, nf0.format(sum(gon, 'c'))); td(tr, nf0.format(sum(gon, 's')));
-        td(tr, nf0.format(sum(gon, 'bw') + sum(gon, 'c') + sum(gon, 's'))); td(tr, nf0.format(sum(gon, 'year')));
+        td(tr, nf0.format(sum(gon, 'bw') + sum(gon, 'c') + sum(gon, 's')));
+        addY(tr, {ybw: sum(gon, 'ybw'), yc: sum(gon, 'yc'), ys: sum(gon, 'ys'), year: sum(gon, 'year')}, true, false);
         td(tr, nf0.format(gon.reduce((t, p) => t + p.var + p.rent, 0) * vat));
         tb.appendChild(tr);
       }
     });
     const tr = el('tr', null, 'tot');
-    td(tr, ''); td(tr, 'รวมทั้งหมด', 'l'); td(tr, '');
-    td(tr, nf0.format(R.tot.bw)); td(tr, nf0.format(R.tot.c)); td(tr, nf0.format(R.tot.s));
-    td(tr, nf0.format(R.tot.bw + R.tot.c + R.tot.s)); td(tr, nf0.format(R.tot.year));
+    td(tr, ''); td(tr, 'รวมทั้งหมด', 'l'); td(tr, ''); td(tr, '');
+    td(tr, nf0.format(R.tot.bw)); td(tr, nf0.format(R.tot.c)); td(tr, nf0.format(R.tot.s)); td(tr, nf0.format(R.tot.bw + R.tot.c + R.tot.s));
+    addY(tr, R.tot, true, false);
     td(tr, nf0.format(R.on.reduce((t, p) => t + p.var + p.rent, 0) * vat));
     tb.appendChild(tr);
     if (R.rentRic) {
       const r2 = el('tr', null, 'tot');
-      td(r2, ''); td(r2, '+ ค่าเช่า Ricoh รวม', 'l'); [0, 1, 2, 3, 4, 5].forEach(() => td(r2, ''));
+      td(r2, ''); td(r2, '+ ค่าเช่า Ricoh รวม', 'l');
+      for (let k = 0; k < 2 + 4 + yc.length; k++) td(r2, '');
       td(r2, nf0.format(R.rentRic * vat));
       tb.appendChild(r2);
     }
@@ -410,6 +431,7 @@ const DATA = {"machines":[{"name":"Fuji ชั้น 11 (SSONS)","company":"SSON
     box.appendChild(lg);
   }
 
+  document.querySelectorAll('[data-yc]').forEach((c) => c.addEventListener('change', () => { state.cols[c.dataset.yc] = c.checked; render(); }));
   document.querySelectorAll('.seg').forEach((b) => b.addEventListener('click', () => {
     state.view = b.dataset.v;
     document.querySelectorAll('.seg').forEach((o) => o.setAttribute('aria-pressed', o === b ? 'true' : 'false'));
@@ -429,9 +451,9 @@ const DATA = {"machines":[{"name":"Fuji ชั้น 11 (SSONS)","company":"SSON
     out.push([q('วงเงินต่อเดือน'), Math.round(L.limit)].join(','));
     out.push([q('วงเงินทั้งปี 2027'), Math.round(L.limit * 12)].join(','));
     out.push('');
-    out.push(['เครื่อง', 'บริษัท', 'จุดตั้ง', 'สัญญาถึง', 'นำมาคิด', 'แผน 2027', 'ขาวดำ/เดือน', 'สี/เดือน', 'สติกเกอร์/เดือน', 'รวม/เดือน', 'ทั้งปี'].concat(TH).map(q).join(','));
+    out.push(['เครื่อง', 'บริษัท', 'จุดตั้ง', 'สัญญาถึง', 'นำมาคิด', 'แผน 2027', 'ขาวดำ/เดือน', 'สี/เดือน', 'สติกเกอร์/เดือน', 'รวม/เดือน', 'ทั้งปี', 'ทั้งปีขาวดำ', 'ทั้งปีสี', 'ทั้งปีสติกเกอร์'].concat(TH).map(q).join(','));
     R.per.forEach((p) => out.push([q(p.m.name), q(p.m.company), q(p.m.loc), q(p.m.end), q(p.on ? 'ใช่' : 'ไม่'), q(p.plan === 'ricoh' ? 'Ricoh' : 'สัญญาเดิม'),
-      Math.round(p.bw), Math.round(p.c), Math.round(p.s), Math.round(p.bw + p.c + p.s), Math.round(p.year)].concat(p.mon.map((v) => Math.round(v))).join(',')));
+      Math.round(p.bw), Math.round(p.c), Math.round(p.s), Math.round(p.bw + p.c + p.s), Math.round(p.year), Math.round(p.ybw), Math.round(p.yc), Math.round(p.ys)].concat(p.mon.map((v) => Math.round(v))).join(',')));
     const blob = new Blob(['\ufeff' + out.join('\r\n')], {type: 'text/csv;charset=utf-8'});
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'copier-limit-2027.csv';
     document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
