@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#FFFFFF">
-<title>Scotch Field Audit — Prototype</title>
+<title>Scotch Field Audit — Prototype v3</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&family=Kanit:wght@500;600&display=swap">
@@ -170,6 +170,61 @@ pre.json{margin:0;background:#1B1A19;color:#EDE9E3;border-radius:12px;padding:12
 .cam-note{margin:0;padding:0 16px 18px;text-align:center;font-size:12px;color:#BDB7AE}
 .ghost-dark{height:44px;border-radius:12px;border:1px solid #4A4642;background:transparent;color:#fff;padding:0 14px;justify-self:start}
 @media (min-width:900px){ body{padding:24px 0} .app{min-height:calc(100vh - 48px);border-radius:24px;overflow:hidden} }
+.opt.txt.tall{height:auto;min-height:44px;padding:8px 10px;line-height:1.3}
+.missrow{background:var(--flag-bg);margin:0 -14px;padding-left:14px!important;padding-right:14px!important}
+.card table th{width:42%;font-weight:500}
+/* ---- v3 additions ---- */
+select,input[type=date]{width:100%;min-height:44px;border-radius:12px;border:1px solid #C9C4BC;background:var(--surface);padding:8px 10px;font:inherit;font-size:14px;color:var(--ink);margin-top:4px}
+.hero{background:var(--ink);color:#fff;border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:14px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-40px;top:-40px;width:150px;height:150px;border-radius:75px;background:#2A2826}
+.hero>*{position:relative;z-index:1}
+.hero-eyebrow{font-size:12px;font-weight:600;letter-spacing:.08em;color:var(--gold)}
+.hero-num{font-family:var(--display);font-size:42px;font-weight:600;line-height:1.1}
+.hero-of{font-family:var(--display);font-size:18px;color:#B9B4AC}
+.hero-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.hero-stats div{background:#2A2826;border-radius:12px;padding:8px 12px}
+.hero-stats b{display:block;font-family:var(--display);font-size:20px}
+.hero-stats span{font-size:11px;color:#CFCAC2}
+.detect{background:var(--surface);border:2px solid var(--ink);border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.tier{border-radius:12px;padding:10px 12px;font-size:13px;display:flex;gap:8px;align-items:flex-start}
+.tier.ok{background:var(--ok-bg);color:var(--ok-ink)} .tier.warn{background:var(--warn-bg);color:var(--warn-ink)} .tier.lock{background:var(--flag-bg);color:var(--flag-ink)}
+.tier svg{flex-shrink:0;margin-top:2px}
+.lockcard{align-items:center;text-align:center;padding:24px 18px;border-color:#E9B9B9}
+.firstvisit{border-color:var(--gold-line);background:#FFFDF8}
+.cam-view .oval{position:absolute;left:50%;top:44%;width:58%;aspect-ratio:3/4;transform:translate(-50%,-50%);border:3px dashed rgba(230,191,138,.9);border-radius:50%;pointer-events:none}
+.approvals{border-color:var(--gold-line)}
+.appr{display:flex;gap:12px;border-top:1px solid var(--line2);padding-top:10px}
+.appr img{width:64px;height:84px;object-fit:cover;border-radius:10px;flex-shrink:0;background:#2A2826}
+.verbar{display:flex;justify-content:space-between;align-items:center;gap:10px;border-radius:14px;padding:12px 14px;background:var(--ok-bg);color:var(--ok-ink)}
+.verbar.dirty{background:var(--warn-bg);color:var(--warn-ink)}
+.atabs{display:flex;gap:4px;overflow-x:auto;padding-bottom:2px}
+.atabs button{flex-shrink:0;height:38px;padding:0 14px;border-radius:19px;border:1px solid var(--line);background:var(--surface);font-size:13px;font-weight:500;color:var(--ink2)}
+.atabs button.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.bgrid{display:grid;gap:8px}
+.builder{border:2px solid var(--ink)}
+.frow{display:flex;gap:8px;align-items:center;border-top:1px solid var(--line2);padding-top:10px}
+.frow.expired{opacity:.55} .frow.scheduled{background:#FFFDF8;margin:0 -14px;padding:10px 14px 0}
+.ibtn{width:34px;height:34px;border-radius:10px;border:1px solid var(--line);background:var(--surface);font-size:15px;display:flex;align-items:center;justify-content:center;color:var(--ink2)}
+.ibtn.del{color:var(--flag-ink)}
+.mtable td,.mtable th{vertical-align:top}
+.mtable tr.sel td{background:#FBF4E8}
+.tree{font-size:13px;background:#FAF9F7;border:1px solid var(--line);border-radius:12px;padding:12px}
+.tree .tn{display:inline-block;background:var(--surface);border:1px solid #D9D5CE;border-radius:10px;padding:6px 10px;font-weight:600;margin:4px 0}
+.tree .tn.r{border-color:var(--gold-line);background:var(--gold-bg);color:var(--gold-ink)}
+.tree code{font-size:10px;color:var(--ink3);font-weight:500;margin-left:4px}
+.tree .tb{margin-left:14px;padding-left:12px;border-left:2px solid #D9D5CE;margin-top:4px}
+.tree .ta{display:inline-block;font-size:11px;font-weight:600;background:var(--ink);color:#fff;border-radius:8px;padding:1px 8px;margin-right:6px}
+.diff{font-size:13px;padding:6px 10px;border-radius:8px}
+.diff.add{background:var(--ok-bg)} .diff.del{background:var(--flag-bg)}
+.kof{font-size:15px;color:var(--ink3);font-weight:500}
+.legend{display:flex;gap:10px;font-size:11px;color:var(--ink3)} .legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:-1px}
+.chart{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;align-items:end}
+.chart .col{border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 0;border-radius:10px}
+.chart .col.on{background:var(--gold-bg)}
+.chart .bars{height:120px;width:100%;display:flex;align-items:flex-end;justify-content:center;gap:3px}
+.chart .bars i{width:11px;border-radius:4px 4px 0 0;display:block;min-height:2px}
+.chart .bars .p{background:#D9D5CE} .chart .bars .a{background:var(--red)}
+.chart .cv{font-family:var(--display);font-size:12px} .chart .cd{font-size:11px;color:var(--ink3)}
 </style>
 </head>
 <body>
@@ -179,57 +234,104 @@ pre.json{margin:0;background:#1B1A19;color:#EDE9E3;border-radius:12px;padding:12
 
 <!-- ============================================================
      MOCK DATABASE — ในระบบจริงข้อมูลชุดนี้อยู่ใน SQL Server
-     ตาราง: Users, Stores, Products (+ FormVersions)
-     * ชื่อพนักงานและพิกัดสาขาเป็นข้อมูลจำลอง
+     ตาราง: Users, Stores, Products, QuestionMaster, FormRows (+ FormVersions), ReasonCodes
+     * ชื่อพนักงาน พิกัดสาขา และบาร์โค้ดเป็นข้อมูลจำลอง
      ============================================================ -->
 <script type="application/json" id="seed-data">
 {
-  "form": { "period": "ต.ค. 2026", "version": 1 },
+  "form": { "version": 3 },
   "users": [
-    { "code": "CVSBKK13", "name": "สมชาย ใจดี",    "role": "FF",    "group": "BKK", "pin": "1234" },
-    { "code": "CVSBKK14", "name": "สุดา มีสุข",     "role": "FF",    "group": "BKK", "pin": "1234" },
-    { "code": "CVSBKK15", "name": "อนันต์ รักงาน",  "role": "FF",    "group": "BKK", "pin": "1234" },
-    { "code": "CVSLEAD01","name": "วิภา หัวหน้าทีม", "role": "LEAD",  "group": "BKK", "pin": "1234" },
-    { "code": "BA01",     "name": "ทีม BA (Admin)",  "role": "ADMIN", "group": "HQ",  "pin": "1234" }
+    { "code": "CVSBKK13", "name": "สมชาย ใจดี",     "role": "FF",    "group": "BKK", "pin": "1234", "route": ["10","814","250","1696","1778","3755","906"] },
+    { "code": "CVSBKK14", "name": "สุดา มีสุข",      "role": "FF",    "group": "BKK", "pin": "1234", "route": ["2512","949","45","1764","906","3755"] },
+    { "code": "CVSUPC01", "name": "อนันต์ รักงาน",   "role": "FF",    "group": "UPC", "pin": "1234", "route": ["15894","1764","45","949","250"] },
+    { "code": "CVSLEAD01","name": "วิภา หัวหน้าทีม",  "role": "LEAD",  "group": "BKK", "pin": "1234", "route": [] },
+    { "code": "BA01",     "name": "ทีม BA (Admin)",   "role": "ADMIN", "group": "HQ",  "pin": "1234", "route": [] }
   ],
   "stores": [
-    { "code": "10",   "name": "ลาดพร้าว 101",            "chain": "7-Eleven", "type": "ทั่วไป (A)", "shelf": "3 แผ่นชั้น", "lat": 13.78800, "lng": 100.60850 },
-    { "code": "814",  "name": "ลาดพร้าว 101/1",          "chain": "7-Eleven", "type": "ทั่วไป (A)", "shelf": "3 แผ่นชั้น", "lat": 13.79050, "lng": 100.61100 },
-    { "code": "250",  "name": "ลาดพร้าว 109",            "chain": "7-Eleven", "type": "ทั่วไป (B)", "shelf": "2 แผ่นชั้น", "lat": 13.79300, "lng": 100.61400 },
-    { "code": "1696", "name": "ม.ศิขริน",                "chain": "7-Eleven", "type": "ทั่วไป (A)", "shelf": "3 แผ่นชั้น", "lat": 13.78200, "lng": 100.62000 },
-    { "code": "1778", "name": "ลาดพร้าว 140",            "chain": "7-Eleven", "type": "ทั่วไป (B)", "shelf": "2 แผ่นชั้น", "lat": 13.77600, "lng": 100.62900 },
-    { "code": "3755", "name": "รามคำแหง 42",             "chain": "7-Eleven", "type": "ทั่วไป (B)", "shelf": "2 แผ่นชั้น", "lat": 13.76050, "lng": 100.62400 },
-    { "code": "906",  "name": "รามคำแหง 68",             "chain": "7-Eleven", "type": "ทั่วไป (B)", "shelf": "2 แผ่นชั้น", "lat": 13.76250, "lng": 100.63350 },
-    { "code": "2512", "name": "รามคำแหง 51/2",           "chain": "7-Eleven", "type": "ทั่วไป (B)", "shelf": "2 แผ่นชั้น", "lat": 13.75800, "lng": 100.64550 },
-    { "code": "949",  "name": "พัฒนาการ 46",             "chain": "7-Eleven", "type": "ทั่วไป (B)", "shelf": "2 แผ่นชั้น", "lat": 13.73600, "lng": 100.62300 },
-    { "code": "45",   "name": "เมืองทอง 2 (พัฒนาการ 61)", "chain": "7-Eleven", "type": "ทั่วไป (B)", "shelf": "2 แผ่นชั้น", "lat": 13.72900, "lng": 100.64000 },
-    { "code": "1764", "name": "อ่อนนุช 17 แยก 16",       "chain": "7-Eleven", "type": "ทั่วไป (A)", "shelf": "3 แผ่นชั้น", "lat": 13.71600, "lng": 100.60700 },
-    { "code": "15894","name": "ลาซาล 56",                "chain": "7-Eleven", "type": "ทั่วไป (B)", "shelf": "2 แผ่นชั้น", "lat": 13.66800, "lng": 100.61900 }
+    { "code": "10",    "name": "ลาดพร้าว 101",            "fc": "BE", "loc": "ที่พักอาศัย/ตลาด", "lat": 13.78800, "lng": 100.60850 },
+    { "code": "814",   "name": "ลาดพร้าว 101/1",          "fc": "BE", "loc": "ที่พักอาศัย/ตลาด", "lat": 13.78860, "lng": 100.60960 },
+    { "code": "250",   "name": "ลาดพร้าว 109",            "fc": "BE", "loc": "ที่พักอาศัย/ตลาด", "lat": 13.79300, "lng": 100.61400 },
+    { "code": "1696",  "name": "ม.ศิขริน",                "fc": "BE", "loc": "ที่พักอาศัย/ตลาด", "lat": 13.78200, "lng": 100.62000 },
+    { "code": "1778",  "name": "ลาดพร้าว 140",            "fc": "BE", "loc": null,              "lat": 13.77600, "lng": 100.62900 },
+    { "code": "3755",  "name": "รามคำแหง 42",             "fc": "BE", "loc": "สถานการศึกษา",    "lat": 13.76050, "lng": 100.62400 },
+    { "code": "906",   "name": "รามคำแหง 68",             "fc": "BE", "loc": "ที่พักอาศัย/ตลาด", "lat": 13.76250, "lng": 100.63350 },
+    { "code": "2512",  "name": "รามคำแหง 51/2",           "fc": "BE", "loc": "ออฟฟิศ",          "lat": 13.75800, "lng": 100.64550 },
+    { "code": "949",   "name": "พัฒนาการ 46",             "fc": "BS", "loc": "ปั๊มน้ำมัน",        "lat": 13.73600, "lng": 100.62300 },
+    { "code": "45",    "name": "เมืองทอง 2 (พัฒนาการ 61)", "fc": "BS", "loc": null,              "lat": 13.72900, "lng": 100.64000 },
+    { "code": "1764",  "name": "อ่อนนุช 17 แยก 16",       "fc": "BS", "loc": "ที่พักอาศัย/ตลาด", "lat": 13.71600, "lng": 100.60700 },
+    { "code": "15894", "name": "ลาซาล 56",                "fc": "BS", "loc": "ที่พักอาศัย/ตลาด", "lat": 13.66800, "lng": 100.61900 }
   ],
   "products": [
-    { "id": "S01", "type": "S", "name": "สก๊อต รังนกรอเยลโกลด์ 40 มล.",                 "active": true,  "focus": false },
-    { "id": "S02", "type": "S", "name": "สก๊อต รังนกรอเยลโกลด์ ไซลิทอล 40 มล.",          "active": true,  "focus": false },
-    { "id": "S03", "type": "S", "name": "สก๊อต รังนกรอเยลโกลด์ น้ำตาลน้อย 40 มล.",        "active": true,  "focus": true  },
-    { "id": "S04", "type": "S", "name": "สก๊อต รังนกรอเยลโกลด์ เกรปซีดซิงค์ 40 มล.",      "active": true,  "focus": true  },
-    { "id": "S05", "type": "S", "name": "สก๊อต ซุปไก่สกัด สูตร 100% 40 มล.",             "active": true,  "focus": false },
-    { "id": "S06", "type": "S", "name": "สก๊อต ซุปไก่สกัด สูตร 100% 70 มล.",             "active": true,  "focus": false },
-    { "id": "S07", "type": "S", "name": "สก๊อต คิตซ์ ช็อคโก 40 มล.",                    "active": true,  "focus": false },
-    { "id": "S08", "type": "S", "name": "สก๊อต เพียวเร่ ไฟเบอร์แอนด์พรุนพลัส 75 มล.",     "active": true,  "focus": true  },
-    { "id": "S09", "type": "S", "name": "สก๊อต พุงทะลาย บิวติชอท เอ็กซ์ตร้าคอลลาเจน 100 มล.", "active": false, "focus": false },
-    { "id": "B01", "type": "C", "name": "แบรนด์ รังนกแท้ไซลิทอล 42 มล.",                 "active": true },
-    { "id": "B02", "type": "C", "name": "แบรนด์ ซุปไก่สกัด 42 มล.",                      "active": true },
-    { "id": "B03", "type": "C", "name": "แบรนด์ ซุปไก่สกัด 70 มล.",                      "active": true },
-    { "id": "B04", "type": "C", "name": "แบรนด์ วีต้าเบอร์รี่ 42 มล.",                    "active": true },
-    { "id": "C01", "type": "C", "name": "ดอกบัวคู่ รังนกไซลิทอล 45 มล.",                  "active": true },
-    { "id": "C02", "type": "C", "name": "เบลล์รังนก สูตรน้ำตาลกรวด 200 มล.",             "active": true },
-    { "id": "P01", "type": "P", "name": "Shelf Talker รังนกรอเยลโกลด์ สูตรหวานน้อย",     "active": true },
-    { "id": "P02", "type": "P", "name": "Shelf Talker เพียวเร่ไฟเบอร์แอนด์พรุนพลัส",     "active": true },
-    { "id": "P03", "type": "P", "name": "สื่อบนตู้ Vault",                                "active": true },
-    { "id": "P04", "type": "P", "name": "พื้นที่พิเศษวางสินค้าแพ็ก (หัวชั้น, นอกแคชเชียร์)", "active": true },
-    { "id": "P05", "type": "P", "name": "พื้นที่พิเศษวางกระเช้าหลังตู้ไอติม",               "active": true }
+    { "id": "F01", "code": "รังนก_หวานน้อย_150ml",           "barcode": "8850000100011", "name": "สก๊อต รังนกแท้ พลัสวิตามิน สูตรหวานน้อย 150 มล." },
+    { "id": "F02", "code": "รังนก_เก๊กฮวย_150ml",            "barcode": "8850000100028", "name": "สก๊อต รังนกแท้ พลัสวิตามิน กลิ่นเก๊กฮวย 150 มล." },
+    { "id": "F03", "code": "รังนก_รอเยลโกลด์ไซลิทอล_40ml",     "barcode": "8850000100035", "name": "สก๊อต รังนกรอเยลโกลด์ ไซลิทอล 40 มล." },
+    { "id": "F04", "code": "รังนก_รอเยลโกลด์หวานน้อย_70ml",    "barcode": "8850000100042", "name": "สก๊อต รังนกแท้รอเยลโกลด์ หวานน้อย 70 มล." },
+    { "id": "F05", "code": "ซุปไก่_ออริจินัล_40ml",            "barcode": "8850000100059", "name": "สก๊อต ซุปไก่สกัด ออริจินัล 40 มล." },
+    { "id": "F06", "code": "เพียวเร่_เบอร์รี่_40ml",            "barcode": "8850000100066", "name": "สก๊อต เพียวเร่ เบอร์รี่ 40 มล." },
+    { "id": "F07", "code": "พุงทะลาย_เอ็กซ์ตร้าคอลลาเจน_100ml",  "barcode": "8850000100073", "name": "สก๊อต พุงทะลาย บิวติชอท เอ็กซ์ตร้าคอลลาเจน 100 มล." },
+    { "id": "O01", "code": "รังนก_สุพรีมโกลด์_40ml",           "barcode": "8850000100080", "name": "สก๊อต รังนกสุพรีมโกลด์ 40 มล." },
+    { "id": "O02", "code": "รังนก_สุพรีมโกลด์ไซลิทอล_40ml",     "barcode": "8850000100097", "name": "สก๊อต รังนกสุพรีมโกลด์ ไซลิทอล 40 มล." },
+    { "id": "O03", "code": "รังนก_รอเยลโกลด์หวานน้อย_40ml",    "barcode": "8850000100103", "name": "สก๊อต รังนกแท้รอเยลโกลด์ หวานน้อย 40 มล." },
+    { "id": "O04", "code": "รังนก_เกรปซีดซิงค์_40ml",          "barcode": "8850000100110", "name": "สก๊อต รังนกแท้รอเยลโกลด์ เกรปซีดซิงค์ 40 มล." },
+    { "id": "O05", "code": "รังนก_เกรปซีดซิงค์_70ml",          "barcode": "8850000100127", "name": "สก๊อต รังนกแท้รอเยลโกลด์ เกรปซีดซิงค์ 70 มล." },
+    { "id": "O06", "code": "รังนก_B3พลัส_70ml",              "barcode": "8850000100134", "name": "สก๊อต รังนกรอเยลโกลด์ B3พลัส 70 มล." },
+    { "id": "O07", "code": "ซุปไก่_ออริจินัล_70ml",            "barcode": "8850000100141", "name": "สก๊อต ซุปไก่สกัด ออริจินัล 70 มล." },
+    { "id": "O08", "code": "ซุปไก่_ออริจินัล_100ml",           "barcode": "8850000100158", "name": "สก๊อต ซุปไก่สกัด ออริจินัล 100 มล." },
+    { "id": "O09", "code": "คิตซ์_ช็อกโกออเรนจ์_40ml",         "barcode": "8850000100165", "name": "สก๊อต คิตซ์ ช็อกโกออเรนจ์ 40 มล." },
+    { "id": "O10", "code": "คิตซ์ซุปไก่ผสมนม_ช็อกโกแลต_140ml",  "barcode": "8850000100172", "name": "สก๊อต คิตซ์ ซุปไก่ผสมนม ช็อกโกแลต 140 มล." },
+    { "id": "O11", "code": "คิตซ์ซุปไก่ผสมนม_ฮันนี่มอลต์_140ml", "barcode": "8850000100189", "name": "สก๊อต คิตซ์ ซุปไก่ผสมนม ฮันนี่มอลต์ 140 มล." },
+    { "id": "O12", "code": "เพียวเร่_พรุน_40ml",               "barcode": "8850000100196", "name": "สก๊อต เพียวเร่ พรุน 40 มล." },
+    { "id": "O13", "code": "เพียวเร่_ไฟเบอร์แอนด์พรุนพลัส_75ml", "barcode": "8850000100202", "name": "สก๊อต เพียวเร่ ไฟเบอร์แอนด์พรุนพลัส 75 มล." },
+    { "id": "O14", "code": "พุงทะลาย_บิวติชอทคอลลาเจน_100ml",   "barcode": "8850000100219", "name": "สก๊อต พุงทะลาย บิวติชอท คอลลาเจน 100 มล." }
   ],
-  "reasons": ["สต๊อกยังเต็ม", "ขายไม่ดี", "รอโปรโมชั่น", "ไม่มีพื้นที่", "อื่น ๆ"],
-  "rules": { "maxDistanceM": 200, "minDurationSec": 120, "lateHours": 2, "maxAccuracyM": 100 }
+  "questions": [
+    { "id": "M01", "cat": "Must List", "key": "ON_SHELF",       "type": "single", "text": "สินค้านี้มีวางบนตู้แช่หรือไม่?", "options": ["มี", "ไม่มี"] },
+    { "id": "M02", "cat": "Must List", "key": "IN_STOCK",       "type": "single", "text": "กรณีไม่มีวางบนตู้แช่ มีสินค้านี้ในสต็อกหรือไม่?", "options": ["มี", "ไม่มี"] },
+    { "id": "M03", "cat": "Must List", "key": "ALLOW_ARRANGE",  "type": "single", "text": "กรณีมีในสต็อก สาขายอมให้จัดเรียงหรือไม่?", "options": ["ให้จัด", "ไม่ให้จัด"] },
+    { "id": "M04", "cat": "Must List", "key": "ARRANGE_REASON", "type": "single", "text": "กรณีไม่ให้จัดเรียง เพราะอะไร?", "options": ["(รายการเหตุผล: ไม่ให้จัด)"] },
+    { "id": "M05", "cat": "Must List", "key": "WILL_ORDER",     "type": "single", "text": "กรณีไม่มีในสต็อก สาขายอมสั่งของหรือไม่?", "options": ["สั่ง", "ไม่สั่ง"] },
+    { "id": "M06", "cat": "Must List", "key": "ORDER_REASON",   "type": "single", "text": "กรณีไม่สั่ง เพราะอะไร?", "options": ["(รายการเหตุผล: ไม่สั่ง)"] },
+    { "id": "Q01", "cat": "เช็คสินค้าทั่วไป", "key": "AVAILABLE", "type": "single", "needProduct": true, "text": "สินค้านี้มีวางบนตู้แช่หรือไม่?", "options": ["มี", "ไม่มี"] },
+    { "id": "Q10", "cat": "กระเช้า", "key": "BASKET_ON_SALE", "type": "single", "text": "มีกระเช้าสก๊อตอย่างน้อย 1 ตัว วางขายหน้าสาขาหรือไม่?", "options": ["มี", "ไม่มี"], "follow": { "on": "มี", "qs": ["Q11", "Q12"] } },
+    { "id": "Q11", "cat": "กระเช้า", "key": "BASKET_ITEMS", "type": "multiple", "child": true, "text": "กระเช้าที่มีวางขาย", "options": ["Happy Moment 1", "Happy Moment 2", "Be Bright", "กระเช้า C"] },
+    { "id": "Q12", "cat": "กระเช้า", "key": "BASKET_PLACES", "type": "multiple", "child": true, "text": "พื้นที่วางกระเช้าอยู่ตรงไหนบ้าง?", "options": ["หลังแคชเชียร์", "ตู้ไอติม", "หัวชั้น", "อื่นๆ"] },
+    { "id": "Q20", "cat": "สื่อโปรโมชั่น", "key": "THEME_POSM", "type": "single", "text": "มีสื่อโปรโมชั่น Theme Corporate หรือไม่?", "options": ["มี และติดในตำแหน่งที่ถูกต้องแล้ว", "ไม่มี"], "follow": { "on": "มี และติดในตำแหน่งที่ถูกต้องแล้ว", "qs": ["Q21"] } },
+    { "id": "Q21", "cat": "สื่อโปรโมชั่น", "key": "THEME_POSM_ITEMS", "type": "multiple", "child": true, "text": "มีสื่อโปรโมชั่น Theme Corporate อันไหนอยู่บ้าง?", "options": ["รังนก 150ml · Stamp 3 ดวง (All Member +1 & True Money Wallet +1)", "รังนก สุพรีมโกลด์ 40ml · Stamp 6 ดวง (All Member +1)", "ซุปไก่ 70ml · Stamp 3 ดวง (All Member +1 & True Money Wallet +1)", "พุงทะลาย เอ็กซ์ตร้าคอลลาเจน 100ml · Stamp 2 ดวง (All Member +1)"] },
+    { "id": "Q30", "cat": "พื้นที่พิเศษ", "key": "SPACE_PACK", "type": "single", "text": "สก๊อตมีพื้นที่พิเศษสำหรับแพ็กหรือไม่?", "options": ["มี", "ไม่มี"], "follow": { "on": "มี", "qs": ["Q31", "Q32"] } },
+    { "id": "Q31", "cat": "พื้นที่พิเศษ", "key": "SPACE_PACK_ITEMS", "type": "multiple", "child": true, "text": "พื้นที่พิเศษสำหรับแพ็ก วางสินค้าใดบ้าง?", "options": ["รอเยลโกลด์ ไซลิทอล 40", "สุพรีมโกลด์ 40", "รอเยลโกลด์ หวานน้อย 70", "ซุปไก่ ออริจินัล 40", "ซุปไก่ ออริจินัล 70", "คิตซ์ ช็อกโกออเรนจ์ 40", "เพียวเร่ พรุน 40", "เพียวเร่ เบอร์รี่ 40", "รังนกพลัสวิตามิน หวานน้อย 150", "รังนกพลัสวิตามิน เก๊กฮวย 150"] },
+    { "id": "Q32", "cat": "พื้นที่พิเศษ", "key": "SPACE_PACK_PLACES", "type": "multiple", "child": true, "text": "พื้นที่พิเศษสำหรับแพ็ก อยู่บริเวณไหนบ้าง?", "options": ["หัวโปรโมชั่น", "อื่นๆ"] },
+    { "id": "Q33", "cat": "พื้นที่พิเศษ", "key": "SPACE_GIFTBOX", "type": "single", "text": "สก๊อตมีพื้นที่พิเศษสำหรับกิ๊ฟบ็อกซ์หรือไม่?", "options": ["มี", "ไม่มี"], "follow": { "on": "มี", "qs": ["Q34", "Q35"] } },
+    { "id": "Q34", "cat": "พื้นที่พิเศษ", "key": "SPACE_GIFTBOX_ITEMS", "type": "multiple", "child": true, "text": "พื้นที่พิเศษสำหรับกิ๊ฟบ็อกซ์ วางสินค้าใดบ้าง?", "options": ["กิ๊ฟบ็อกซ์ วันเดอร์ลัส"] },
+    { "id": "Q35", "cat": "พื้นที่พิเศษ", "key": "SPACE_GIFTBOX_PLACES", "type": "multiple", "child": true, "text": "พื้นที่พิเศษสำหรับกิ๊ฟบ็อกซ์ อยู่บริเวณไหนบ้าง?", "options": ["หัวโปรโมชั่น", "หลังตู้ไอศกรีม", "อื่นๆ"] },
+    { "id": "Q36", "cat": "พื้นที่พิเศษ", "key": "SPACE_BASKET", "type": "single", "text": "สก๊อตมีพื้นที่พิเศษสำหรับกระเช้าหรือไม่?", "options": ["มี", "ไม่มี"], "follow": { "on": "มี", "qs": ["Q37", "Q38"] } },
+    { "id": "Q37", "cat": "พื้นที่พิเศษ", "key": "SPACE_BASKET_ITEMS", "type": "multiple", "child": true, "text": "พื้นที่พิเศษสำหรับกระเช้า วางสินค้าใดบ้าง?", "options": ["Happy Moment 1", "Happy Moment 2", "Be Bright", "กระเช้า C"] },
+    { "id": "Q38", "cat": "พื้นที่พิเศษ", "key": "SPACE_BASKET_PLACES", "type": "multiple", "child": true, "text": "พื้นที่พิเศษสำหรับกระเช้า อยู่บริเวณไหนบ้าง?", "options": ["หัวโปรโมชั่น", "พื้นที่พิเศษวางกระเช้า", "หลังตู้ไอศกรีม", "บาร์น้ำแพ็ก", "อื่นๆ"] },
+    { "id": "Q40", "cat": "พื้นที่พิเศษ", "key": "SPACE_BRAND", "type": "single", "text": "แบรนด์ (คู่แข่ง) มีพื้นที่พิเศษหรือไม่?", "options": ["มี", "ไม่มี"], "follow": { "on": "มี", "qs": ["Q41"] } },
+    { "id": "Q41", "cat": "พื้นที่พิเศษ", "key": "SPACE_BRAND_PLACES", "type": "multiple", "child": true, "text": "พื้นที่พิเศษของแบรนด์ อยู่บริเวณไหนบ้าง?", "options": ["หัวโปรโมชั่น", "ตะแกรงหน้าตู้แช่", "พื้นที่พิเศษวางกระเช้า", "บาร์น้ำแพ็ก", "อื่นๆ"] },
+    { "id": "Q50", "cat": "สื่อโปรโมชั่น", "key": "TALKER_FIBER", "type": "single", "text": "มีสื่อ Shelf Talker เพียวเร่ ไฟเบอร์แอนด์พรุนพลัส หรือไม่?", "options": ["มี", "ไม่มี"] }
+  ],
+  "formRows": [
+    { "q": "MSL", "products": ["F01","F02","F03","F04","F05","F06","F07"], "from": -16, "to": 13 },
+    { "q": "Q01", "products": ["O01","O02","O03","O04","O05","O06","O07","O08","O09","O10","O11","O12","O13"], "from": -16, "to": 13 },
+    { "q": "Q01", "products": ["O14"], "from": -46, "to": -1 },
+    { "q": "Q10", "from": -16, "to": 13 },
+    { "q": "Q20", "from": -16, "to": 13 },
+    { "q": "Q30", "from": -16, "to": 13 },
+    { "q": "Q33", "from": -16, "to": 13 },
+    { "q": "Q36", "from": -16, "to": 13 },
+    { "q": "Q40", "from": -16, "to": 13 },
+    { "q": "Q50", "from": 7, "to": 37 }
+  ],
+  "reasons": {
+    "arrange": [ { "code": "A01", "label": "ไม่มีพื้นที่บนชั้น", "active": true }, { "code": "A02", "label": "ผู้จัดการไม่อนุญาต", "active": true }, { "code": "A03", "label": "พื้นที่ติดโปรฯ คู่แข่ง", "active": true }, { "code": "A04", "label": "สินค้าใกล้หมดอายุ", "active": true } ],
+    "order":   [ { "code": "R01", "label": "สต็อกยังเต็ม", "active": true }, { "code": "R02", "label": "ขายไม่ดี", "active": true }, { "code": "R03", "label": "รอโปรโมชั่น", "active": true }, { "code": "R04", "label": "เกินวงเงินสั่งซื้อ", "active": true } ]
+  },
+  "purposes": ["เข้าตามปกติ", "เข้าแทน", "ติดตามงาน"],
+  "shelfSizes": ["XS - บูธ", "S - 1 แผ่นชั้น", "M - 2 แผ่นชั้น", "L - 3 แผ่นชั้น", "XL - มากกว่า 3 แผ่นชั้น", "All grocer"],
+  "locTypes": ["ที่พักอาศัย/ตลาด", "ปั๊มน้ำมัน", "แหล่งท่องเที่ยว", "สถานการศึกษา", "ออฟฟิศ", "โรงงาน/นิคม", "โรงพยาบาล", "สถานีขนส่ง", "สถานบันเทิง"],
+  "accessReasons": ["สาขาปิดปรับปรุง", "สาขาปิดชั่วคราว", "ผู้จัดการไม่อนุญาตให้เข้า"],
+  "coolerOptions": ["ถ่ายได้", "ถ่ายได้ - จัดเรียงสินค้าไม่ได้", "ถ่ายไม่ได้ - สาขาไม่ให้"],
+  "rules": { "okM": 50, "lockM": 200, "okAccM": 30, "minDurationSec": 120, "lateHours": 2 }
 }
 </script>
 
@@ -306,30 +408,6 @@ const S = {
 };
 
 /* =============================================================
-   2) "SERVER" จำลอง — สิ่งที่ API จริงจะทำเมื่อได้รับข้อมูล
-   ============================================================= */
-function serverReceive(v, receivedAt) {
-  // (ก) Idempotency: VisitId ซ้ำ = เคยรับแล้ว → ไม่บันทึกซ้ำ
-  if (S.server.some(x => x.id === v.id)) return { status: 200, note: 'ซ้ำ → ข้าม (ไม่บันทึกซ้ำ)' };
-  const rec = JSON.parse(JSON.stringify(v));
-  rec.receivedAt = (receivedAt || new Date()).toISOString();
-  // (ข) Server คำนวณระยะเองจากพิกัด — ไม่เชื่อค่าที่มือถือส่งมา
-  const st = storeBy(v.store);
-  rec.distance = Math.round(haversine({ lat: v.lat, lng: v.lng }, st));
-  // (ค) กฎ flag ความผิดปกติ
-  const flags = [];
-  const dur = (new Date(v.completedAt) - new Date(v.startedAt)) / 1000;
-  const late = (new Date(rec.receivedAt) - new Date(v.completedAt)) / 3600000;
-  if (rec.distance > RULES.maxDistanceM) flags.push(`อยู่ห่างร้าน ${fmtDist(rec.distance)}`);
-  if (dur < RULES.minDurationSec) flags.push(`ใช้เวลาเพียง ${fmtDur(dur)} นาที`);
-  if (late > RULES.lateHours) flags.push(`ส่งย้อนหลัง ${late.toFixed(1)} ชม.`);
-  if (v.acc > RULES.maxAccuracyM) flags.push(`GPS ไม่แม่นยำ (±${Math.round(v.acc)} ม.)`);
-  rec.flags = flags;
-  S.server.push(rec);
-  return { status: 201, note: flags.length ? `รับแล้ว · flag ${flags.length}` : 'รับแล้ว' };
-}
-
-/* =============================================================
    3) ภาพจำลอง (ใช้เมื่อไม่มีกล้อง) + ประทับเวลา/พิกัดลงภาพ
    ============================================================= */
 function drawShelf(ctx, w, h, seed) {
@@ -369,43 +447,173 @@ function makePhoto(source, meta, seed) {
   const c = document.createElement('canvas'); c.width = w; c.height = h;
   const ctx = c.getContext('2d');
   if (source && source.videoWidth) ctx.drawImage(source, 0, 0, w, h); else drawShelf(ctx, w, h, seed);
-  stamp(ctx, w, h, [`${fmtDT(meta.takenAt)} · สาขา ${meta.store}`, `${meta.lat.toFixed(5)}, ${meta.lng.toFixed(5)}  ±${Math.round(meta.acc)} ม.`]);
+  stamp(ctx, w, h, [`${meta.label ? meta.label + ' · ' : ''}${fmtDT(meta.takenAt)} · สาขา ${meta.store}`, `${meta.lat.toFixed(5)}, ${meta.lng.toFixed(5)}  ±${Math.round(meta.acc)} ม.`]);
   const data = c.toDataURL('image/jpeg', 0.72);
   return { data, takenAt: meta.takenAt, lat: meta.lat, lng: meta.lng, kb: Math.round(data.length * 0.75 / 1024) };
 }
 
 /* =============================================================
-   4) ข้อมูลตัวอย่างของวันนี้ (ให้ dashboard มีอะไรดู)
+   2) แบบฟอร์ม: คลังคำถาม (master) + แถวในฟอร์ม + การเผยแพร่
    ============================================================= */
+const OTHER = 'OTH', OTHER_OPT = 'อื่นๆ';
+const clone = x => JSON.parse(JSON.stringify(x));
+const iso = d => { d = new Date(d); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; };
+const addDays = n => { const d = new Date(); d.setDate(d.getDate() + n); return iso(d); };
+const TODAY = iso(new Date());
+const TH_MONTH = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+const fmtD = s => { const d = new Date(s + 'T00:00:00'); return `${d.getDate()} ${TH_MONTH[d.getMonth()]}`; };
+const PERIOD = (() => { const d = new Date(); return `${TH_MONTH[d.getMonth()]} ${d.getFullYear()}`; })();
+
+const QM = clone(SEED.questions);                    // คลังคำถาม (master)
+const qBy = id => QM.find(q => q.id === id);
+const MSL_QS = QM.filter(q => q.cat === 'Must List');
+const CATS = ['Must List', 'เช็คสินค้าทั่วไป', 'กระเช้า', 'สื่อโปรโมชั่น', 'พื้นที่พิเศษ'];
+let rowSeq = 0;
+const newRowId = () => 'R' + String(++rowSeq).padStart(3, '0');
+function buildRows() {
+  const rows = [];
+  SEED.formRows.forEach(spec => {
+    (spec.products || [null]).forEach(p => rows.push({ id: newRowId(), q: spec.q, product: p, start: addDays(spec.from), end: addDays(spec.to) }));
+  });
+  return rows;
+}
+// PUB = ฟอร์มที่เผยแพร่แล้ว (FF เห็น) · DRAFT = ฉบับที่ Admin กำลังแก้
+let PUB = { version: SEED.form.version, rows: buildRows(), reasons: clone(SEED.reasons), at: addDays(-16) };
+let DRAFT = clone(PUB);
+const isDirty = () => JSON.stringify({ r: DRAFT.rows, s: DRAFT.reasons }) !== JSON.stringify({ r: PUB.rows, s: PUB.reasons });
+const rowStatus = r => TODAY < r.start ? 'scheduled' : TODAY > r.end ? 'expired' : 'live';
+const liveRows = () => PUB.rows.filter(r => rowStatus(r) === 'live');
+const rowKey = r => r.q + ':' + (r.product || '-');           // กุญแจคำตอบ = รหัสคำถาม + รหัสสินค้า (คงที่ทุกเดือน)
+const stepOfRow = r => r.q === 'MSL' ? 'msl' : qBy(r.q).cat === 'เช็คสินค้าทั่วไป' ? 'other' : 'area';
+const rowsOf = step => liveRows().filter(r => stepOfRow(r) === step);
+const reasonList = kind => PUB.reasons[kind].filter(r => r.active);
+const reasonLabel = (kind, code, other) => code === OTHER ? 'อื่น ๆ: ' + (other || '') : ((PUB.reasons[kind].find(r => r.code === code) || {}).label || code || '');
+
+const SLOT = { sign: 'ป้ายหน้าสาขา', selfie: 'Selfie ยืนยันตัวตน', cooler: 'หน้าเชลฟ์ (ตู้แช่ขวดเดี่ยว)' };
+I.finger = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 11v4"/><path d="M8.5 7.5A5 5 0 0 1 17 11v2a9 9 0 0 1-1 4"/><path d="M7 11a5 5 0 0 1 .3-1.7"/><path d="M7 14v-3"/><path d="M9 18.5a9 9 0 0 0 1.5-4.5"/><path d="M5 6.5A8 8 0 0 1 19.5 9"/></svg>';
+Object.assign(S, { reports: [], draft: null, adminTab: 'builder', b: { cat: 'Must List', q: 'MSL', product: '', start: TODAY, end: addDays(30) } });
+STORES.forEach(s => { s.status = 'active'; });
+
+/* ระยะจากร้าน 3 ระดับ: ok / selfie / lock */
+function tierOf(pos, st) {
+  const d = haversine(pos, st);
+  if (d > RULES.lockM) return { k: 'lock', d };
+  if (d > RULES.okM || pos.acc > RULES.okAccM) return { k: 'selfie', d };
+  return { k: 'ok', d };
+}
+
+/* =============================================================
+   3) "SERVER" จำลอง — สิ่งที่ API จริงจะทำเมื่อได้รับข้อมูล
+   ============================================================= */
+function serverReceive(v, receivedAt) {
+  if (S.server.some(x => x.id === v.id)) return { status: 200, note: 'ซ้ำ → ข้าม (ไม่บันทึกซ้ำ)' };
+  const rec = clone(v);
+  rec.receivedAt = (receivedAt || new Date()).toISOString();
+  const st = storeBy(v.store);
+  rec.distance = Math.round(haversine({ lat: v.lat, lng: v.lng }, st));   // server คำนวณเอง ไม่เชื่อค่าจากมือถือ
+  const flags = [];
+  const dur = (new Date(v.completedAt) - new Date(v.surveyStartedAt || v.startedAt)) / 1000;   // เวลาทำแบบสอบถามจริง
+  const late = (new Date(rec.receivedAt) - new Date(v.completedAt)) / 3600000;
+  if (rec.distance > RULES.okM) flags.push(`เช็คอินห่างร้าน ${fmtDist(rec.distance)} (มี selfie)`);
+  if (dur < RULES.minDurationSec) flags.push(`ใช้เวลาเพียง ${fmtDur(dur)} นาที`);
+  if (late > RULES.lateHours) flags.push(`ส่งย้อนหลัง ${late.toFixed(1)} ชม.`);
+  if (v.acc > RULES.okAccM) flags.push(`GPS ไม่แม่นยำ (±${Math.round(v.acc)} ม.)`);
+  rec.flags = flags;
+  if (v.profileLoc && !st.loc) st.loc = v.profileLoc;    // ข้อมูลพื้นที่ใกล้เคียง เก็บถาวรใน master สาขา
+  S.server.push(rec);
+  return { status: 201, note: flags.length ? `รับแล้ว · flag ${flags.length}` : 'รับแล้ว' };
+}
+
+/* =============================================================
+   4) ข้อมูลตัวอย่างของวันนี้
+   ============================================================= */
+function newVisit(user, store, start, pos) {
+  return { id: uuid(), user, store, startedAt: start.toISOString(), completedAt: null,
+    lat: pos.lat, lng: pos.lng, acc: pos.acc,
+    purpose: null, coverFor: '', access: null, accessReason: '', shelfSize: null, profileLoc: null,
+    surveyStartedAt: null, surveyLat: null, surveyLng: null, surveyAcc: null,   // กด "เริ่มตอบแบบสอบถาม"
+    ans: {},                                   // คำตอบทั้งหมด: key = รหัสคำถาม:รหัสสินค้า
+    cooler: null, photos: { sign: [], selfie: [], cooler: [] }, remark: '', formVersion: PUB.version };
+}
+function drawSelfie(ctx, w, h, seed) {
+  const rnd = mulberry32(seed || 7);
+  drawShelf(ctx, w, h, seed);
+  ctx.fillStyle = 'rgba(0,0,0,.35)'; ctx.fillRect(0, 0, w, h);
+  const skin = ['#C68E68', '#B97D5A', '#D7A27F'][Math.floor(rnd() * 3)];
+  ctx.fillStyle = ['#ED1C24', '#2F4A6D', '#3B6B4F'][Math.floor(rnd() * 3)];
+  ctx.beginPath(); ctx.ellipse(w / 2, h * 0.98, w * 0.42, h * 0.3, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = skin; ctx.fillRect(w * 0.45, h * 0.55, w * 0.1, h * 0.12);
+  ctx.beginPath(); ctx.ellipse(w / 2, h * 0.45, w * 0.17, h * 0.15, 0, 0, Math.PI * 2); ctx.fill();
+  ctx.fillStyle = '#231F1C'; ctx.beginPath(); ctx.ellipse(w / 2, h * 0.36, w * 0.18, h * 0.08, 0, Math.PI, 0); ctx.fill();
+}
+function photoOf(slot, meta, seed, src) {
+  if (slot === 'selfie' && !(src && src.videoWidth)) {
+    const c = document.createElement('canvas'); c.width = 720; c.height = 960;
+    const ctx = c.getContext('2d'); drawSelfie(ctx, 720, 960, seed);
+    stamp(ctx, 720, 960, [`${SLOT.selfie} · ${fmtDT(meta.takenAt)} · สาขา ${meta.store}`, `${meta.lat.toFixed(5)}, ${meta.lng.toFixed(5)}  ±${Math.round(meta.acc)} ม.`]);
+    const data = c.toDataURL('image/jpeg', 0.72);
+    return { data, takenAt: meta.takenAt, lat: meta.lat, lng: meta.lng, kb: Math.round(data.length * 0.75 / 1024) };
+  }
+  return makePhoto(src || null, Object.assign({ label: SLOT[slot] }, meta), seed);
+}
+function randomAnswers(v, rnd) {
+  const pick = a => a[Math.floor(rnd() * a.length)];
+  liveRows().forEach(r => {
+    const k = rowKey(r);
+    if (r.q === 'MSL') {
+      const a = v.ans[k] = { shelf: rnd() < .68 ? 'มี' : 'ไม่มี' };
+      if (a.shelf === 'ไม่มี') {
+        a.stock = rnd() < .5 ? 'มี' : 'ไม่มี';
+        if (a.stock === 'มี') { a.arrange = rnd() < .75 ? 'ให้จัด' : 'ไม่ให้จัด'; if (a.arrange === 'ไม่ให้จัด') a.arrangeReason = pick(reasonList('arrange')).code; }
+        else { a.order = rnd() < .55 ? 'สั่ง' : 'ไม่สั่ง'; if (a.order === 'ไม่สั่ง') a.orderReason = pick(reasonList('order')).code; }
+      }
+      return;
+    }
+    const q = qBy(r.q), a = v.ans[k] = { value: rnd() < .55 ? q.options[0] : q.options[q.options.length - 1], multi: {}, other: {} };
+    if (q.follow && a.value === q.follow.on) q.follow.qs.forEach(cid => {
+      const opts = qBy(cid).options.filter(o => o !== OTHER_OPT);
+      a.multi[cid] = opts.filter(() => rnd() < .45); if (!a.multi[cid].length) a.multi[cid] = [opts[0]];
+    });
+  });
+}
 function seedToday() {
   const rnd = mulberry32(2027);
   const ffs = USERS.filter(u => u.role === 'FF');
-  const today = new Date(Date.now() - (10 * 26 + 30) * 60000);   // ให้ทุกรายการจบก่อน "ตอนนี้"
+  const base = new Date(Date.now() - (10 * 26 + 30) * 60000);
+  const order = ['250', '2512', '15894', '1696', '949', '1764', '3755', '906', '10', '45'];
   for (let i = 0; i < 10; i++) {
-    const u = ffs[i % ffs.length], st = STORES[(i * 5 + 2) % STORES.length];
-    const start = new Date(today.getTime() + i * 26 * 60000);
-    let durMin = 9 + Math.floor(rnd() * 8);
-    let off = { lat: (rnd() - .5) * 0.0006, lng: (rnd() - .5) * 0.0006 };
-    let acc = 6 + Math.round(rnd() * 12), recvLagMin = 1 + Math.floor(rnd() * 20);
-    if (i === 3) durMin = 2.4;                               // ทำเร็วผิดปกติ
-    if (i === 6) off = { lat: 0.0072, lng: 0.0041 };         // อยู่ไกลร้าน
-    if (i === 8) recvLagMin = 5 * 60 + 10;                   // ส่งย้อนหลัง
-    const end = new Date(start.getTime() + durMin * 60000);
-    const v = { id: uuid(), user: u.code, store: st.code, startedAt: start.toISOString(), completedAt: end.toISOString(),
-      lat: st.lat + off.lat, lng: st.lng + off.lng, acc, counts: {}, follow: {}, comp: {}, posm: {},
-      photos: [], noPhoto: false, noPhotoReason: '', remark: '', formVersion: 1 };
-    active('S').forEach(p => {
-      const n = [0, 1, 1, 2, 2, 3][Math.floor(rnd() * 6)]; v.counts[p.id] = n;
-      if (n === 0) { const stock = rnd() < .5 ? 'yes' : 'no'; v.follow[p.id] = { stock };
-        if (stock === 'no') { v.follow[p.id].order = rnd() < .5 ? 'yes' : 'no'; if (v.follow[p.id].order === 'no') v.follow[p.id].reason = SEED.reasons[Math.floor(rnd() * 4)]; } }
-    });
-    active('C').forEach(p => v.comp[p.id] = Math.floor(rnd() * 4));
-    active('P').forEach(p => v.posm[p.id] = rnd() < .45 ? 1 : 0);
-    if (i === 5) { v.noPhoto = true; v.noPhotoReason = 'ผู้จัดการสาขาไม่อนุญาตให้ถ่ายรูป'; }
-    else { const n = 1 + (i % 2); for (let k = 0; k < n; k++) v.photos.push(makePhoto(null, { takenAt: new Date(start.getTime() + (3 + k) * 60000).toISOString(), store: st.code, lat: v.lat, lng: v.lng, acc }, 99 + i * 7 + k)); }
-    serverReceive(v, new Date(end.getTime() + recvLagMin * 60000));
+    const u = ffs[i % ffs.length], st = storeBy(order[i]);
+    const start = new Date(base.getTime() + i * 26 * 60000);
+    let durMin = 9 + Math.floor(rnd() * 8), lag = 1 + Math.floor(rnd() * 20);
+    let off = { lat: (rnd() - .5) * 0.0003, lng: (rnd() - .5) * 0.0003 };
+    if (i === 3) durMin = 2.4;
+    if (i === 6) off = { lat: 0.0009, lng: 0.0006 };      // ~120 ม. → ต้อง selfie
+    if (i === 8) lag = 5 * 60 + 10;
+    const v = newVisit(u.code, st.code, start, { lat: st.lat + off.lat, lng: st.lng + off.lng, acc: 6 + Math.round(rnd() * 10) });
+    const meta = k => ({ takenAt: new Date(start.getTime() + (1 + k) * 60000).toISOString(), store: st.code, lat: v.lat, lng: v.lng, acc: v.acc });
+    v.purpose = i === 5 ? 'เข้าแทน' : i === 2 ? 'ติดตามงาน' : 'เข้าตามปกติ';
+    if (v.purpose === 'เข้าแทน') v.coverFor = ffs[(i + 1) % ffs.length].code;
+    v.photos.sign.push(photoOf('sign', meta(0), 300 + i));
+    if (i === 6) v.photos.selfie.push(photoOf('selfie', meta(0), 500 + i));
+    if (i === 4) { v.access = 'out'; v.accessReason = 'สาขาปิดปรับปรุง'; durMin = 3.5; }
+    else {
+      v.access = 'in'; v.shelfSize = pick3(rnd, SEED.shelfSizes.slice(1, 4));
+      randomAnswers(v, rnd);
+      v.cooler = i === 7 ? SEED.coolerOptions[2] : i === 2 ? SEED.coolerOptions[1] : SEED.coolerOptions[0];
+      if (v.cooler !== SEED.coolerOptions[2]) v.photos.cooler.push(photoOf('cooler', meta(6), 99 + i));
+    }
+    if (v.access === 'in') Object.assign(v, { surveyStartedAt: new Date(start.getTime() + 2 * 60000).toISOString(), surveyLat: v.lat, surveyLng: v.lng, surveyAcc: v.acc });
+    v.completedAt = new Date(start.getTime() + (durMin + (v.access === 'in' ? 2 : 0)) * 60000).toISOString();
+    serverReceive(v, new Date(new Date(v.completedAt).getTime() + lag * 60000));
   }
+  // รายการรออนุมัติ: ร้านใหม่ 1 + แจ้งร้านปิด 1
+  const ns = { code: 'N-0001', name: 'ซอยโชคชัย 4 (ร้านใหม่)', fc: 'BE', loc: null, lat: 13.79120, lng: 100.60420, status: 'pending' };
+  STORES.push(ns);
+  S.reports.push({ id: uuid(), type: 'new', store: ns.code, user: 'CVSBKK14', at: new Date(Date.now() - 95 * 60000).toISOString(), note: 'เปิดใหม่ปากซอย', photo: photoOf('sign', { takenAt: new Date().toISOString(), store: 'N-0001', lat: ns.lat, lng: ns.lng, acc: 9 }, 41).data, status: 'pending' });
+  storeBy('2512').status = 'closing';
+  S.reports.push({ id: uuid(), type: 'closed', store: '2512', user: 'CVSBKK14', at: new Date(Date.now() - 40 * 60000).toISOString(), note: 'ป้ายแจ้งปิดกิจการถาวร', photo: photoOf('sign', { takenAt: new Date().toISOString(), store: '2512', lat: 13.758, lng: 100.6455, acc: 7 }, 77).data, status: 'pending' });
 }
+function pick3(rnd, a) { return a[Math.floor(rnd() * a.length)]; }
 
 /* =============================================================
    5) ตำแหน่ง (GPS จริง หรือจำลอง)
@@ -413,8 +621,9 @@ function seedToday() {
 function setPosMode(m) {
   S.posMode = m;
   const home = storeBy('10');
-  if (m === 'store') S.pos = { lat: home.lat + 0.00011, lng: home.lng + 0.00009, acc: 8, src: 'จำลอง: ยืนหน้าร้าน ลาดพร้าว 101' };
-  else if (m === 'far') S.pos = { lat: home.lat + 0.0088, lng: home.lng + 0.0046, acc: 14, src: 'จำลอง: ห่างจากร้านราว 1 กม.' };
+  if (m === 'store') S.pos = { lat: home.lat + 0.00009, lng: home.lng + 0.00007, acc: 7, src: 'จำลอง: ยืนหน้าร้าน ลาดพร้าว 101' };
+  else if (m === 'near') S.pos = { lat: home.lat - 0.00095, lng: home.lng - 0.0004, acc: 12, src: 'จำลอง: ห่างร้าน ~110 ม.' };
+  else if (m === 'far') S.pos = { lat: home.lat + 0.0088, lng: home.lng + 0.0046, acc: 14, src: 'จำลอง: ห่างร้าน ~1 กม.' };
   else {
     S.pos = null;
     if (!navigator.geolocation) { toast('เบราว์เซอร์นี้ไม่รองรับ GPS — กลับไปใช้ตำแหน่งจำลอง'); return setPosMode('store'); }
@@ -427,16 +636,75 @@ function setPosMode(m) {
 }
 
 /* =============================================================
-   6) ACTIONS — ทุกปุ่มมี data-act="ชื่อ" แล้วมาเข้าที่นี่
+   6) ขั้นตอน + ตรวจความครบถ้วน
    ============================================================= */
+function steps(v) {
+  return v && v.access === 'out'
+    ? [{ k: 'checkin', l: 'เช็คอิน' }]
+    : [{ k: 'checkin', l: 'เช็คอิน' }, { k: 'msl', l: 'Must List' }, { k: 'other', l: 'สินค้าอื่น' }, { k: 'area', l: 'พื้นที่/สื่อ' }, { k: 'photo', l: 'รูปเชลฟ์' }];
+}
+function checkinItems(v) {
+  const st = storeBy(v.store), t = tierOf(v, st);
+  const it = [
+    ['lock', t.k !== 'lock'],
+    ['sign', v.photos.sign.length > 0],
+    ['purpose', !!v.purpose && (v.purpose !== 'เข้าแทน' || !!v.coverFor)],
+    ['access', !!v.access && (v.access !== 'out' || !!v.accessReason.trim())]
+  ];
+  if (t.k === 'selfie') it.push(['selfie', v.photos.selfie.length > 0]);
+  if (v.access === 'in') { it.push(['shelf', !!v.shelfSize]); if (!st.loc) it.push(['profile', !!v.profileLoc]); }
+  return it;
+}
+function mslMissing(a) {
+  a = a || {};
+  if (!a.shelf) return true;
+  if (a.shelf === 'ไม่มี') {
+    if (!a.stock) return true;
+    if (a.stock === 'มี') { if (!a.arrange) return true; if (a.arrange === 'ไม่ให้จัด' && (!a.arrangeReason || (a.arrangeReason === OTHER && !(a.arrangeOther || '').trim()))) return true; }
+    if (a.stock === 'ไม่มี') { if (!a.order) return true; if (a.order === 'ไม่สั่ง' && (!a.orderReason || (a.orderReason === OTHER && !(a.orderOther || '').trim()))) return true; }
+  }
+  return false;
+}
+function qMissing(r, a) {
+  const q = qBy(r.q); a = a || {};
+  if (q.type === 'multiple') return !(a.multi && a.multi[q.id] && a.multi[q.id].length);
+  if (!a.value) return true;
+  if (q.follow && a.value === q.follow.on) return q.follow.qs.some(cid => {
+    const sel = (a.multi || {})[cid] || [];
+    return !sel.length || (sel.includes(OTHER_OPT) && !((a.other || {})[cid] || '').trim());
+  });
+  return false;
+}
+const rowMissing = (v, r) => r.q === 'MSL' ? mslMissing(v.ans[rowKey(r)]) : qMissing(r, v.ans[rowKey(r)]);
+function missing(v) {
+  const m = {
+    checkin: checkinItems(v).filter(x => !x[1]).length,
+    msl: rowsOf('msl').filter(r => rowMissing(v, r)).length,
+    other: rowsOf('other').filter(r => rowMissing(v, r)).length,
+    area: rowsOf('area').filter(r => rowMissing(v, r)).length,
+    photo: !v.cooler ? 1 : (v.cooler !== SEED.coolerOptions[2] && !v.photos.cooler.length ? 1 : 0)
+  };
+  if (v.access === 'out') m.msl = m.other = m.area = m.photo = 0;
+  return m;
+}
+const totals = v => ({ checkin: checkinItems(v).length, msl: rowsOf('msl').length, other: rowsOf('other').length, area: rowsOf('area').length, photo: 1 });
+
+/* =============================================================
+   7) ACTIONS — ทุกปุ่มมี data-act="ชื่อ"
+   ============================================================= */
+const ansOf = key => (S.visit.ans[key] = S.visit.ans[key] || {});
 const A = {
   pickUser(d) { S.loginCode = d.code; render(); },
   login() {
     const pin = (document.getElementById('pin') || {}).value || '';
     const u = userBy(S.loginCode);
     if (!u || pin !== u.pin) return toast('PIN ไม่ถูกต้อง (ทดสอบใช้ 1234)');
-    S.user = u; S.screen = u.role === 'FF' ? 'home' : 'dashboard';
-    if (u.role === 'FF' && !S.pos) setPosMode('store'); else render();
+    doLogin(u);
+  },
+  passkey() {
+    const u = userBy(S.loginCode);
+    toast('จำลอง Passkey: Android ขอสแกนลายนิ้วมือ…');
+    setTimeout(() => { doLogin(u); toast(`ยืนยันตัวตนด้วย Passkey สำเร็จ — ${u.name}`); }, 1100);
   },
   logout() { if (S.visit && !confirmLeave()) return; S.user = null; S.visit = null; S.screen = 'login'; render(); },
   toggleNet() {
@@ -444,45 +712,84 @@ const A = {
     toast(S.online ? 'กลับมาออนไลน์ — กำลังส่งข้อมูลที่ค้าง' : 'จำลองว่าไม่มีสัญญาณ — ข้อมูลจะเก็บในเครื่องก่อน');
     render(); if (S.online && S.queue.length) A.sync();
   },
-  go(d) { if (S.visit && S.screen === 'audit' && d.to !== 'audit' && !confirmLeave()) return; if (d.to !== 'audit') S.visit = S.screen === 'audit' ? null : S.visit; S.screen = d.to; S.showMissing = false; render(); window.scrollTo(0, 0); },
+  go(d) {
+    if (S.visit && S.screen === 'audit' && !confirmLeave()) return;
+    if (S.screen === 'audit') S.visit = null;
+    if (d.to === 'newstore' || d.to === 'closed') S.draft = { name: '', code: '', note: '', store: d.store || '', photos: { sign: [] } };
+    S.screen = d.to; S.showMissing = false; render(); window.scrollTo(0, 0);
+  },
   pos(d) { setPosMode(d.m); },
   pickStore(d) {
     if (!S.pos) return toast('กำลังหาตำแหน่ง… ลองอีกครั้ง');
-    S.visit = { id: uuid(), user: S.user.code, store: d.code, startedAt: new Date().toISOString(), completedAt: null,
-      lat: S.pos.lat, lng: S.pos.lng, acc: S.pos.acc, counts: {}, follow: {}, comp: {}, posm: {},
-      photos: [], noPhoto: false, noPhotoReason: '', remark: '', formVersion: S.formVersion };
+    S.visit = newVisit(S.user.code, d.code, new Date(), S.pos);
     S.step = 0; S.showMissing = false; S.screen = 'audit'; render(); window.scrollTo(0, 0);
   },
-  count(d) { S.visit.counts[d.p] = +d.v; render(); },
-  follow(d) {
-    const f = S.visit.follow[d.p] = S.visit.follow[d.p] || {};
-    f[d.k] = d.v;
-    if (d.k === 'stock' && d.v === 'yes') { delete f.order; delete f.reason; }
-    if (d.k === 'order' && d.v === 'yes') delete f.reason;
+  simWalk() {   // ทดสอบ: เดินเข้าใกล้ร้านแล้วอัปเดตพิกัด
+    const st = storeBy(S.visit.store);
+    S.pos = { lat: st.lat + 0.00008, lng: st.lng + 0.00006, acc: 7, src: 'จำลอง: เดินมาหน้าร้านแล้ว' }; S.posMode = 'store';
+    Object.assign(S.visit, { lat: S.pos.lat, lng: S.pos.lng, acc: S.pos.acc }); render(); toast('อัปเดตพิกัดแล้ว — อยู่ในรัศมีร้าน');
+  },
+  recheck() {
+    if (!S.pos) return toast('กำลังหาตำแหน่ง…');
+    Object.assign(S.visit, { lat: S.pos.lat, lng: S.pos.lng, acc: S.pos.acc }); render();
+  },
+  purpose(d) { S.visit.purpose = d.v; if (d.v !== 'เข้าแทน') S.visit.coverFor = ''; render(); },
+  cover(d) { S.visit.coverFor = d.v; render(); },
+  access(d) { S.visit.access = d.v; if (d.v === 'in') S.visit.accessReason = ''; S.step = 0; render(); },
+  reasonChip(d) { S.visit.accessReason = d.v; render(); },
+  shelf(d) { S.visit.shelfSize = d.v; render(); },
+  profile(d) { S.visit.profileLoc = d.v; render(); },
+  msl(d) {
+    const a = ansOf(d.key); a[d.f] = d.v;
+    if (d.f === 'shelf' && d.v === 'มี') Object.keys(a).forEach(k => { if (k !== 'shelf') delete a[k]; });
+    if (d.f === 'stock') ['arrange', 'arrangeReason', 'arrangeOther', 'order', 'orderReason', 'orderOther'].forEach(k => delete a[k]);
+    if (d.f === 'arrange' && d.v === 'ให้จัด') { delete a.arrangeReason; delete a.arrangeOther; }
+    if (d.f === 'order' && d.v === 'สั่ง') { delete a.orderReason; delete a.orderOther; }
     render();
   },
-  comp(d) { S.visit.comp[d.p] = +d.v; render(); },
-  posm(d) { S.visit.posm[d.p] = +d.v; render(); },
+  qv(d) { const a = ansOf(d.key); a.value = d.v; a.multi = {}; a.other = {}; render(); },
+  qm(d) {
+    const a = ansOf(d.key); a.multi = a.multi || {}; a.other = a.other || {};
+    const list = a.multi[d.q] = a.multi[d.q] || [];
+    const i = list.indexOf(d.v); if (i >= 0) list.splice(i, 1); else list.push(d.v);
+    render();
+  },
+  cooler(d) { S.visit.cooler = d.v; if (d.v === SEED.coolerOptions[2]) S.visit.photos.cooler = []; render(); },
   step(d) { S.step = +d.n; render(); window.scrollTo(0, 0); },
-  next() { S.step = Math.min(3, S.step + 1); render(); window.scrollTo(0, 0); },
+  next() {
+    const v = S.visit;
+    if (steps(v)[S.step].k === 'checkin') {
+      const miss = missing(v).checkin;
+      if (miss) { S.showMissing = true; render(); return toast(`ข้อมูลเช็คอินยังไม่ครบ ${miss} รายการ`); }
+      if (!v.surveyStartedAt) {           // กด "เริ่มตอบแบบสอบถาม" → บันทึกเวลาเริ่ม + จับ GPS อีกครั้ง
+        const pos = S.pos || v, t = tierOf(pos, storeBy(v.store));
+        if (t.k === 'lock') return toast(`ตอนนี้อยู่ห่างร้าน ${fmtDist(t.d)} — เริ่มทำแบบสอบถามไม่ได้`);
+        Object.assign(v, { surveyStartedAt: new Date().toISOString(), surveyLat: pos.lat, surveyLng: pos.lng, surveyAcc: pos.acc });
+        toast(`เริ่มจับเวลาแบบสอบถาม ${fmtTime(v.surveyStartedAt)} น. · GPS ห่างร้าน ${fmtDist(t.d)}`);
+      }
+      S.showMissing = false;
+    }
+    S.step = Math.min(steps(v).length - 1, S.step + 1); render(); window.scrollTo(0, 0);
+  },
   prev() { S.step = Math.max(0, S.step - 1); render(); window.scrollTo(0, 0); },
-  camera() { openCamera(); },
+  camera(d) { openCamera(d.slot, d.target || 'visit'); },
   camClose() { closeCamera(); },
   camShot() {
-    const v = document.getElementById('cam-video');
-    const p = makePhoto(camSim ? null : v, { takenAt: new Date().toISOString(), store: S.visit.store, lat: S.visit.lat, lng: S.visit.lng, acc: S.visit.acc }, Date.now() % 100000);
-    S.visit.photos.push(p); closeCamera(); render(); toast(`ถ่ายแล้ว · ${p.kb} KB (บีบอัดก่อนส่ง)`);
+    const vid = document.getElementById('cam-video');
+    const holder = camTarget === 'draft' ? S.draft : S.visit;
+    const meta = { takenAt: new Date().toISOString(), store: holder.store || (S.draft && S.draft.code) || 'ใหม่', lat: S.pos.lat, lng: S.pos.lng, acc: S.pos.acc };
+    const p = photoOf(camSlot, meta, Date.now() % 100000, camSim ? null : vid);
+    holder.photos[camSlot].push(p); closeCamera(); render(); toast(`ถ่ายแล้ว · ${p.kb} KB (บีบอัดก่อนส่ง)`);
   },
-  delPhoto(d) { S.visit.photos.splice(+d.i, 1); render(); },
-  noPhoto() { S.visit.noPhoto = !S.visit.noPhoto; render(); },
+  delPhoto(d) { (d.target === 'draft' ? S.draft : S.visit).photos[d.slot].splice(+d.i, 1); render(); },
   submit() {
-    const miss = missing(S.visit);
-    const total = miss.reduce((a, b) => a + b, 0);
+    const v = S.visit, miss = missing(v), st = steps(v);
+    const total = st.reduce((a, s) => a + miss[s.k], 0);
     if (total) {
-      S.showMissing = true; S.step = miss.findIndex(n => n > 0); render(); window.scrollTo(0, 0);
+      S.showMissing = true; S.step = st.findIndex(s => miss[s.k] > 0); render(); window.scrollTo(0, 0);
       return toast(`ยังตอบไม่ครบ ${total} รายการ — ไฮไลต์สีแดงไว้ให้แล้ว`);
     }
-    const v = S.visit; v.completedAt = new Date().toISOString();
+    v.completedAt = new Date().toISOString();
     S.queue.push(v); S.lastDone = v; S.visit = null; S.screen = 'done'; render(); window.scrollTo(0, 0);
     if (S.online) A.sync();
   },
@@ -490,68 +797,117 @@ const A = {
     if (!S.online) return toast('ยังออฟไลน์อยู่ — ข้อมูลรออยู่ในคิว');
     if (!S.queue.length || S.syncing) return;
     S.syncing = true; render();
-    setTimeout(() => {                    // จำลองเวลาเครือข่าย
+    setTimeout(() => {
       S.queue.forEach(v => { const r = serverReceive(v); S.log.unshift({ t: new Date(), id: v.id, store: v.store, ...r }); });
       const n = S.queue.length; S.queue = []; S.syncing = false; render(); toast(`ส่งสำเร็จ ${n} รายการ`);
     }, 900);
   },
-  resend() {   // ทดสอบ: ส่งข้อมูลก้อนเดิมซ้ำ (เช่น เน็ตหลุดตอนรอคำตอบ)
+  resend() {
     const mine = S.server.filter(v => v.user === S.user.code);
     if (!mine.length) return toast('ยังไม่มีข้อมูลที่ส่งแล้วให้ทดสอบ');
     const v = mine[mine.length - 1]; const r = serverReceive(v);
     S.log.unshift({ t: new Date(), id: v.id, store: v.store, ...r }); render();
   },
+  newStoreSave() {
+    const d = S.draft;
+    if (d.name.trim().length < 3) return toast('ใส่ชื่อร้านอย่างน้อย 3 ตัวอักษร');
+    if (!d.photos.sign.length) return toast('ต้องถ่ายรูปป้ายหน้าร้านก่อน');
+    const code = d.code.trim() || 'N-' + String(STORES.length + 1).padStart(4, '0');
+    if (storeBy(code)) return toast('รหัสสาขานี้มีอยู่แล้ว');
+    STORES.push({ code, name: d.name.trim().slice(0, 80), fc: '-', loc: null, lat: S.pos.lat, lng: S.pos.lng, status: 'pending' });
+    S.reports.push({ id: uuid(), type: 'new', store: code, user: S.user.code, at: new Date().toISOString(), note: '', photo: d.photos.sign[0].data, status: 'pending' });
+    A.pickStore({ code }); S.visit.photos.sign = d.photos.sign.slice(); render();
+    toast('ส่งคำขอเพิ่มร้านแล้ว (รอหัวทีมอนุมัติ) — เริ่มตรวจได้เลย');
+  },
+  closedPick(d) { S.draft.store = d.code; render(); },
+  closedSave() {
+    const d = S.draft;
+    if (!d.store) return toast('เลือกสาขาที่ปิดก่อน');
+    if (!d.photos.sign.length) return toast('ต้องถ่ายรูปหน้าร้านเป็นหลักฐาน');
+    storeBy(d.store).status = 'closing';
+    S.reports.push({ id: uuid(), type: 'closed', store: d.store, user: S.user.code, at: new Date().toISOString(), note: d.note, photo: d.photos.sign[0].data, status: 'pending' });
+    S.screen = 'home'; render(); toast('แจ้งร้านปิดแล้ว — รอหัวทีมยืนยัน');
+  },
+  approve(d) { const r = S.reports.find(x => x.id === d.id), st = storeBy(r.store); r.status = 'approved'; st.status = r.type === 'new' ? 'active' : 'closed'; render(); toast(r.type === 'new' ? 'อนุมัติร้านใหม่แล้ว — เข้า master สาขา' : 'ยืนยันร้านปิดแล้ว — ซ่อนจากเส้นทาง'); },
+  reject(d) { const r = S.reports.find(x => x.id === d.id), st = storeBy(r.store); r.status = 'rejected'; st.status = r.type === 'new' ? 'rejected' : 'active'; render(); },
   filter(d) { S.filterFlag = d.v === 'flag'; render(); },
+  repDay(d) { S.repDay = d.d; render(); },
   detail(d) { S.detailId = d.id; S.screen = 'detail'; render(); window.scrollTo(0, 0); },
   exportCsv() { exportCsv(); },
-  pActive(d) { const p = prodBy(d.id); p.active = !p.active; S.formVersion++; render(); },
-  pFocus(d) { const p = prodBy(d.id); p.focus = !p.focus; S.formVersion++; render(); },
-  addSku() {
-    const el = document.getElementById('new-sku'); const name = (el.value || '').trim();
-    if (name.length < 3) return toast('พิมพ์ชื่อสินค้าอย่างน้อย 3 ตัวอักษร');
-    PRODUCTS.push({ id: 'S' + String(PRODUCTS.length + 1).padStart(2, '0') + 'N', type: 'S', name: name.slice(0, 120), active: true, focus: true });
-    S.formVersion++; render(); toast('เพิ่มแล้ว — FF จะเห็นในฟอร์มทันทีโดยไม่ต้องแก้โค้ด');
-  }
+  /* --- Admin --- */
+  atab(d) { S.adminTab = d.t; render(); window.scrollTo(0, 0); },
+  bAdd() {
+    const b = S.b;
+    if (b.q !== 'MSL' && !qBy(b.q)) return toast('เลือกคำถามก่อน');
+    const needP = b.q === 'MSL' || (qBy(b.q) || {}).needProduct;
+    if (needP && !b.product) return toast('คำถามนี้ต้องเลือกสินค้า');
+    if (!b.start || !b.end || b.end < b.start) return toast('ตั้งช่วงเวลาให้ถูกต้อง');
+    if (DRAFT.rows.some(r => r.q === b.q && (r.product || '') === (needP ? b.product : '') && !(b.end < r.start || b.start > r.end))) return toast('มีคำถาม + สินค้านี้ในช่วงเวลาเดียวกันแล้ว');
+    DRAFT.rows.push({ id: newRowId(), q: b.q, product: needP ? b.product : null, start: b.start, end: b.end });
+    render(); toast('เพิ่มลง Draft แล้ว — กด Publish เพื่อให้พนักงานเห็น');
+  },
+  rowDel(d) { DRAFT.rows = DRAFT.rows.filter(r => r.id !== d.id); render(); },
+  rowMove(d) {
+    const i = DRAFT.rows.findIndex(r => r.id === d.id), r = DRAFT.rows[i], step = stepOfRowAny(r);
+    let j = i + (+d.dir);
+    while (j >= 0 && j < DRAFT.rows.length && stepOfRowAny(DRAFT.rows[j]) !== step) j += (+d.dir);
+    if (j < 0 || j >= DRAFT.rows.length) return;
+    DRAFT.rows[i] = DRAFT.rows[j]; DRAFT.rows[j] = r; render();
+  },
+  rActive(d) { const r = DRAFT.reasons[d.kind].find(x => x.code === d.code); r.active = !r.active; render(); },
+  addReason(d) {
+    const el = document.getElementById('nr-' + d.kind), label = (el.value || '').trim();
+    if (label.length < 2) return toast('พิมพ์เหตุผลก่อน');
+    const list = DRAFT.reasons[d.kind], pre = d.kind === 'arrange' ? 'A' : 'R';
+    list.push({ code: pre + String(list.length + 1).padStart(2, '0'), label: label.slice(0, 60), active: true }); render();
+  },
+  addQuestion() {
+    const g = id => (document.getElementById(id) || {}).value || '';
+    const text = g('nq-text').trim(), cat = g('nq-cat'), type = g('nq-type'), opts = g('nq-opts').split(',').map(s => s.trim()).filter(Boolean);
+    if (text.length < 5 || opts.length < 2) return toast('ใส่คำถาม และตัวเลือกอย่างน้อย 2 ข้อ (คั่นด้วย ,)');
+    const id = 'Q' + (60 + QM.filter(q => q.id >= 'Q60').length);
+    QM.push({ id, cat, key: 'CUSTOM_' + id, type, text: text.slice(0, 160), options: opts.slice(0, 12), needProduct: cat === 'เช็คสินค้าทั่วไป' });
+    render(); toast(`เพิ่ม ${id} เข้าคลังคำถามแล้ว — ไปที่ตัวสร้างฟอร์มเพื่อใช้งาน`);
+  },
+  publish() {
+    if (!isDirty()) return toast('ไม่มีการเปลี่ยนแปลง');
+    PUB = { version: PUB.version + 1, rows: clone(DRAFT.rows), reasons: clone(DRAFT.reasons), at: TODAY };
+    render(); toast(`เผยแพร่ฟอร์ม v${PUB.version} แล้ว — พนักงานเห็นทันทีเมื่อเปิดแอป`);
+  },
+  discard() { DRAFT = clone(PUB); render(); toast('ยกเลิก Draft แล้ว'); }
 };
+function stepOfRowAny(r) { return r.q === 'MSL' ? 'msl' : (qBy(r.q) || {}).cat === 'เช็คสินค้าทั่วไป' ? 'other' : 'area'; }
+function doLogin(u) {
+  S.user = u; S.screen = u.role === 'FF' ? 'home' : u.role === 'ADMIN' ? 'form' : 'dashboard';
+  if (u.role === 'FF' && !S.pos) setPosMode('store'); else render();
+}
 function confirmLeave() { return window.confirm('ยังตรวจร้านนี้ไม่เสร็จ ออกจากหน้านี้หรือไม่? (ข้อมูลร้านนี้จะหาย)'); }
 
-/* ตรวจความครบถ้วน: คืนค่าจำนวนที่ขาดของแต่ละขั้น [สก๊อต, คู่แข่ง, POSM, รูป] */
-function skuMissing(v, p) {
-  const c = v.counts[p.id], f = v.follow[p.id] || {};
-  if (c === undefined) return true;
-  if (c === 0) { if (!f.stock) return true; if (f.stock === 'no' && !f.order) return true; if (f.order === 'no' && !f.reason) return true; }
-  return false;
-}
-function missing(v) {
-  return [
-    active('S').filter(p => skuMissing(v, p)).length,
-    active('C').filter(p => v.comp[p.id] === undefined).length,
-    active('P').filter(p => v.posm[p.id] === undefined).length,
-    (v.photos.length || (v.noPhoto && v.noPhotoReason.trim())) ? 0 : 1
-  ];
-}
-
 /* =============================================================
-   7) กล้อง — ถ่ายสดเท่านั้น ไม่มี <input type=file> ให้เลือกจากอัลบั้ม
+   8) กล้อง — ถ่ายสดเท่านั้น (selfie ใช้กล้องหน้า)
    ============================================================= */
-let camStream = null, camSim = false;
-async function openCamera() {
+let camStream = null, camSim = false, camSlot = 'sign', camTarget = 'visit';
+async function openCamera(slot, target) {
+  camSlot = slot; camTarget = target;
+  const selfie = slot === 'selfie';
   const m = document.getElementById('modal');
-  m.innerHTML = `<div class="cam" role="dialog" aria-modal="true" aria-label="ถ่ายรูปชั้นวาง">
-    <div class="cam-top"><span>ถ่ายรูปชั้นวาง</span><span class="small" id="cam-mode" style="color:#BDB7AE">กำลังเปิดกล้อง…</span></div>
-    <div class="cam-view"><video id="cam-video" playsinline muted autoplay></video><canvas id="cam-sim" width="720" height="960" hidden></canvas></div>
+  m.innerHTML = `<div class="cam" role="dialog" aria-modal="true" aria-label="${esc(SLOT[slot])}">
+    <div class="cam-top"><span>${esc(SLOT[slot])}</span><span class="small" id="cam-mode" style="color:#BDB7AE">กำลังเปิดกล้อง…</span></div>
+    <div class="cam-view"><video id="cam-video" playsinline muted autoplay ${selfie ? 'style="transform:scaleX(-1)"' : ''}></video><canvas id="cam-sim" width="720" height="960" hidden></canvas>
+      ${selfie ? '<div class="oval" aria-hidden="true"></div>' : ''}</div>
     <div class="cam-bar"><button class="ghost-dark" data-act="camClose">ยกเลิก</button><button class="shutter" data-act="camShot" aria-label="ถ่ายรูป"></button><span></span></div>
-    <p class="cam-note">ไม่มีปุ่มเลือกรูปจากอัลบั้ม — ป้องกันการใช้รูปเก่า · เวลาและพิกัดจะถูกประทับลงรูป</p></div>`;
+    <p class="cam-note">${selfie ? 'วางหน้าให้อยู่ในกรอบ ให้เห็นฉากหน้าร้าน · ' : slot === 'cooler' ? 'ถ่ายหลังจัดเรียงแล้ว · ' : ''}ไม่มีปุ่มเลือกรูปจากอัลบั้ม · เวลาและพิกัดถูกประทับลงรูป</p></div>`;
   m.hidden = false;
   const mode = document.getElementById('cam-mode');
   try {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error('no-api');
-    camStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 } }, audio: false });
-    document.getElementById('cam-video').srcObject = camStream; camSim = false; mode.textContent = 'กล้องจริง';
+    camStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: selfie ? 'user' : 'environment' }, width: { ideal: 1280 } }, audio: false });
+    document.getElementById('cam-video').srcObject = camStream; camSim = false; mode.textContent = selfie ? 'กล้องหน้า' : 'กล้องจริง';
   } catch (e) {
     camSim = true; mode.textContent = 'โหมดจำลอง (ไม่พบกล้อง/ไม่ได้รับอนุญาต)';
     document.getElementById('cam-video').hidden = true;
-    const c = document.getElementById('cam-sim'); c.hidden = false; drawShelf(c.getContext('2d'), c.width, c.height, Date.now() % 100000);
+    const c = document.getElementById('cam-sim'); c.hidden = false;
+    (selfie ? drawSelfie : drawShelf)(c.getContext('2d'), c.width, c.height, Date.now() % 100000);
   }
 }
 function closeCamera() {
@@ -560,42 +916,55 @@ function closeCamera() {
 }
 
 /* =============================================================
-   8) EXPORT CSV — หัวคอลัมน์รูปแบบเดียวกับไฟล์ Excel เดิม
+   9) EXPORT CSV — คอลัมน์ผูกกับ "รหัสคำถาม + รหัสสินค้า" (ต่อผลข้ามเดือนได้)
    ============================================================= */
 function csvCell(x) {
   let s = String(x == null ? '' : x);
-  if (/^[=+\-@\t\r]/.test(s)) s = "'" + s;          // กัน CSV/Formula injection เวลาเปิดใน Excel
+  if (/^[=+\-@\t\r]/.test(s)) s = "'" + s;          // กัน CSV/Formula injection
   return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
 }
 function exportCsv() {
-  const S_ = PRODUCTS.filter(p => p.type === 'S'), C_ = PRODUCTS.filter(p => p.type === 'C'), P_ = PRODUCTS.filter(p => p.type === 'P');
-  const head = ['Start time', 'Completion time', 'Received at server', 'เขต', 'Group', 'ประเภทร้านค้า', 'ประเภทร้าน', 'ประเภทแผ่นชั้น', 'รหัสสาขา', 'ชื่อสาขา',
-    ...S_.map(p => 'S' + p.name), ...C_.map(p => p.name), ...P_.map(p => p.name), 'หมายเหตุ', 'Latitude', 'Longitude', 'ระยะห่างจากร้าน (ม.)', 'Flag'];
+  const keys = []; const seen = new Set();
+  [...PUB.rows, ...S.server.flatMap(v => Object.keys(v.ans).map(k => ({ q: k.split(':')[0], product: k.split(':')[1] === '-' ? null : k.split(':')[1] })))]
+    .forEach(r => { const k = rowKey(r); if (!seen.has(k)) { seen.add(k); keys.push(r); } });
+  const head = ['VisitId', 'Check-in time', 'Survey start', 'Completion time', 'Received at server', 'รหัสสาขา', 'ชื่อสาขา', 'Group', 'เขต', 'จุดประสงค์', 'เข้าแทน', 'การเยี่ยมสาขา', 'เหตุผลที่เข้าไม่ได้', 'ขนาดพื้นที่เชลฟ์', 'ประเภทที่ตั้ง', 'Form version'];
+  const cols = [];
+  keys.forEach(r => {
+    const prod = r.product ? prodBy(r.product) : null, tag = prod ? `[${prod.code}]` : '';
+    if (r.q === 'MSL') MSL_QS.forEach(q => cols.push({ h: `${q.key} ${tag}`, f: v => { const a = v.ans[rowKey(r)] || {};
+      return { ON_SHELF: a.shelf, IN_STOCK: a.stock, ALLOW_ARRANGE: a.arrange, ARRANGE_REASON: a.arrangeReason ? reasonLabel('arrange', a.arrangeReason, a.arrangeOther) : '', WILL_ORDER: a.order, ORDER_REASON: a.orderReason ? reasonLabel('order', a.orderReason, a.orderOther) : '' }[q.key] || ''; } }));
+    else {
+      const q = qBy(r.q);
+      cols.push({ h: `${q.key} ${tag}`.trim(), f: v => (v.ans[rowKey(r)] || {}).value || '' });
+      ((q.follow || {}).qs || []).forEach(cid => cols.push({ h: qBy(cid).key, f: v => { const a = v.ans[rowKey(r)] || {}; return [...((a.multi || {})[cid] || []).filter(x => x !== OTHER_OPT), (a.other || {})[cid] ? 'อื่นๆ: ' + a.other[cid] : ''].filter(Boolean).join('; '); } }));
+    }
+  });
+  const tail = ['ถ่ายรูปตู้แช่ได้หรือไม่', 'รูปป้าย', 'Selfie', 'รูปตู้แช่', 'หมายเหตุ', 'Latitude', 'Longitude', 'ระยะห่างจากร้าน (ม.)', 'Flag'];
   const rows = S.server.slice().sort((a, b) => a.startedAt.localeCompare(b.startedAt)).map(v => {
     const u = userBy(v.user), st = storeBy(v.store);
-    return [fmtDT(v.startedAt), fmtDT(v.completedAt), fmtDT(v.receivedAt), `${u.code} ${u.name}`, u.group, st.chain, st.type, st.shelf, st.code, st.name,
-      ...S_.map(p => v.counts[p.id] ?? ''), ...C_.map(p => v.comp[p.id] ?? ''), ...P_.map(p => v.posm[p.id] ?? ''),
-      [v.noPhoto ? 'ไม่อนุญาตให้ถ่ายรูป: ' + v.noPhotoReason : '', v.remark].filter(Boolean).join(' / '),
-      v.lat.toFixed(6), v.lng.toFixed(6), v.distance, v.flags.join(' | ')];
+    return [v.id, fmtDT(v.startedAt), v.surveyStartedAt ? fmtDT(v.surveyStartedAt) : '', fmtDT(v.completedAt), fmtDT(v.receivedAt), st.code, st.name, u.group, `${u.code} ${u.name}`, v.purpose, v.coverFor, v.access === 'in' ? 'เข้าได้' : 'เข้าไม่ได้', v.accessReason, v.shelfSize || '', st.loc || v.profileLoc || '', 'v' + v.formVersion,
+      ...cols.map(c => c.f(v)),
+      v.cooler || '', v.photos.sign.length, v.photos.selfie.length, v.photos.cooler.length, v.remark, v.lat.toFixed(6), v.lng.toFixed(6), v.distance, v.flags.join(' | ')];
   });
-  const csv = '﻿' + [head, ...rows].map(r => r.map(csvCell).join(',')).join('\r\n');
+  const all = [[...head, ...cols.map(c => c.h), ...tail], ...rows];
+  const csv = '﻿' + all.map(r => r.map(csvCell).join(',')).join('\r\n');
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
-  a.download = `FieldAudit_${new Date().toISOString().slice(0, 10)}.csv`;
+  a.download = `FieldAudit_${TODAY}.csv`;
   document.body.appendChild(a); a.click(); a.remove();
-  toast(`ส่งออก ${rows.length} แถว — เปิดด้วย Excel หรือดึงเข้า Power BI ได้`);
+  toast(`ส่งออก ${rows.length} แถว × ${all[0].length} คอลัมน์ — หัวคอลัมน์เป็นรหัสคำถาม ต่อผลข้ามเดือนได้`);
 }
 
 /* =============================================================
-   9) RENDER — แต่ละหน้าคือฟังก์ชันที่คืน HTML
+   10) RENDER
    ============================================================= */
 function header() {
   if (!S.user) return `<header class="hdr"><div class="hdr-top"><div class="row"><img class="logo" src="${LOGO}" alt="Scotch Group"><div class="vsep"></div><div class="app-name">Field Audit</div></div><span class="badge b-gold">Prototype</span></div></header>`;
-  const ff = S.user.role === 'FF';
-  const tabs = ff
-    ? [['home', 'หน้าแรก'], ['queue', 'คิวส่งข้อมูล', S.queue.length]]
-    : [['dashboard', 'แดชบอร์ด'], ['form', 'จัดการฟอร์ม']];
-  const cur = S.screen === 'pick' || S.screen === 'audit' || S.screen === 'done' ? 'home' : S.screen === 'detail' ? 'dashboard' : S.screen;
+  const role = S.user.role;
+  const pend = S.reports.filter(r => r.status === 'pending').length;
+  const tabs = role === 'FF' ? [['home', 'หน้าแรก'], ['report', 'รีพอร์ต'], ['queue', 'คิวส่ง', S.queue.length]]
+    : role === 'LEAD' ? [['dashboard', 'แดชบอร์ด', pend], ['form', 'ฟอร์ม']] : [['form', 'จัดการฟอร์ม', isDirty() ? '•' : 0], ['dashboard', 'แดชบอร์ด']];
+  const cur = ['pick', 'audit', 'done', 'newstore', 'closed'].includes(S.screen) ? 'home' : S.screen === 'detail' ? 'dashboard' : S.screen;
   return `<header class="hdr">
     <div class="hdr-top">
       <div class="row"><img class="logo" src="${LOGO}" alt="Scotch Group"><div class="vsep"></div><div class="app-name">Field Audit</div></div>
@@ -610,22 +979,26 @@ function header() {
 }
 
 function vLogin() {
+  const u = userBy(S.loginCode);
   return `<main class="main">
     <div style="padding:12px 2px 4px">
-      <div class="eyebrow">Concept Prototype</div>
+      <div class="eyebrow">Concept Prototype · v3</div>
       <h1 style="font-size:28px;margin-top:4px">เข้าสู่ระบบ</h1>
-      <p class="muted" style="margin:4px 0 0">เลือกผู้ใช้ทดสอบ แล้วใส่ PIN <b>1234</b></p>
+      <p class="muted" style="margin:4px 0 0">เลือกผู้ใช้ทดสอบ แล้วเข้าด้วยลายนิ้วมือ (จำลอง) หรือ PIN <b>1234</b></p>
     </div>
     <div class="users" role="group" aria-label="ผู้ใช้ทดสอบ">
-      ${USERS.map(u => `<button class="ucard" data-act="pickUser" data-code="${esc(u.code)}" aria-pressed="${S.loginCode === u.code}">
-        <span class="avatar">${esc(initials(u.name))}</span>
-        <span style="flex:1"><b style="display:block">${esc(u.name)}</b><span class="small muted">${esc(u.code)}</span></span>
-        <span class="badge ${u.role === 'FF' ? 'b-grey' : u.role === 'LEAD' ? 'b-gold' : 'b-ok'}">${{ FF: 'พนักงานภาคสนาม', LEAD: 'หัวหน้าทีม', ADMIN: 'Admin' }[u.role]}</span>
+      ${USERS.map(x => `<button class="ucard" data-act="pickUser" data-code="${esc(x.code)}" aria-pressed="${S.loginCode === x.code}">
+        <span class="avatar">${esc(initials(x.name))}</span>
+        <span style="flex:1"><b style="display:block">${esc(x.name)}</b><span class="small muted">${esc(x.code)} · ${esc(x.group)}</span></span>
+        <span class="badge ${x.role === 'FF' ? 'b-grey' : x.role === 'LEAD' ? 'b-gold' : 'b-ok'}">${{ FF: 'พนักงานภาคสนาม', LEAD: 'หัวหน้าทีม', ADMIN: 'Admin' }[x.role]}</span>
       </button>`).join('')}
     </div>
-    <div><label class="lb" for="pin">PIN</label><input id="pin" type="password" inputmode="numeric" autocomplete="off" maxlength="6" placeholder="••••" value="1234"></div>
-    <button class="btn primary big block" data-act="login">เข้าสู่ระบบ ${I.arrow}</button>
-    <div class="alert info">ไฟล์นี้เป็นต้นแบบเพื่ออธิบาย concept · ข้อมูลทั้งหมดเป็นข้อมูลจำลอง · ไม่มีการส่งข้อมูลออกจากเครื่อง</div>
+    <button class="btn dark big block" data-act="passkey">${I.finger} เข้าสู่ระบบด้วยลายนิ้วมือ (Passkey)</button>
+    <div class="small muted" style="text-align:center;margin-top:-4px">ผูกกับมือถือเครื่องนี้ · ไม่มีรหัสผ่านให้บอกต่อ</div>
+    <details class="card"><summary style="font-weight:600;cursor:pointer">หรือใช้ PIN (สำรอง)</summary>
+      <div class="stack" style="margin-top:10px"><div><label class="lb" for="pin">PIN ของ ${esc(u.code)}</label><input id="pin" type="password" inputmode="numeric" autocomplete="off" maxlength="6" placeholder="••••" value="1234"></div>
+      <button class="btn primary block" data-act="login">เข้าสู่ระบบ ${I.arrow}</button></div></details>
+    <div class="alert info">ต้นแบบเพื่ออธิบาย concept · ข้อมูลทั้งหมดเป็นข้อมูลจำลอง · ไม่มีการส่งข้อมูลออกจากเครื่อง</div>
   </main>`;
 }
 
@@ -636,99 +1009,154 @@ function myToday() {
 }
 
 function vHome() {
-  const list = myToday();
-  const flagged = list.filter(v => v.flags && v.flags.length).length;
-  const p = S.pos;
+  const list = myToday(), flagged = list.filter(v => v.flags && v.flags.length).length, p = S.pos;
+  const route = S.user.route.map(storeBy).filter(s => s && s.status !== 'closed');
+  const done = new Set(list.map(v => v.store));
   return `<main class="main">
     <div style="padding:4px 2px 0">
       <div class="muted small">สวัสดี</div>
       <h1 style="font-size:26px">${esc(S.user.name)}</h1>
-      <div class="small muted">${esc(S.user.code)} · ฟอร์มเดือน ${esc(SEED.form.period)} (v${S.formVersion})</div>
+      <div class="small muted">${esc(S.user.code)} · ${esc(S.user.group)} · ฟอร์ม ${esc(PERIOD)} (v${PUB.version})</div>
     </div>
-    <div class="kpis">
-      <div class="kpi"><b>${list.length}</b><span>ร้านที่ตรวจวันนี้</span></div>
-      <div class="kpi"><b style="color:${S.queue.length ? 'var(--warn-ink)' : 'inherit'}">${S.queue.length}</b><span>รอส่งข้อมูล</span></div>
-    </div>
+    <section class="hero">
+      <div class="between"><div><div class="hero-eyebrow">เส้นทางวันนี้</div>
+        <div class="row" style="align-items:baseline;gap:6px"><span class="hero-num">${route.filter(s => done.has(s.code)).length}</span><span class="hero-of">/ ${route.length} สาขา</span></div></div>
+        ${ring(route.length ? route.filter(s => done.has(s.code)).length / route.length : 0)}</div>
+      <div class="hero-stats"><div><b style="color:#8FD6AE">${list.filter(v => v.st === 'sent').length}</b><span>ส่งแล้ว</span></div><div><b style="color:#F2C46D">${S.queue.length}</b><span>รอส่ง</span></div><div><b>${flagged}</b><span>Flag</span></div></div>
+    </section>
     <div class="card stack">
       <div class="between"><b>ตำแหน่งปัจจุบัน</b><span class="badge b-gold">ทดสอบ</span></div>
-      <div class="seg" style="grid-template-columns:repeat(3,minmax(0,1fr))" role="group" aria-label="แหล่งตำแหน่ง">
+      <div class="seg" style="grid-template-columns:repeat(2,minmax(0,1fr))" role="group" aria-label="แหล่งตำแหน่ง">
         <button class="opt txt ${S.posMode === 'store' ? 'on' : ''}" data-act="pos" data-m="store">หน้าร้าน</button>
+        <button class="opt txt ${S.posMode === 'near' ? 'on' : ''}" data-act="pos" data-m="near">ห่าง ~110 ม.</button>
         <button class="opt txt ${S.posMode === 'far' ? 'on' : ''}" data-act="pos" data-m="far">ห่าง ~1 กม.</button>
         <button class="opt txt ${S.posMode === 'real' ? 'on' : ''}" data-act="pos" data-m="real">GPS จริง</button>
       </div>
       <div class="small muted">${p ? `${esc(p.src)} · ${p.lat.toFixed(5)}, ${p.lng.toFixed(5)} (±${Math.round(p.acc)} ม.)` : 'กำลังหาตำแหน่ง…'}</div>
     </div>
-    <button class="btn primary big block" data-act="go" data-to="pick">${I.pin} เริ่มตรวจร้าน</button>
+    <button class="btn primary big block" data-act="go" data-to="pick">${I.pin} เช็คอินร้านค้า</button>
     <div class="between" style="margin-top:4px"><h2 style="font-size:18px">วันนี้ของฉัน</h2>${flagged ? `<span class="badge b-flag">${I.flag} ${flagged} รายการถูก flag</span>` : ''}</div>
     ${list.length ? list.map(v => visitItem(v, false)).join('') : '<div class="card muted small">ยังไม่มีการตรวจร้านวันนี้</div>'}
   </main>`;
+}
+function ring(pct) {
+  const c = 2 * Math.PI * 34, on = Math.max(0.001, pct) * c;
+  return `<svg width="84" height="84" viewBox="0 0 84 84" role="img" aria-label="ความคืบหน้า ${Math.round(pct * 100)}%"><circle cx="42" cy="42" r="34" fill="none" stroke="#3A3733" stroke-width="10"/><circle cx="42" cy="42" r="34" fill="none" stroke="#ED1C24" stroke-width="10" stroke-linecap="round" stroke-dasharray="${on.toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 42 42)"/><text x="42" y="48" text-anchor="middle" fill="#fff" font-family="Kanit,sans-serif" font-size="17" font-weight="600">${Math.round(pct * 100)}%</text></svg>`;
 }
 
 function visitItem(v, clickable) {
   const st = storeBy(v.store), u = userBy(v.user);
   const status = v.st === 'queued' ? '<span class="badge b-warn">รอส่ง</span>'
     : v.flags.length ? `<span class="badge b-flag">${I.flag} ${v.flags.length}</span>` : '<span class="badge b-ok">ส่งแล้ว</span>';
-  const inner = `<span class="grow"><span class="t" style="display:block">${esc(st.name)} <span class="muted small">#${esc(st.code)}</span></span>
+  const tags = [v.access === 'out' ? '<span class="badge b-grey">เข้าไม่ได้</span>' : '', v.purpose && v.purpose !== 'เข้าตามปกติ' ? `<span class="badge b-gold">${esc(v.purpose)}</span>` : ''].join(' ');
+  const inner = `<span class="grow"><span class="t" style="display:block">${esc(st.name)} <span class="muted small">#${esc(st.code)}</span> ${tags}</span>
       <span class="small muted">${fmtTime(v.startedAt)}–${fmtTime(v.completedAt)} · ${fmtDur((new Date(v.completedAt) - new Date(v.startedAt)) / 1000)} นาที${clickable ? ' · ' + esc(u.name) : ''}</span>
       ${v.flags && v.flags.length ? `<span class="small" style="display:block;color:var(--flag-ink)">${v.flags.map(esc).join(' · ')}</span>` : ''}</span>${status}`;
   return clickable ? `<button class="item" data-act="detail" data-id="${v.id}">${inner}</button>` : `<div class="item">${inner}</div>`;
 }
 
+/* --- เช็คอิน: detect สาขาจาก GPS / ค้นหาจากเส้นทาง --- */
+function routeStores() {
+  const mine = S.user.route.map(storeBy).filter(Boolean);
+  const added = STORES.filter(s => s.status === 'pending' && S.reports.some(r => r.store === s.code && r.user === S.user.code));
+  return [...mine, ...added].filter(s => s.status !== 'closed' && s.status !== 'rejected');
+}
 function vPick() {
   const here = S.pos;
-  const q = S.search.trim().toLowerCase();
-  const withD = STORES.map(s => ({ ...s, d: here ? haversine(here, s) : null }));
-  const near = withD.slice().sort((a, b) => a.d - b.d).slice(0, 5);
+  const withD = routeStores().map(s => ({ ...s, d: here ? haversine(here, s) : null, t: here ? tierOf(here, s).k : null }));
+  const inR = withD.filter(s => s.d != null && s.d <= RULES.lockM).sort((a, b) => a.d - b.d);
+  const det = inR[0];
   return `<main class="main">
     <button class="linkbtn row" data-act="go" data-to="home" style="gap:6px">${I.back} กลับ</button>
-    <div><h1 style="font-size:24px">เลือกสาขา</h1><p class="muted small" style="margin:2px 0 0">เรียงจากระยะใกล้ที่สุดตาม GPS — ไม่ต้องพิมพ์ชื่อร้านเอง</p></div>
-    <div style="position:relative">
-      <label class="lb" for="store-q">ค้นหาด้วยรหัสหรือชื่อสาขา</label>
-      <input id="store-q" type="search" placeholder="เช่น 814 หรือ ลาดพร้าว" value="${esc(S.search)}" autocomplete="off">
-    </div>
-    <div id="store-list" class="stack" style="gap:8px">${storeList(withD, near, q)}</div>
+    <div><h1 style="font-size:24px">เช็คอินร้านค้า</h1><p class="muted small" style="margin:2px 0 0">ระบบตรวจหาสาขาจาก GPS ให้อัตโนมัติ · เช็คอินได้ในรัศมี ${RULES.okM} ม. (ถึง ${RULES.lockM} ม. ต้อง selfie)</p></div>
+    ${det ? `<section class="detect" aria-label="สาขาที่ตรวจพบ">
+        <div class="between"><span class="badge b-ok">${I.pinok} ตรวจพบสาขาจาก GPS</span><span class="small muted">±${Math.round(here.acc)} ม.</span></div>
+        <div><div class="store-name" style="font-size:24px">${esc(det.name)}</div><div class="small muted">#${esc(det.code)}${det.status === 'pending' ? ' · ร้านใหม่ (รออนุมัติ)' : ''} · ห่าง ${fmtDist(det.d)}</div></div>
+        ${tierBadge(det.t, det.d)}
+        <button class="btn primary big block" data-act="pickStore" data-code="${esc(det.code)}">${I.check} เช็คอิน ${esc(det.name)}</button>
+        ${inR.length > 1 ? `<div class="small muted">พบ ${inR.length} สาขาในรัศมี — ถ้าไม่ใช่สาขานี้ เลือกจากรายการด้านล่าง</div>` : ''}
+      </section>` : `<div class="alert warn">${I.pin}<span>ไม่พบสาขาในรัศมี ${RULES.lockM} ม. — ค้นหาจากสาขาในเส้นทาง หรือเพิ่มร้านใหม่</span></div>`}
+    <div><label class="lb" for="store-q">ค้นหาจากสาขาในเส้นทางของฉัน (รหัส / ชื่อ)</label>
+      <input id="store-q" type="search" placeholder="เช่น 814 หรือ ลาดพร้าว" value="${esc(S.search)}" autocomplete="off"></div>
+    <div id="store-list" class="stack" style="gap:8px">${storeList(withD, S.search.trim().toLowerCase())}</div>
+    <div class="seg2"><button class="btn" data-act="go" data-to="newstore">+ เพิ่มร้านใหม่</button><button class="btn" data-act="go" data-to="closed" data-store="${det ? esc(det.code) : ''}">แจ้งร้านปิด</button></div>
   </main>`;
 }
-function storeList(withD, near, q) {
-  const list = q ? withD.filter(s => s.code.includes(q) || s.name.toLowerCase().includes(q)) : near;
-  if (!list.length) return '<div class="card muted small">ไม่พบสาขา — สาขาใหม่ให้หัวหน้าทีมเพิ่มในระบบ</div>';
-  return (q ? '' : '<div class="small muted" style="font-weight:600">ใกล้คุณที่สุด 5 สาขา</div>') + list.map(s => {
-    const ok = s.d != null && s.d <= RULES.maxDistanceM;
+function tierBadge(t, d) {
+  if (t === 'ok') return `<div class="tier ok">${I.check}<span><b>อยู่ในรัศมีร้าน</b> · เช็คอินได้ทันที</span></div>`;
+  if (t === 'selfie') return `<div class="tier warn">${I.cam.replace('22', '18').replace('22', '18')}<span><b>ห่างร้าน ${fmtDist(d)}</b> · เช็คอินได้แต่ต้องถ่าย selfie และหัวทีมจะเห็นเป็น flag</span></div>`;
+  return `<div class="tier lock">${I.lock}<span><b>ห่างร้าน ${fmtDist(d)}</b> · เกิน ${RULES.lockM} ม. เช็คอินไม่ได้</span></div>`;
+}
+function storeList(withD, q) {
+  const list = (q ? withD.filter(s => s.code.toLowerCase().includes(q) || s.name.toLowerCase().includes(q)) : withD).slice().sort((a, b) => (a.d ?? 9e9) - (b.d ?? 9e9));
+  if (!list.length) return '<div class="card muted small">ไม่พบสาขาในเส้นทาง — กด “เพิ่มร้านใหม่”</div>';
+  return list.map(s => {
+    const col = s.t === 'ok' ? 'var(--ok-ink)' : s.t === 'selfie' ? 'var(--warn-ink)' : 'var(--ink3)';
     return `<button class="item" data-act="pickStore" data-code="${esc(s.code)}">
-      <span class="ico ${ok ? 'ok' : 'grey'}">${ok ? I.pinok : I.pin}</span>
-      <span class="grow"><span class="t" style="display:block">${esc(s.name)}</span><span class="small muted">#${esc(s.code)} · ${esc(s.type)} · ${esc(s.shelf)}</span></span>
-      <span class="dist" style="color:${ok ? 'var(--ok-ink)' : 'var(--ink2)'}">${s.d != null ? fmtDist(s.d) : '—'}</span></button>`;
+      <span class="ico ${s.t === 'ok' ? 'ok' : s.t === 'selfie' ? 'warn' : 'grey'}">${s.t === 'lock' ? I.lock : s.t === 'ok' ? I.pinok : I.pin}</span>
+      <span class="grow"><span class="t" style="display:block">${esc(s.name)}</span><span class="small muted">#${esc(s.code)}${s.status === 'pending' ? ' · รออนุมัติ' : s.status === 'closing' ? ' · แจ้งปิดแล้ว' : ''}</span></span>
+      <span class="dist" style="color:${col}">${s.d != null ? fmtDist(s.d) : '—'}</span></button>`;
   }).join('');
+}
+
+function vNewStore() {
+  const d = S.draft;
+  return `<main class="main">
+    <button class="linkbtn row" data-act="go" data-to="pick" style="gap:6px">${I.back} กลับ</button>
+    <div><h1 style="font-size:24px">เพิ่มร้านใหม่</h1><p class="muted small" style="margin:2px 0 0">ใช้พิกัด GPS ปัจจุบันเป็นตำแหน่งร้าน · หัวทีมอนุมัติก่อนเข้า master</p></div>
+    <section class="card stack">
+      <div><label class="lb" for="ns-name">ชื่อสาขา *</label><input id="ns-name" type="text" data-draft="name" maxlength="80" value="${esc(d.name)}" placeholder="เช่น ซอยโชคชัย 4"></div>
+      <div><label class="lb" for="ns-code">รหัสสาขา (ถ้าทราบ)</label><input id="ns-code" type="text" data-draft="code" maxlength="10" inputmode="numeric" value="${esc(d.code)}" placeholder="เว้นว่างได้"></div>
+      <div class="small muted">${I.pin} ${S.pos ? `${S.pos.lat.toFixed(5)}, ${S.pos.lng.toFixed(5)} (±${Math.round(S.pos.acc)} ม.)` : 'กำลังหาตำแหน่ง…'}</div>
+    </section>
+    <section class="card stack"><div class="between"><h2 style="font-size:16px">รูปป้ายหน้าร้าน *</h2><span class="small muted">ถ่ายจากในแอปเท่านั้น</span></div>${photoGrid(d, 'sign', 'draft')}</section>
+    <button class="btn primary big block" data-act="newStoreSave">ส่งคำขอ และเริ่มเช็คอิน</button>
+  </main>`;
+}
+function vClosed() {
+  const d = S.draft, here = S.pos;
+  const near = routeStores().filter(s => s.status === 'active').map(s => ({ ...s, d: here ? haversine(here, s) : 9e9 })).sort((a, b) => a.d - b.d).slice(0, 4);
+  return `<main class="main">
+    <button class="linkbtn row" data-act="go" data-to="pick" style="gap:6px">${I.back} กลับ</button>
+    <div><h1 style="font-size:24px">แจ้งร้านปิด</h1><p class="muted small" style="margin:2px 0 0">หัวทีมยืนยันก่อน แล้วร้านจะหายจากเส้นทางของทุกคน</p></div>
+    <section class="card stack"><h2 style="font-size:16px">สาขาที่ปิด *</h2>
+      ${near.map(s => `<button class="opt txt ${d.store === s.code ? 'on' : ''}" aria-pressed="${d.store === s.code}" data-act="closedPick" data-code="${esc(s.code)}">${esc(s.name)} · #${esc(s.code)} · ${fmtDist(s.d)}</button>`).join('')}
+    </section>
+    <section class="card stack"><div class="between"><h2 style="font-size:16px">รูปหน้าร้าน (หลักฐาน) *</h2></div>${photoGrid(d, 'sign', 'draft')}
+      <div><label class="lb" for="cl-note">หมายเหตุ</label><input id="cl-note" type="text" data-draft="note" maxlength="120" value="${esc(d.note)}" placeholder="เช่น มีป้ายแจ้งปิดกิจการ"></div></section>
+    <button class="btn primary big block" data-act="closedSave">ส่งแจ้งร้านปิด</button>
+  </main>`;
 }
 
 function vAudit() {
   const v = S.visit, st = storeBy(v.store);
-  const d = haversine(v, st), near = d <= RULES.maxDistanceM;
-  const miss = missing(v);
-  const totals = [active('S').length, active('C').length, active('P').length, 1];
-  const done = totals.map((t, i) => t - miss[i]);
-  const pct = Math.round(done.reduce((a, b) => a + b, 0) / totals.reduce((a, b) => a + b, 0) * 100);
-  const labels = ['สก๊อต', 'คู่แข่ง', 'POSM', 'รูปถ่าย'];
-  const body = [stepScotch, stepComp, stepPosm, stepPhoto][S.step](v);
+  const t = tierOf(v, st);
+  const stp = steps(v); if (S.step >= stp.length) S.step = stp.length - 1;
+  const miss = missing(v), tot = totals(v);
+  const doneSum = stp.reduce((a, s) => a + (tot[s.k] - miss[s.k]), 0), totSum = stp.reduce((a, s) => a + tot[s.k], 0);
+  const pct = Math.round(doneSum / Math.max(1, totSum) * 100);
+  const cur = stp[S.step].k;
+  const body = { checkin: stepCheckin, msl: stepMsl, other: stepOther, area: stepArea, photo: stepPhoto }[cur](v);
+  const nextL = stp[S.step + 1] ? stp[S.step + 1].l : '';
+  const locked = t.k === 'lock';
   return `<main class="main" style="padding-bottom:8px">
     <section class="card flat" aria-label="ข้อมูลสาขา">
       <div class="store-top"></div>
       <div class="store-body">
-        <div class="between"><div class="eyebrow">${esc(st.chain)} · รหัสสาขา ${esc(st.code)}</div><button class="btn sm" data-act="go" data-to="pick">เปลี่ยนสาขา</button></div>
+        <div class="between"><div class="eyebrow">7-ELEVEN · รหัสสาขา ${esc(st.code)}${st.status === 'pending' ? ' · ร้านใหม่' : ''}</div><button class="btn sm" data-act="go" data-to="pick">เปลี่ยนสาขา</button></div>
         <h1 class="store-name">${esc(st.name)}</h1>
-        <div class="muted small">${esc(st.type)} · ${esc(st.shelf)}</div>
+        <div class="muted small">FC ${esc(st.fc)} · ${esc(st.loc || 'ยังไม่มีข้อมูลพื้นที่')}</div>
       </div>
       <div class="facts">
-        <div class="fact"><span class="ico ${near ? 'ok' : 'warn'}">${near ? I.pinok : I.pin}</span>
-          <div><b style="color:${near ? 'var(--ok-ink)' : 'var(--warn-ink)'}">${near ? 'อยู่ที่ร้านแล้ว' : 'อยู่นอกรัศมีร้าน'}</b><span>ห่างร้าน ${fmtDist(d)} · ±${Math.round(v.acc)} ม.</span></div></div>
+        <div class="fact"><span class="ico ${t.k === 'ok' ? 'ok' : 'warn'}">${t.k === 'ok' ? I.pinok : I.pin}</span>
+          <div><b style="color:${t.k === 'ok' ? 'var(--ok-ink)' : t.k === 'selfie' ? 'var(--warn-ink)' : 'var(--flag-ink)'}">${t.k === 'ok' ? 'อยู่ในรัศมีร้าน' : t.k === 'selfie' ? 'ต้อง selfie ยืนยัน' : 'นอกรัศมี · ล็อก'}</b><span>ห่างร้าน ${fmtDist(t.d)} · ±${Math.round(v.acc)} ม.</span></div></div>
         <div class="fact"><span class="ico grey">${I.clock}</span>
-          <div><b>เริ่ม ${fmtTime(v.startedAt)} น.</b><span>ใช้เวลา <span id="elapsed">${fmtDur((Date.now() - new Date(v.startedAt)) / 1000)}</span></span></div></div>
+          <div><b>เช็คอิน ${fmtTime(v.startedAt)} น.</b><span>${v.surveyStartedAt ? `เริ่มตอบ ${fmtTime(v.surveyStartedAt)} · <span id="elapsed">${fmtDur((Date.now() - new Date(v.surveyStartedAt)) / 1000)}</span>` : 'ยังไม่เริ่มตอบแบบสอบถาม'}</span></div></div>
       </div>
     </section>
-    ${near ? '' : `<div class="alert warn">${I.flag}<span>ตำแหน่งห่างจากร้านเกิน ${RULES.maxDistanceM} ม. ยังบันทึกได้ แต่หัวหน้าทีมจะเห็นเป็นรายการที่ถูก flag</span></div>`}
-    <nav class="steps" aria-label="ขั้นตอน">
-      ${labels.map((l, i) => `<button class="stepbtn ${S.step === i ? 'on' : ''} ${miss[i] === 0 ? 'done' : ''}" data-act="step" data-n="${i}" ${S.step === i ? 'aria-current="step"' : ''}>
-        <b>${l}</b><span>${i === 3 ? (v.noPhoto ? 'งดถ่าย' : v.photos.length + ' รูป') : done[i] + '/' + totals[i]}</span></button>`).join('')}
+    <nav class="steps" style="grid-template-columns:repeat(${stp.length},minmax(0,1fr))" aria-label="ขั้นตอน">
+      ${stp.map((s, i) => `<button class="stepbtn ${S.step === i ? 'on' : ''} ${miss[s.k] === 0 ? 'done' : ''}" data-act="step" data-n="${i}" ${(locked || !v.surveyStartedAt) && i > 0 ? 'disabled' : ''} ${S.step === i ? 'aria-current="step"' : ''}>
+        <b>${s.l}</b><span>${miss[s.k] === 0 ? '✓' : (tot[s.k] - miss[s.k]) + '/' + tot[s.k]}</span></button>`).join('')}
     </nav>
     <div class="bar" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100" aria-label="ความคืบหน้า"><i style="width:${pct}%"></i></div>
     ${body}
@@ -737,88 +1165,150 @@ function vAudit() {
     <div class="hint">${S.online ? I.cloud + 'บันทึกในเครื่องทันที · ส่งอัตโนมัติเมื่อกดส่ง' : I.wifiOff + 'ออฟไลน์อยู่ · ข้อมูลจะเก็บในเครื่องแล้วส่งภายหลัง'}</div>
     <div class="row">
       ${S.step > 0 ? `<button class="btn" style="flex:1" data-act="prev">${I.back} ย้อนกลับ</button>` : `<button class="btn" style="flex:1" data-act="go" data-to="home">ยกเลิก</button>`}
-      ${S.step < 3 ? `<button class="btn primary" style="flex:2" data-act="next">ถัดไป · ${labels[S.step + 1]} ${I.arrow}</button>`
-        : `<button class="btn primary" style="flex:2" data-act="submit">${I.check} บันทึกและส่ง</button>`}
+      ${S.step < stp.length - 1 ? `<button class="btn primary" style="flex:2" data-act="next" ${locked ? 'disabled' : ''}>${cur === 'checkin' && !v.surveyStartedAt ? I.clock + ' เริ่มตอบแบบสอบถาม' : 'ถัดไป · ' + nextL + ' ' + I.arrow}</button>`
+        : `<button class="btn primary" style="flex:2" data-act="submit" ${locked ? 'disabled' : ''}>${I.check} เสร็จสิ้น</button>`}
     </div>
   </div>`;
 }
 
-function optBtns(act, pid, cur, extra) {
-  return ['0', '1', '2', '3+'].map((l, i) => `<button class="opt ${cur === i ? 'on' : ''}" aria-pressed="${cur === i}" data-act="${act}" data-p="${pid}" data-v="${i}">${l}</button>`).join('') + (extra || '');
+/* ปุ่มตัวเลือกทั่วไป */
+function opts(act, attrs, cur, list, cls) {
+  return list.map(x => `<button class="opt txt ${cls || ''} ${cur === x ? 'on' : ''}" aria-pressed="${cur === x}" data-act="${act}" ${attrs} data-v="${esc(x)}">${esc(x)}</button>`).join('');
 }
-function pill(pid, key, val, label, cur) {
-  return `<button class="opt txt ${cur === val ? 'on' : ''}" aria-pressed="${cur === val}" data-act="follow" data-p="${pid}" data-k="${key}" data-v="${esc(val)}">${esc(label)}</button>`;
+function chipsOf(act, attrs, sel, list) {
+  return `<div class="chips">${list.map(x => { const on = sel.includes(x); return `<button class="chip ${on ? 'on' : ''}" aria-pressed="${on}" data-act="${act}" ${attrs} data-v="${esc(x)}">${esc(x)}</button>`; }).join('')}</div>`;
 }
-function stepScotch(v) {
-  return `<section class="stack" style="gap:10px" aria-labelledby="h-s">
-    <div><h2 id="h-s" style="font-size:20px">สินค้าสก๊อตบนชั้นวาง</h2><div class="small muted">แตะจำนวนหน้าสินค้า (facing) · ถ้าเป็น 0 จะมีคำถามต่อ</div></div>
-    ${active('S').map(p => {
-      const c = v.counts[p.id], f = v.follow[p.id] || {}, miss = S.showMissing && skuMissing(v, p);
-      return `<div class="card stack ${miss ? 'miss' : ''}" style="gap:12px">
-        <div class="between" style="align-items:flex-start">
-          <div><div style="font-weight:600;line-height:1.35">${esc(p.name)}</div>${p.focus ? '<span class="badge b-gold" style="margin-top:4px">โฟกัสเดือนนี้</span>' : ''}</div>
-          ${c !== undefined && !skuMissing(v, p) ? `<span class="badge b-ok">${I.check} ครบ</span>` : `<span class="small muted" style="white-space:nowrap">${c === undefined ? 'ยังไม่ตอบ' : 'ตอบต่อ'}</span>`}
-        </div>
-        <div class="seg" role="group" aria-label="จำนวนหน้าสินค้า">${optBtns('count', p.id, c)}</div>
-        ${c === 0 ? `<div class="follow">
-          <div class="follow-h">${I.branch} ไม่พบบนชั้นวาง — ตอบต่ออีกนิด</div>
-          <div><div class="q">มีของในสต๊อกหลังร้านไหม</div><div class="seg2">${pill(p.id, 'stock', 'yes', 'มีในสต๊อก', f.stock)}${pill(p.id, 'stock', 'no', 'ไม่มี', f.stock)}</div></div>
-          ${f.stock === 'no' ? `<div><div class="q">ร้านยอมสั่งเพิ่มไหม</div><div class="seg2">${pill(p.id, 'order', 'yes', 'สั่งเพิ่ม', f.order)}${pill(p.id, 'order', 'no', 'ไม่สั่ง', f.order)}</div></div>` : ''}
-          ${f.order === 'no' ? `<div><div class="q">เหตุผลที่ร้านไม่สั่ง</div><div class="chips">${SEED.reasons.map(r => `<button class="chip ${f.reason === r ? 'on' : ''}" aria-pressed="${f.reason === r}" data-act="follow" data-p="${p.id}" data-k="reason" data-v="${esc(r)}">${esc(r)}</button>`).join('')}</div></div>` : ''}
-        </div>` : ''}
-      </div>`;
-    }).join('')}
+
+function stepCheckin(v) {
+  const st = storeBy(v.store), t = tierOf(v, st), sm = S.showMissing;
+  const items = Object.fromEntries(checkinItems(v));
+  if (t.k === 'lock') return `<section class="card stack lockcard">
+      <span class="ico" style="width:56px;height:56px;border-radius:28px;background:var(--flag-bg);color:var(--flag-ink)">${I.lock.replace(/14/g, '26')}</span>
+      <h2 style="font-size:20px">เช็คอินไม่ได้ — อยู่ห่างร้าน ${fmtDist(t.d)}</h2>
+      <div class="muted small">ต้องอยู่ห่างจากร้านไม่เกิน ${RULES.lockM} ม. (ในรัศมี ${RULES.okM} ม. เช็คอินได้ทันที) · ไปที่หน้าร้านแล้วกดอัปเดตตำแหน่ง</div>
+      <button class="btn dark block" data-act="recheck">อัปเดตตำแหน่ง</button>
+      <button class="btn block" data-act="simWalk">ทดสอบ: จำลองว่าเดินมาถึงหน้าร้านแล้ว</button>
+    </section>`;
+  const firstVisit = !st.loc;
+  const others = USERS.filter(u => u.role === 'FF' && u.code !== S.user.code);
+  return `${tierBadge(t.k, t.d)}
+    <section class="card stack ${sm && !items.sign ? 'miss' : ''}"><div class="between"><h2 style="font-size:17px">รูปป้ายหน้าสาขา (reference)</h2><span class="small muted">บังคับ</span></div>
+      ${photoGrid(v, 'sign', 'visit')}
+      <div class="small muted row" style="gap:6px">${I.lock} ต้องถ่ายจากในแอป · อัปโหลดจากอัลบั้มไม่ได้</div></section>
+    ${t.k === 'selfie' ? `<section class="card stack ${sm && !items.selfie ? 'miss' : ''}"><div class="between"><h2 style="font-size:17px">Selfie ยืนยันตัวตน</h2><span class="badge b-warn">ห่างร้านเกิน ${RULES.okM} ม.</span></div>
+      <div class="small muted">ใช้กล้องหน้า ให้เห็นหน้าและฉากหน้าร้าน</div>${photoGrid(v, 'selfie', 'visit')}</section>` : ''}
+    <section class="card stack ${sm && !items.purpose ? 'miss' : ''}"><h2 style="font-size:17px">จุดประสงค์การเข้าร้าน</h2>
+      <div class="seg" style="grid-template-columns:repeat(3,minmax(0,1fr))">${opts('purpose', '', v.purpose, SEED.purposes)}</div>
+      ${v.purpose === 'เข้าแทน' ? `<div class="follow"><div class="follow-h">${I.branch} เข้าแทนใคร?</div>
+        <div class="chips">${others.map(u => `<button class="chip ${v.coverFor === u.code ? 'on' : ''}" aria-pressed="${v.coverFor === u.code}" data-act="cover" data-v="${esc(u.code)}">${esc(u.code)} ${esc(u.name)}</button>`).join('')}</div></div>` : ''}
+    </section>
+    <section class="card stack ${sm && !items.access ? 'miss' : ''}"><h2 style="font-size:17px">การเยี่ยมสาขา</h2>
+      <div class="seg2">
+        <button class="opt txt ${v.access === 'in' ? 'on' : ''}" aria-pressed="${v.access === 'in'}" data-act="access" data-v="in">เข้าได้</button>
+        <button class="opt txt ${v.access === 'out' ? 'on' : ''}" aria-pressed="${v.access === 'out'}" data-act="access" data-v="out">เข้าไม่ได้</button></div>
+      ${v.access === 'out' ? `<div class="follow"><div class="follow-h">${I.branch} เหตุผลที่เข้าไม่ได้ — แล้วกดบันทึกได้เลย</div>
+        <div class="chips">${SEED.accessReasons.map(r => `<button class="chip ${v.accessReason === r ? 'on' : ''}" aria-pressed="${v.accessReason === r}" data-act="reasonChip" data-v="${esc(r)}">${esc(r)}</button>`).join('')}</div>
+        <div><label class="lb" for="acc-reason">หรือพิมพ์เหตุผล</label><input id="acc-reason" type="text" data-bind="accessReason" maxlength="200" value="${esc(v.accessReason)}" placeholder="ระบุเหตุผล"></div></div>` : ''}
+    </section>
+    ${v.access === 'in' ? `<section class="card stack ${sm && !items.shelf ? 'miss' : ''}"><div class="between"><h2 style="font-size:17px">ขนาดพื้นที่เชลฟ์</h2><span class="small muted">ใส่ทุกครั้ง</span></div>
+      <div class="seg2">${opts('shelf', '', v.shelfSize, SEED.shelfSizes)}</div></section>
+    ${firstVisit ? `<section class="card stack firstvisit ${sm && !items.profile ? 'miss' : ''}"><div class="between"><h2 style="font-size:17px">พื้นที่ใกล้เคียงร้าน</h2><span class="badge b-gold">ครั้งแรกของสาขานี้</span></div>
+      <div class="small muted">ตอบครั้งเดียว ระบบเก็บไว้ใน master สาขา ครั้งต่อไปไม่ต้องตอบ</div>
+      ${chipsOf('profile', '', v.profileLoc ? [v.profileLoc] : [], SEED.locTypes)}</section>`
+      : `<div class="small muted row" style="gap:6px;padding:0 4px">${I.check} พื้นที่ใกล้เคียง: <b>${esc(st.loc)}</b> (บันทึกไว้แล้ว)</div>`}` : ''}`;
+}
+
+function mslCard(v, r) {
+  const p = prodBy(r.product), key = rowKey(r), a = v.ans[key] || {}, miss = S.showMissing && mslMissing(a), ok = !mslMissing(a);
+  const at = `data-key="${esc(key)}"`;
+  const reasonBlock = (kind, f, otherF) => `<div><div class="q">เพราะอะไร? <span class="muted">(${kind === 'arrange' ? 'ARRANGE_REASON' : 'ORDER_REASON'})</span></div>
+    <div class="chips">${reasonList(kind).map(x => `<button class="chip ${a[f] === x.code ? 'on' : ''}" aria-pressed="${a[f] === x.code}" data-act="msl" ${at} data-f="${f}" data-v="${x.code}">${esc(x.label)}</button>`).join('')}
+    <button class="chip ${a[f] === OTHER ? 'on' : ''}" aria-pressed="${a[f] === OTHER}" data-act="msl" ${at} data-f="${f}" data-v="${OTHER}">อื่น ๆ</button></div>
+    ${a[f] === OTHER ? `<input type="text" style="margin-top:8px" aria-label="ระบุเหตุผล" data-ans="${esc(key)}|${otherF}" maxlength="120" value="${esc(a[otherF] || '')}" placeholder="ระบุเหตุผล">` : ''}</div>`;
+  return `<div class="card stack ${miss ? 'miss' : ''}" style="gap:10px">
+    <div class="between" style="align-items:flex-start">
+      <div><div style="font-weight:600;line-height:1.35">${esc(p.name)}</div><div class="tiny muted">${esc(p.code)} · ${esc(p.barcode)}</div></div>
+      ${ok ? `<span class="badge b-ok">${I.check} ครบ</span>` : `<span class="small muted" style="white-space:nowrap">${a.shelf ? 'ตอบต่อ' : 'ยังไม่ตอบ'}</span>`}
+    </div>
+    <div><div class="q">มีวางบนตู้แช่หรือไม่</div><div class="seg2">${opts('msl', at + ' data-f="shelf"', a.shelf, ['มี', 'ไม่มี'])}</div></div>
+    ${a.shelf === 'ไม่มี' ? `<div class="follow">
+      <div class="follow-h">${I.branch} ไม่มีบนตู้แช่ — ตอบต่ออีกนิด</div>
+      <div><div class="q">มีในสต็อกหรือไม่</div><div class="seg2">${opts('msl', at + ' data-f="stock"', a.stock, ['มี', 'ไม่มี'])}</div></div>
+      ${a.stock === 'มี' ? `<div><div class="q">สาขายอมให้จัดเรียงหรือไม่</div><div class="seg2">${opts('msl', at + ' data-f="arrange"', a.arrange, ['ให้จัด', 'ไม่ให้จัด'])}</div></div>` : ''}
+      ${a.arrange === 'ไม่ให้จัด' ? reasonBlock('arrange', 'arrangeReason', 'arrangeOther') : ''}
+      ${a.stock === 'ไม่มี' ? `<div><div class="q">สาขายอมสั่งของหรือไม่</div><div class="seg2">${opts('msl', at + ' data-f="order"', a.order, ['สั่ง', 'ไม่สั่ง'])}</div></div>` : ''}
+      ${a.order === 'ไม่สั่ง' ? reasonBlock('order', 'orderReason', 'orderOther') : ''}
+    </div>` : ''}
+  </div>`;
+}
+function stepMsl(v) {
+  const rows = rowsOf('msl');
+  return `<section class="stack" style="gap:10px" aria-labelledby="h-f">
+    <div><h2 id="h-f" style="font-size:20px">สินค้า Must List</h2><div class="small muted">ไม่มีบนตู้แช่ → ถามต่อ สต็อก → จัดเรียง / สั่งของ → เหตุผล</div></div>
+    ${rows.map(r => mslCard(v, r)).join('') || '<div class="card muted small">เดือนนี้ไม่มีสินค้า Must List</div>'}
   </section>`;
 }
-function stepComp(v) {
-  return `<section class="stack" style="gap:10px" aria-labelledby="h-c">
-    <div><h2 id="h-c" style="font-size:20px">สินค้าคู่แข่ง</h2><div class="small muted">นับจำนวนหน้าสินค้าที่เห็น · ไม่มีคำถามต่อ</div></div>
-    ${active('C').map(p => `<div class="card stack ${S.showMissing && v.comp[p.id] === undefined ? 'miss' : ''}" style="gap:10px">
-      <div style="font-weight:600">${esc(p.name)}</div>
-      <div class="seg" role="group" aria-label="จำนวนหน้าสินค้า">${optBtns('comp', p.id, v.comp[p.id])}</div></div>`).join('')}
+function stepOther(v) {
+  const rows = rowsOf('other');
+  return `<section class="stack" style="gap:10px" aria-labelledby="h-o">
+    <div><h2 id="h-o" style="font-size:20px">สินค้าทั่วไป</h2><div class="small muted">${esc(qBy('Q01').text)} · ตอบ มี/ไม่มี</div></div>
+    <div class="card" style="padding:4px 14px">
+    ${rows.map((r, i) => { const p = prodBy(r.product), key = rowKey(r), a = v.ans[key] || {};
+      return `<div class="between ${S.showMissing && !a.value ? 'missrow' : ''}" style="padding:10px 0;${i ? 'border-top:1px solid var(--line2)' : ''}">
+      <div style="min-width:0"><div style="font-weight:500;line-height:1.35">${esc(p.name)}</div><div class="tiny muted">${esc(p.barcode)}</div></div>
+      <div class="seg2" style="width:150px;flex-shrink:0">${opts('qv', `data-key="${esc(key)}"`, a.value, qBy(r.q).options)}</div></div>`; }).join('')}
+    </div>
   </section>`;
 }
-function stepPosm(v) {
-  return `<section class="stack" style="gap:10px" aria-labelledby="h-p">
-    <div><h2 id="h-p" style="font-size:20px">สื่อ POSM และพื้นที่พิเศษ</h2><div class="small muted">มีติดตั้ง / จัดวางอยู่หรือไม่</div></div>
-    ${active('P').map(p => { const c = v.posm[p.id]; return `<div class="card stack ${S.showMissing && c === undefined ? 'miss' : ''}" style="gap:10px">
-      <div style="font-weight:600">${esc(p.name)}</div>
-      <div class="seg2"><button class="opt txt ${c === 1 ? 'on' : ''}" aria-pressed="${c === 1}" data-act="posm" data-p="${p.id}" data-v="1">มี</button>
-      <button class="opt txt ${c === 0 ? 'on' : ''}" aria-pressed="${c === 0}" data-act="posm" data-p="${p.id}" data-v="0">ไม่มี</button></div></div>`; }).join('')}
+function qCard(v, r) {
+  const q = qBy(r.q), key = rowKey(r), a = v.ans[key] || {}, miss = S.showMissing && qMissing(r, a), ok = !qMissing(r, a);
+  const at = `data-key="${esc(key)}"`;
+  const multiBlock = cid => { const cq = qBy(cid), sel = (a.multi || {})[cid] || [];
+    return `<div><div class="q">${esc(cq.text)} <span class="muted">(เลือกได้หลายข้อ)</span></div>${chipsOf('qm', at + ` data-q="${cid}"`, sel, cq.options)}
+      ${sel.includes(OTHER_OPT) ? `<input type="text" style="margin-top:8px" aria-label="ระบุอื่นๆ" data-ans="${esc(key)}|other|${cid}" maxlength="120" value="${esc((a.other || {})[cid] || '')}" placeholder="ระบุ">` : ''}</div>`; };
+  return `<div class="card stack ${miss ? 'miss' : ''}" style="gap:10px">
+    <div class="between" style="align-items:flex-start"><div><div class="eyebrow" style="letter-spacing:.04em">${esc(q.cat)}${q.type === 'multiple' ? ' · Multiple' : ''}</div><div style="font-weight:600;line-height:1.35;margin-top:2px">${esc(q.text)}</div></div>
+      ${ok ? `<span class="badge b-ok">${I.check}</span>` : ''}</div>
+    ${q.type === 'multiple' ? multiBlock(q.id) : `<div class="${q.options.length === 2 ? 'seg2' : 'stack'}" style="${q.options.length === 2 ? '' : 'gap:6px'}">${opts('qv', at, a.value, q.options, 'tall')}</div>
+      ${q.follow && a.value === q.follow.on ? `<div class="follow">${q.follow.qs.map(multiBlock).join('')}</div>` : ''}`}
+  </div>`;
+}
+function stepArea(v) {
+  const rows = rowsOf('area');
+  return `<section class="stack" style="gap:10px" aria-labelledby="h-a">
+    <div><h2 id="h-a" style="font-size:20px">กระเช้า · สื่อ · พื้นที่พิเศษ</h2><div class="small muted">คำถามดึงจากคลังคำถาม · ตอบ “มี” แล้วเลือกรายละเอียดต่อ</div></div>
+    ${rows.map(r => qCard(v, r)).join('')}
   </section>`;
+}
+
+function photoGrid(holder, slot, target) {
+  return `<div class="photos">
+    ${holder.photos[slot].map((p, i) => `<div class="ph"><img src="${p.data}" alt="${esc(SLOT[slot])} ${i + 1} ถ่ายเวลา ${fmtTime(p.takenAt)}"><button class="x" data-act="delPhoto" data-slot="${slot}" data-target="${target}" data-i="${i}" aria-label="ลบรูปที่ ${i + 1}">${I.x}</button></div>`).join('')}
+    <button class="addph" data-act="camera" data-slot="${slot}" data-target="${target}"><i>${I.cam}</i>${slot === 'selfie' ? 'ถ่าย selfie' : 'ถ่ายรูป'}</button></div>`;
 }
 function stepPhoto(v) {
-  const miss = S.showMissing && missing(v)[3];
-  return `<section class="card stack ${miss ? 'miss' : ''}" aria-labelledby="h-ph">
-    <div class="between"><h2 id="h-ph" style="font-size:18px">รูปชั้นวางสินค้า</h2><span class="small muted">อย่างน้อย 1 รูป</span></div>
-    ${v.noPhoto ? `<div><label class="lb" for="np-reason">เหตุผล / ผู้ที่ไม่อนุญาต</label>
-        <input id="np-reason" type="text" data-bind="noPhotoReason" placeholder="เช่น ผู้จัดการสาขาไม่อนุญาต" value="${esc(v.noPhotoReason)}" maxlength="200">
-        <div class="small muted" style="margin-top:6px">ระบบยังเก็บพิกัดและเวลาไว้เป็นหลักฐานแทนรูป</div></div>`
-      : `<div class="photos">
-        ${v.photos.map((p, i) => `<div class="ph"><img src="${p.data}" alt="รูปที่ ${i + 1} ถ่ายเวลา ${fmtTime(p.takenAt)}"><button class="x" data-act="delPhoto" data-i="${i}" aria-label="ลบรูปที่ ${i + 1}">${I.x}</button></div>`).join('')}
-        <button class="addph" data-act="camera"><i>${I.cam}</i>ถ่ายรูป</button></div>
-        <div class="small muted row" style="gap:6px">${I.lock} ถ่ายจากกล้องเท่านั้น · ประทับเวลาและพิกัดลงรูปอัตโนมัติ</div>`}
-    <div class="between" style="border-top:1px solid var(--line2);padding-top:12px">
-      <span id="np-label" style="font-weight:500">สาขาไม่อนุญาตให้ถ่ายรูป</span>
-      <button class="switch" role="switch" aria-checked="${v.noPhoto}" aria-labelledby="np-label" data-act="noPhoto"><i></i></button>
-    </div>
-  </section>
-  <section class="card"><label class="lb" for="remark">หมายเหตุ (ถ้ามี)</label><textarea id="remark" data-bind="remark" maxlength="500" placeholder="เช่น ร้านกำลังรีโนเวท">${esc(v.remark)}</textarea></section>`;
+  const miss = S.showMissing && missing(v).photo;
+  return `<section class="card stack ${miss ? 'miss' : ''}" aria-labelledby="h-cool">
+      <div class="between"><h2 id="h-cool" style="font-size:18px">รูปหน้าเชลฟ์ (ตู้แช่ขวดเดี่ยว)</h2><span class="small muted">ถ่ายในแอปเท่านั้น</span></div>
+      <div class="q" style="margin:0">สามารถถ่ายรูปตู้แช่ขวดเดี่ยวได้ตามปกติหรือไม่</div>
+      <div class="stack" style="gap:6px">${opts('cooler', '', v.cooler, SEED.coolerOptions)}</div>
+      ${v.cooler && v.cooler !== SEED.coolerOptions[2] ? `<div class="small" style="color:var(--gold-ink);font-weight:500">${v.cooler === SEED.coolerOptions[0] ? 'ถ่ายหลังจากจัดเรียงแล้ว' : 'ถ่ายสภาพตู้แช่ตามจริง'}</div>${photoGrid(v, 'cooler', 'visit')}` : ''}
+    </section>
+    <section class="card"><label class="lb" for="remark">หมายเหตุ (ถ้ามี)</label><textarea id="remark" data-bind="remark" maxlength="500" placeholder="เช่น ร้านกำลังรีโนเวท">${esc(v.remark)}</textarea></section>`;
 }
 
 function vDone() {
   const v = S.lastDone, st = storeBy(v.store);
-  const sent = S.server.find(x => x.id === v.id);
-  const queued = S.queue.some(x => x.id === v.id);
+  const sent = S.server.find(x => x.id === v.id), queued = S.queue.some(x => x.id === v.id);
   return `<main class="main">
     <div class="card stack" style="align-items:center;text-align:center;padding:28px 18px">
       <span class="ico ok" style="width:64px;height:64px;border-radius:32px">${I.check.replace('width="16" height="16"', 'width="32" height="32"')}</span>
       <h1 style="font-size:24px">บันทึกเรียบร้อย</h1>
-      <div class="muted">${esc(st.name)} · ${fmtDur((new Date(v.completedAt) - new Date(v.startedAt)) / 1000)} นาที</div>
+      <div class="muted">${esc(st.name)} · ${fmtDur((new Date(v.completedAt) - new Date(v.startedAt)) / 1000)} นาที${v.access === 'out' ? ' · เข้าสาขาไม่ได้' : ''}</div>
       ${queued ? `<div class="alert warn" style="text-align:left">${S.syncing ? 'กำลังส่งข้อมูล…' : 'ยังไม่มีสัญญาณ — ข้อมูลเก็บในเครื่องแล้ว จะส่งให้อัตโนมัติเมื่อออนไลน์'}</div>` : ''}
       ${sent ? `<div class="alert ${sent.flags.length ? 'flag' : 'ok'}" style="text-align:left;width:100%">${sent.flags.length ? `${I.flag}<span>ส่งแล้ว แต่ server flag ไว้: ${sent.flags.map(esc).join(' · ')}<br><span class="small">(ในเดโมมักโดน “ใช้เวลาน้อย” เพราะกดเร็ว — กฎขั้นต่ำ ${RULES.minDurationSec / 60} นาที)</span></span>` : 'ส่งเข้า server แล้ว ไม่มีความผิดปกติ'}</div>` : ''}
     </div>
-    <button class="btn primary big block" data-act="go" data-to="pick">${I.pin} ตรวจร้านถัดไป</button>
+    <button class="btn primary big block" data-act="go" data-to="pick">${I.pin} เช็คอินร้านถัดไป</button>
     <button class="btn block" data-act="go" data-to="home">กลับหน้าแรก</button>
   </main>`;
 }
@@ -830,7 +1320,7 @@ function vQueue() {
     <button class="btn dark block" data-act="sync" ${!S.online || !S.queue.length || S.syncing ? 'disabled' : ''}>${S.syncing ? 'กำลังส่ง…' : 'ส่งตอนนี้'}</button>
     <div class="card stack">
       <b>ทดสอบ: ส่งข้อมูลซ้ำ</b>
-      <div class="small muted">จำลองกรณีเน็ตหลุดระหว่างรอคำตอบ แล้วแอปส่งก้อนเดิมอีกรอบ — server จะเห็นว่า VisitId เดิมมีแล้วจึงไม่บันทึกซ้ำ</div>
+      <div class="small muted">จำลองกรณีเน็ตหลุดระหว่างรอคำตอบ แล้วแอปส่งก้อนเดิมอีกรอบ — server เห็นว่า VisitId เดิมมีแล้วจึงไม่บันทึกซ้ำ</div>
       <button class="btn sm" data-act="resend" style="align-self:flex-start">ส่งรายการล่าสุดซ้ำ</button>
     </div>
     <div class="stack" style="gap:6px"><b>Sync log</b>
@@ -841,86 +1331,269 @@ function vQueue() {
 
 function vDashboard() {
   const all = S.server.slice().sort((a, b) => b.startedAt.localeCompare(a.startedAt));
-  const flagged = all.filter(v => v.flags.length);
-  const list = S.filterFlag ? flagged : all;
+  const ins = all.filter(v => v.access === 'in');
+  const flagged = all.filter(v => v.flags.length), list = S.filterFlag ? flagged : all;
   const avg = all.length ? all.reduce((a, v) => a + (new Date(v.completedAt) - new Date(v.startedAt)), 0) / all.length / 1000 : 0;
-  const byUser = USERS.filter(u => u.role === 'FF').map(u => {
-    const vs = all.filter(v => v.user === u.code);
-    return { u, n: vs.length, f: vs.filter(v => v.flags.length).length, last: vs[0] };
-  });
+  const pend = S.reports.filter(r => r.status === 'pending');
+  const mslRows = PUB.rows.filter(r => r.q === 'MSL');
+  const oos = mslRows.map(r => {
+    const k = rowKey(r), ans = ins.map(v => v.ans[k]).filter(Boolean), no = ans.filter(a => a.shelf === 'ไม่มี');
+    return { p: prodBy(r.product), n: ans.length, no: no.length, pct: ans.length ? Math.round(no.length / ans.length * 100) : 0,
+      stockY: no.filter(a => a.stock === 'มี').length, arr: no.filter(a => a.arrange === 'ให้จัด').length, stockN: no.filter(a => a.stock === 'ไม่มี').length, ord: no.filter(a => a.order === 'สั่ง').length };
+  }).filter(x => x.n).sort((a, b) => b.pct - a.pct);
+  const reasons = {};
+  ins.forEach(v => Object.values(v.ans).forEach(a => {
+    if (a.orderReason) { const l = 'ไม่สั่ง: ' + reasonLabel('order', a.orderReason, a.orderOther); reasons[l] = (reasons[l] || 0) + 1; }
+    if (a.arrangeReason) { const l = 'ไม่ให้จัด: ' + reasonLabel('arrange', a.arrangeReason, a.arrangeOther); reasons[l] = (reasons[l] || 0) + 1; }
+  }));
+  const topR = Object.entries(reasons).sort((a, b) => b[1] - a[1]).slice(0, 5), maxR = topR.length ? topR[0][1] : 1;
+  const purposeCount = SEED.purposes.map(p => [p, all.filter(v => v.purpose === p).length]);
   return `<main class="main">
-    <div class="between"><div><h1 style="font-size:24px">ภาพรวมวันนี้</h1><div class="small muted">${fmtDT(new Date()).slice(0, 10)} · ทีม BKK</div></div>
+    <div class="between"><div><h1 style="font-size:24px">ภาพรวมวันนี้</h1><div class="small muted">${fmtDT(new Date()).slice(0, 10)} · ฟอร์ม v${PUB.version}</div></div>
       <button class="btn sm dark" data-act="exportCsv">${I.dl} Export</button></div>
+    ${pend.length ? `<section class="card stack approvals"><div class="between"><h2 style="font-size:16px">รออนุมัติ</h2><span class="count">${pend.length}</span></div>
+      ${pend.map(r => { const st = storeBy(r.store), u = userBy(r.user); return `<div class="appr">
+        <img src="${r.photo}" alt="รูปหน้าร้าน ${esc(st.name)}">
+        <div style="flex:1;min-width:0"><span class="badge ${r.type === 'new' ? 'b-ok' : 'b-flag'}">${r.type === 'new' ? 'ร้านใหม่' : 'แจ้งร้านปิด'}</span>
+          <div style="font-weight:600;margin-top:2px">${esc(st.name)} <span class="small muted">#${esc(st.code)}</span></div>
+          <div class="tiny muted">${esc(u.code)} · ${fmtTime(r.at)}${r.note ? ' · ' + esc(r.note) : ''}</div>
+          <div class="row" style="gap:6px;margin-top:6px"><button class="btn sm dark" data-act="approve" data-id="${r.id}">อนุมัติ</button><button class="btn sm" data-act="reject" data-id="${r.id}">ปฏิเสธ</button></div></div></div>`; }).join('')}
+    </section>` : ''}
     <div class="kpis">
-      <div class="kpi"><b>${all.length}</b><span>ร้านที่ตรวจแล้ว</span></div>
+      <div class="kpi"><b>${all.length}</b><span>สาขาที่เยี่ยม (เข้าไม่ได้ ${all.length - ins.length})</span></div>
       <div class="kpi"><b>${new Set(all.map(v => v.user)).size}</b><span>พนักงานที่ออกตรวจ</span></div>
       <div class="kpi"><b style="color:${flagged.length ? 'var(--flag-ink)' : 'inherit'}">${flagged.length}</b><span>รายการถูก flag</span></div>
-      <div class="kpi"><b>${fmtDur(avg)}</b><span>เวลาเฉลี่ยต่อร้าน (นาที)</span></div>
+      <div class="kpi"><b>${fmtDur(avg)}</b><span>เวลาเฉลี่ยต่อสาขา (นาที)</span></div>
     </div>
-    <section class="card"><h2 style="font-size:16px;margin-bottom:6px">รายคน</h2>
-      <div style="overflow-x:auto"><table><thead><tr><th>พนักงาน</th><th class="num">ร้าน</th><th class="num">Flag</th><th class="num">ล่าสุด</th></tr></thead><tbody>
-      ${byUser.map(r => `<tr><td>${esc(r.u.name)}<div class="tiny muted">${esc(r.u.code)}</div></td><td class="num">${r.n}</td><td class="num" style="color:${r.f ? 'var(--flag-ink)' : 'inherit'}">${r.f}</td><td class="num">${r.last ? fmtTime(r.last.completedAt) : '—'}</td></tr>`).join('')}
-      </tbody></table></div></section>
-    <div class="between"><h2 style="font-size:18px">รายการตรวจร้าน</h2>
+    <div class="chips">${purposeCount.map(([p, n]) => `<span class="badge ${p === 'เข้าตามปกติ' ? 'b-grey' : 'b-gold'}" style="height:28px;font-size:12px">${esc(p)} ${n}</span>`).join('')}</div>
+    <section class="card stack"><div><h2 style="font-size:16px">Must List ไม่มีบนตู้แช่</h2><div class="small muted">จาก ${ins.length} สาขาที่เข้าได้ · เรียงจากขาดมากสุด</div></div>
+      ${oos.map(x => `<div>
+        <div class="between small"><span style="font-weight:500;min-width:0">${esc(x.p.name.replace('สก๊อต ', ''))}</span><b style="font-family:var(--display);font-size:15px">${x.pct}%</b></div>
+        <div class="bar" style="height:8px;margin:4px 0"><i style="width:${x.pct}%"></i></div>
+        <div class="tiny muted">ไม่มีบนตู้ ${x.no}/${x.n} · มีในสต็อก ${x.stockY} (ให้จัด ${x.arr}) · ไม่มีสต็อก ${x.stockN} (ยอมสั่ง ${x.ord})</div></div>`).join('')}
+    </section>
+    ${topR.length ? `<section class="card stack"><div><h2 style="font-size:16px">เหตุผลที่พบบ่อย</h2><div class="small muted">จากคำถาม ARRANGE_REASON / ORDER_REASON</div></div>
+      ${topR.map(([l, n]) => `<div><div class="between small"><span>${esc(l)}</span><b>${n}</b></div><div class="bar" style="height:6px;margin-top:4px"><i style="width:${Math.round(n / maxR * 100)}%;background:var(--ink)"></i></div></div>`).join('')}</section>` : ''}
+    <div class="between"><h2 style="font-size:18px">รายการเยี่ยมสาขา</h2>
       <div class="row" style="gap:4px" role="group" aria-label="ตัวกรอง">
         <button class="chip ${!S.filterFlag ? 'on' : ''}" style="height:36px" data-act="filter" data-v="all">ทั้งหมด</button>
         <button class="chip ${S.filterFlag ? 'on' : ''}" style="height:36px" data-act="filter" data-v="flag">มี flag</button></div></div>
     ${list.map(v => visitItem(v, true)).join('') || '<div class="card muted small">ไม่มีรายการ</div>'}
-    <div class="alert info">ระบบจริง: ข้อมูลส่วนนี้มาจาก view <b>vw_VisitAnswers</b> ใน SQL Server และ Power BI ดึงไปทำรายงานต่อ</div>
   </main>`;
 }
 
 function vDetail() {
   const v = S.server.find(x => x.id === S.detailId); if (!v) { S.screen = 'dashboard'; return vDashboard(); }
   const st = storeBy(v.store), u = userBy(v.user);
-  const ans = (type, map) => PRODUCTS.filter(p => p.type === type && map[p.id] !== undefined);
-  const fl = id => { const f = v.follow[id]; if (!f) return ''; return [f.stock === 'yes' ? 'มีในสต๊อก' : f.stock === 'no' ? 'ไม่มีสต๊อก' : '', f.order === 'yes' ? 'สั่งเพิ่ม' : f.order === 'no' ? 'ไม่สั่ง' : '', f.reason || ''].filter(Boolean).join(' → '); };
-  const payload = { ...v, photos: v.photos.map((p, i) => `photo_${i + 1}.jpg (${p.kb} KB) → เก็บเป็นไฟล์บน server, DB เก็บแค่ path`) };
+  const thumbs = slot => v.photos[slot].map((p, i) => `<div class="ph"><img src="${p.data}" alt="${esc(SLOT[slot])} ${i + 1}"></div>`).join('');
+  const rowsHtml = Object.entries(v.ans).map(([k, a]) => {
+    const [qid, pid] = k.split(':'), prod = pid !== '-' ? prodBy(pid) : null;
+    if (qid === 'MSL') { const path = [a.shelf === 'ไม่มี' ? 'ไม่มีบนตู้' : '', a.stock ? 'สต็อก: ' + a.stock : '', a.arrange || '', a.arrangeReason ? reasonLabel('arrange', a.arrangeReason, a.arrangeOther) : '', a.order || '', a.orderReason ? reasonLabel('order', a.orderReason, a.orderOther) : ''].filter(Boolean).join(' → ');
+      return `<tr><td><span class="tiny muted">Must List</span><br>${esc(prod.name)}${a.shelf === 'ไม่มี' ? `<div class="tiny" style="color:var(--gold-ink)">${esc(path)}</div>` : ''}</td><td class="num"><span class="badge ${a.shelf === 'มี' ? 'b-ok' : 'b-flag'}">${esc(a.shelf || '-')}</span></td></tr>`; }
+    const q = qBy(qid); if (!q) return '';
+    const extra = q.follow && a.value === q.follow.on ? q.follow.qs.map(cid => [...((a.multi || {})[cid] || []).filter(x => x !== OTHER_OPT), (a.other || {})[cid] ? 'อื่นๆ: ' + a.other[cid] : ''].filter(Boolean).join(', ')).filter(Boolean).join(' · ') : '';
+    return `<tr><td><span class="tiny muted">${esc(q.cat)} · ${esc(q.key)}</span><br>${esc(prod ? prod.name : q.text)}${extra ? `<div class="tiny muted">${esc(extra)}</div>` : ''}</td><td class="num">${esc(a.value || '-')}</td></tr>`;
+  }).join('');
+  const payload = { ...v, photos: Object.fromEntries(Object.entries(v.photos).map(([k, a]) => [k, a.map((p, i) => `${k}_${i + 1}.jpg (${p.kb} KB) → เก็บเป็นไฟล์, DB เก็บแค่ path`)])) };
   return `<main class="main">
     <button class="linkbtn row" data-act="go" data-to="dashboard" style="gap:6px">${I.back} กลับแดชบอร์ด</button>
     <section class="card flat"><div class="store-top"></div><div class="store-body">
-      <div class="eyebrow">${esc(st.chain)} · รหัสสาขา ${esc(st.code)}</div><h1 class="store-name">${esc(st.name)}</h1>
+      <div class="eyebrow">7-ELEVEN · รหัสสาขา ${esc(st.code)} · FC ${esc(st.fc)}</div><h1 class="store-name">${esc(st.name)}</h1>
       <div class="small muted">${esc(u.name)} (${esc(u.code)}) · ${fmtTime(v.startedAt)}–${fmtTime(v.completedAt)} · server รับ ${fmtTime(v.receivedAt)}</div></div>
-      <div class="facts"><div class="fact"><span class="ico ${v.distance <= RULES.maxDistanceM ? 'ok' : 'warn'}">${I.pin}</span><div><b>ห่างร้าน ${fmtDist(v.distance)}</b><span>±${Math.round(v.acc)} ม.</span></div></div>
+      <div class="facts"><div class="fact"><span class="ico ${v.distance <= RULES.okM ? 'ok' : 'warn'}">${I.pin}</span><div><b>ห่างร้าน ${fmtDist(v.distance)}</b><span>±${Math.round(v.acc)} ม.</span></div></div>
       <div class="fact"><span class="ico grey">${I.clock}</span><div><b>${fmtDur((new Date(v.completedAt) - new Date(v.startedAt)) / 1000)} นาที</b><span>ฟอร์ม v${v.formVersion}</span></div></div></div></section>
     ${v.flags.length ? `<div class="alert flag">${I.flag}<span>${v.flags.map(esc).join('<br>')}</span></div>` : `<div class="alert ok">${I.check} ไม่พบความผิดปกติ</div>`}
-    <section class="card stack"><h2 style="font-size:16px">รูปถ่าย</h2>
-      ${v.noPhoto ? `<div class="alert warn">งดถ่ายรูป: ${esc(v.noPhotoReason)}</div>` : `<div class="photos">${v.photos.map((p, i) => `<div class="ph"><img src="${p.data}" alt="รูปที่ ${i + 1}"></div>`).join('')}</div>`}</section>
-    <section class="card"><h2 style="font-size:16px;margin-bottom:4px">คำตอบ</h2><div style="overflow-x:auto"><table>
-      <thead><tr><th>สินค้าสก๊อต</th><th class="num">หน้า</th></tr></thead><tbody>
-      ${ans('S', v.counts).map(p => `<tr><td>${esc(p.name)}${fl(p.id) ? `<div class="tiny" style="color:var(--gold-ink)">${esc(fl(p.id))}</div>` : ''}</td><td class="num">${v.counts[p.id]}</td></tr>`).join('')}</tbody>
-      <thead><tr><th>คู่แข่ง</th><th class="num">หน้า</th></tr></thead><tbody>
-      ${ans('C', v.comp).map(p => `<tr><td>${esc(p.name)}</td><td class="num">${v.comp[p.id]}</td></tr>`).join('')}</tbody>
-      <thead><tr><th>POSM / พื้นที่พิเศษ</th><th class="num">มี</th></tr></thead><tbody>
-      ${ans('P', v.posm).map(p => `<tr><td>${esc(p.name)}</td><td class="num">${v.posm[p.id] ? 'มี' : '—'}</td></tr>`).join('')}</tbody></table></div>
-      ${v.remark ? `<div class="small" style="margin-top:8px"><b>หมายเหตุ:</b> ${esc(v.remark)}</div>` : ''}</section>
+    <section class="card"><h2 style="font-size:16px;margin-bottom:4px">เช็คอิน</h2><table><tbody>
+      <tr><th>เวลา</th><td>เช็คอิน ${fmtTime(v.startedAt)}${v.surveyStartedAt ? ' · เริ่มตอบ ' + fmtTime(v.surveyStartedAt) : ''} · เสร็จ ${fmtTime(v.completedAt)}</td></tr>
+      <tr><th>จุดประสงค์</th><td>${esc(v.purpose)}${v.coverFor ? ` · แทน ${esc(v.coverFor)} ${esc(userBy(v.coverFor).name)}` : ''}</td></tr>
+      <tr><th>การเยี่ยมสาขา</th><td>${v.access === 'in' ? 'เข้าได้' : 'เข้าไม่ได้ · ' + esc(v.accessReason)}</td></tr>
+      ${v.access === 'in' ? `<tr><th>ขนาดพื้นที่เชลฟ์</th><td>${esc(v.shelfSize)}</td></tr><tr><th>พื้นที่ใกล้เคียง</th><td>${esc(st.loc || v.profileLoc || '-')}</td></tr>` : ''}
+    </tbody></table></section>
+    <section class="card stack"><h2 style="font-size:16px">รูปป้ายหน้าสาขา${v.photos.selfie.length ? ' + Selfie' : ''}</h2><div class="photos">${thumbs('sign')}${thumbs('selfie')}</div></section>
+    ${v.access === 'in' ? `<section class="card"><h2 style="font-size:16px;margin-bottom:4px">คำตอบ</h2><div style="overflow-x:auto"><table><tbody>${rowsHtml}</tbody></table></div></section>
+    <section class="card stack"><h2 style="font-size:16px">รูปตู้แช่ขวดเดี่ยว</h2><div class="small muted">${esc(v.cooler)}</div>${v.photos.cooler.length ? `<div class="photos">${thumbs('cooler')}</div>` : ''}</section>` : ''}
+    ${v.remark ? `<section class="card small"><b>หมายเหตุ:</b> ${esc(v.remark)}</section>` : ''}
     <section class="stack" style="gap:6px"><b>ข้อมูลที่แอปส่งไป API (JSON)</b><pre class="json">${esc(JSON.stringify(payload, null, 2))}</pre></section>
   </main>`;
 }
 
+/* --- Admin: ตัวสร้างฟอร์ม / คลังคำถาม / สินค้า / เหตุผล / เผยแพร่ --- */
 function vForm() {
-  const group = (type, title, desc) => `<section class="card stack"><div><h2 style="font-size:16px">${title}</h2><div class="small muted">${desc}</div></div>
-    ${PRODUCTS.filter(p => p.type === type).map(p => `<div class="between" style="border-top:1px solid var(--line2);padding-top:10px">
-      <div style="min-width:0"><div style="font-weight:500;${p.active ? '' : 'color:var(--ink3);text-decoration:line-through'}">${esc(p.name)}</div><div class="tiny muted">${esc(p.id)}</div></div>
-      <div class="row" style="gap:6px;flex-shrink:0">
-        ${type === 'S' ? `<button class="chip ${p.focus ? 'on' : ''}" style="height:36px" aria-pressed="${!!p.focus}" data-act="pFocus" data-id="${esc(p.id)}">โฟกัส</button>` : ''}
-        <button class="switch" role="switch" aria-checked="${p.active}" aria-label="ใช้งาน ${esc(p.name)}" data-act="pActive" data-id="${esc(p.id)}"><i></i></button></div></div>`).join('')}
-  </section>`;
+  const dirty = isDirty();
+  const tabs = [['builder', 'ตัวสร้างฟอร์ม'], ['master', 'คลังคำถาม'], ['products', 'สินค้า'], ['reasons', 'เหตุผล'], ['publish', 'เผยแพร่']];
+  const body = { builder: aBuilder, master: aMaster, products: aProducts, reasons: aReasons, publish: aPublish }[S.adminTab]();
   return `<main class="main">
-    <div><h1 style="font-size:24px">จัดการฟอร์มรายเดือน</h1><div class="small muted">เดือน ${esc(SEED.form.period)} · เวอร์ชัน ${S.formVersion} · สำหรับทีม BA</div></div>
-    <div class="alert info">ปิด/เปิดสินค้า หรือเพิ่ม SKU ใหม่ แล้วล็อกอินเป็น FF จะเห็นฟอร์มเปลี่ยนทันที — ไม่ต้องแก้โค้ด (ระบบจริงเก็บเป็นตาราง FormVersions)</div>
-    <section class="card stack"><label class="lb" for="new-sku" style="margin:0">เพิ่มสินค้าสก๊อตใหม่</label>
-      <div class="row"><input id="new-sku" type="text" maxlength="120" placeholder="เช่น สก๊อต รังนก สูตรใหม่ 40 มล."><button class="btn dark" data-act="addSku">เพิ่ม</button></div></section>
-    ${group('S', 'สินค้าสก๊อต', 'มีคำถามต่อเมื่อตอบ 0 (สต๊อก → สั่ง → เหตุผล)')}
-    ${group('C', 'สินค้าคู่แข่ง', 'นับจำนวนหน้าอย่างเดียว')}
-    ${group('P', 'POSM / พื้นที่พิเศษ', 'ตอบ มี / ไม่มี')}
+    <div><h1 style="font-size:24px">จัดการแบบสอบถาม</h1><div class="small muted">ฝั่ง Admin (ทีม BA) · ${esc(PERIOD)}</div></div>
+    <div class="verbar ${dirty ? 'dirty' : ''}">
+      <div><b>เผยแพร่อยู่: v${PUB.version}</b> <span class="small">· ตั้งแต่ ${fmtD(PUB.at)}</span>
+        <div class="small">${dirty ? `มี Draft v${PUB.version + 1} ที่ยังไม่เผยแพร่ — พนักงานยังเห็น v${PUB.version}` : 'ไม่มีการแก้ไขค้าง'}</div></div>
+      ${dirty ? `<button class="btn sm primary" data-act="atab" data-t="publish">ตรวจและเผยแพร่</button>` : ''}
+    </div>
+    <nav class="atabs" aria-label="เมนู Admin">${tabs.map(t => `<button class="${S.adminTab === t[0] ? 'on' : ''}" data-act="atab" data-t="${t[0]}">${t[1]}</button>`).join('')}</nav>
+    ${body}
+  </main>`;
+}
+function schedChip(r) {
+  const s = rowStatus(r);
+  return s === 'live' ? `<span class="badge b-ok">กำลังใช้</span>` : s === 'scheduled' ? `<span class="badge b-gold">ตั้งเวลา · เริ่ม ${fmtD(r.start)}</span>` : `<span class="badge b-grey">หมดเวลา</span>`;
+}
+function rowLabel(r) {
+  if (r.q === 'MSL') return { cat: 'Must List', text: 'ชุดคำถาม Must List (แตกกิ่ง M01–M06)', opts: 'มี/ไม่มี → สต็อก → จัดเรียง/สั่ง → เหตุผล' };
+  const q = qBy(r.q); return { cat: q.cat, text: `${q.id} · ${q.text}`, opts: q.options.join(' / ') + (q.follow ? ` → ถามต่อ ${q.follow.qs.join(', ')}` : '') };
+}
+function aBuilder() {
+  const b = S.b;
+  const qList = b.cat === 'Must List' ? [{ id: 'MSL', text: 'ชุดคำถาม Must List (แตกกิ่ง)' }] : QM.filter(q => q.cat === b.cat && !q.child);
+  const sel = b.q === 'MSL' ? null : qBy(b.q);
+  const needP = b.q === 'MSL' || (sel && sel.needProduct);
+  const preview = b.q === 'MSL' ? ['มี', 'ไม่มี → มีในสต็อก?', '→ ให้จัด / ไม่ให้จัด → เหตุผล', '→ สั่ง / ไม่สั่ง → เหตุผล'] : sel ? sel.options : [];
+  const groups = [['msl', 'Must List'], ['other', 'เช็คสินค้าทั่วไป'], ['area', 'กระเช้า · สื่อ · พื้นที่พิเศษ']];
+  return `<section class="card stack builder">
+      <div><h2 style="font-size:16px">สร้างคำถาม จากคลังคำถาม (master)</h2><div class="small muted">เลือกหมวด → คำถาม → สินค้า → ตัวเลือกมาให้อัตโนมัติ → ตั้งเวลาขึ้นคำถาม</div></div>
+      <div class="bgrid">
+        <label class="lb">หมวด<select data-sel="cat">${CATS.map(c => `<option ${b.cat === c ? 'selected' : ''}>${esc(c)}</option>`).join('')}</select></label>
+        <label class="lb">คำถาม<select data-sel="q">${qList.map(q => `<option value="${q.id}" ${b.q === q.id ? 'selected' : ''}>${esc(q.id === 'MSL' ? q.text : q.id + ' · ' + q.text)}</option>`).join('')}</select></label>
+        ${needP ? `<label class="lb">สินค้า<select data-sel="product"><option value="">— เลือกสินค้า —</option>${PRODUCTS.map(p => `<option value="${p.id}" ${b.product === p.id ? 'selected' : ''}>${esc(p.name)} · ${esc(p.barcode)}</option>`).join('')}</select></label>` : `<div class="small muted" style="align-self:end;padding-bottom:12px">คำถามนี้ไม่ผูกกับสินค้า</div>`}
+      </div>
+      <div><div class="lb" style="margin-bottom:4px">ตัวเลือก (ดึงจาก master อัตโนมัติ)</div><div class="chips">${preview.map(o => `<span class="badge b-grey" style="height:28px;font-size:12px">${esc(o)}</span>`).join('')}</div></div>
+      <div class="seg2"><label class="lb">เริ่ม<input type="date" data-sel="start" value="${b.start}"></label><label class="lb">สิ้นสุด<input type="date" data-sel="end" value="${b.end}"></label></div>
+      <button class="btn dark block" data-act="bAdd">+ เพิ่มลงฟอร์ม (Draft)</button>
+    </section>
+    ${groups.map(([g, title]) => { const rows = DRAFT.rows.filter(r => stepOfRowAny(r) === g);
+      return `<section class="card stack"><div class="between"><h2 style="font-size:16px">${title}</h2><span class="small muted">${rows.filter(r => rowStatus(r) === 'live').length} ข้อที่ใช้อยู่ · ทั้งหมด ${rows.length}</span></div>
+      ${rows.map(r => { const L = rowLabel(r), p = r.product ? prodBy(r.product) : null;
+        return `<div class="frow ${rowStatus(r)}">
+          <div style="min-width:0;flex:1"><div class="row" style="gap:6px;flex-wrap:wrap">${schedChip(r)}<span class="tiny muted">${fmtD(r.start)} – ${fmtD(r.end)}</span></div>
+            <div style="font-weight:600;margin-top:2px">${esc(p ? p.name : L.text)}</div>
+            <div class="tiny muted">${esc(p ? L.text : L.opts)}</div></div>
+          <div class="row" style="gap:2px;flex-shrink:0"><button class="ibtn" data-act="rowMove" data-id="${r.id}" data-dir="-1" aria-label="เลื่อนขึ้น">↑</button><button class="ibtn" data-act="rowMove" data-id="${r.id}" data-dir="1" aria-label="เลื่อนลง">↓</button><button class="ibtn del" data-act="rowDel" data-id="${r.id}" aria-label="ลบ">${I.x}</button></div>
+        </div>`; }).join('') || '<div class="small muted">ยังไม่มีคำถาม</div>'}</section>`; }).join('')}`;
+}
+function aMaster() {
+  return `<div class="alert info">คลังคำถามกลาง · ทุกคำถามมี <b>รหัส (Key)</b> คงที่ คำตอบทุกเดือนจึงต่อกันได้ แม้เปลี่ยนสินค้าหรือลำดับคำถาม</div>
+    ${CATS.map(c => { const qs = QM.filter(q => q.cat === c); return `<section class="card stack"><h2 style="font-size:16px">${esc(c)}</h2>
+      ${c === 'Must List' ? `<div class="tree" aria-label="ผังคำถาม Must List">
+        <div class="tn">M01 มีวางบนตู้แช่? <code>ON_SHELF</code></div>
+        <div class="tb"><span class="ta">มี</span> → จบ</div>
+        <div class="tb"><span class="ta">ไม่มี</span><div class="tn">M02 มีในสต็อก? <code>IN_STOCK</code></div>
+          <div class="tb"><span class="ta">มี</span><div class="tn">M03 ให้จัดเรียง? <code>ALLOW_ARRANGE</code></div><div class="tb"><span class="ta">ไม่ให้</span><div class="tn r">M04 เพราะอะไร <code>ARRANGE_REASON</code></div></div></div>
+          <div class="tb"><span class="ta">ไม่มี</span><div class="tn">M05 ยอมสั่งของ? <code>WILL_ORDER</code></div><div class="tb"><span class="ta">ไม่สั่ง</span><div class="tn r">M06 เพราะอะไร <code>ORDER_REASON</code></div></div></div>
+        </div></div>` : ''}
+      <div style="overflow-x:auto"><table class="mtable"><thead><tr><th>รหัส</th><th>คำถาม</th><th>ชนิด</th><th>ตัวเลือก</th></tr></thead><tbody>
+      ${qs.map(q => `<tr><td><b>${esc(q.id)}</b><div class="tiny muted">${esc(q.key)}</div></td><td>${esc(q.text)}${q.child ? '<div class="tiny muted">คำถามต่อเนื่อง</div>' : ''}</td><td><span class="badge ${q.type === 'multiple' ? 'b-gold' : 'b-grey'}">${q.type === 'multiple' ? 'Multiple' : 'Single'}</span></td><td class="tiny">${q.options.map(esc).join(' · ')}</td></tr>`).join('')}
+      </tbody></table></div></section>`; }).join('')}
+    <section class="card stack"><h2 style="font-size:16px">เพิ่มคำถามใหม่เข้าคลัง</h2>
+      <div class="seg2"><label class="lb">หมวด<select id="nq-cat">${CATS.filter(c => c !== 'Must List').map(c => `<option>${esc(c)}</option>`).join('')}</select></label>
+        <label class="lb">ชนิดคำถาม<select id="nq-type"><option value="single">Single Choice</option><option value="multiple">Multiple Choices</option></select></label></div>
+      <label class="lb">คำถาม<input id="nq-text" type="text" maxlength="160" placeholder="เช่น มีสื่อโปรโมชั่นใหม่ติดที่ตู้แช่หรือไม่?"></label>
+      <label class="lb">ตัวเลือก (คั่นด้วย ,)<input id="nq-opts" type="text" maxlength="300" placeholder="มี, ไม่มี"></label>
+      <button class="btn dark" data-act="addQuestion">+ เพิ่มเข้าคลังคำถาม</button></section>`;
+}
+function aProducts() {
+  return `<section class="card stack"><div><h2 style="font-size:16px">Master สินค้า</h2><div class="small muted">รหัสสินค้าและบาร์โค้ดคงที่ · ใช้เลือกในตัวสร้างฟอร์ม</div></div>
+    <div style="overflow-x:auto"><table class="mtable"><thead><tr><th>สินค้า</th><th>บาร์โค้ด</th><th>ใช้ในฟอร์ม</th></tr></thead><tbody>
+    ${PRODUCTS.map(p => { const r = DRAFT.rows.find(x => x.product === p.id && rowStatus(x) !== 'expired'); return `<tr><td>${esc(p.name)}<div class="tiny muted">${esc(p.id)} · ${esc(p.code)}</div></td><td class="tiny">${esc(p.barcode)}</td><td>${r ? `<span class="badge ${r.q === 'MSL' ? 'b-flag' : 'b-grey'}">${r.q === 'MSL' ? 'Must List' : 'ทั่วไป'}</span>` : '<span class="tiny muted">—</span>'}</td></tr>`; }).join('')}
+    </tbody></table></div><div class="tiny muted">* บาร์โค้ดในต้นแบบเป็นเลขสมมติ</div></section>`;
+}
+function aReasons() {
+  const list = (kind, title) => `<section class="card stack"><div><h2 style="font-size:16px">${title}</h2><div class="small muted">ปิดได้แต่ลบไม่ได้ เพื่อให้ข้อมูลย้อนหลังยังอ่านออก</div></div>
+    ${DRAFT.reasons[kind].map(r => `<div class="between" style="border-top:1px solid var(--line2);padding-top:8px"><div><b>${esc(r.label)}</b><div class="tiny muted">${esc(r.code)}</div></div>
+      <button class="switch" role="switch" aria-checked="${r.active}" aria-label="ใช้งาน ${esc(r.label)}" data-act="rActive" data-kind="${kind}" data-code="${esc(r.code)}"><i></i></button></div>`).join('')}
+    <div class="row"><input id="nr-${kind}" type="text" maxlength="60" placeholder="เพิ่มเหตุผลใหม่"><button class="btn dark" data-act="addReason" data-kind="${kind}">เพิ่ม</button></div>
+    <div class="tiny muted">พนักงานจะเห็นตัวเลือก “อื่น ๆ (ระบุ)” ต่อท้ายเสมอ</div></section>`;
+  return list('arrange', 'เหตุผล: สาขาไม่ให้จัดเรียง (M04)') + list('order', 'เหตุผล: สาขาไม่สั่งของ (M06)');
+}
+function aPublish() {
+  const key = r => r.q + ':' + (r.product || '-') + ':' + r.start + ':' + r.end;
+  const pubK = new Set(PUB.rows.map(key)), drK = new Set(DRAFT.rows.map(key));
+  const added = DRAFT.rows.filter(r => !pubK.has(key(r))), removed = PUB.rows.filter(r => !drK.has(key(r)));
+  const rDiff = JSON.stringify(DRAFT.reasons) !== JSON.stringify(PUB.reasons);
+  const line = (r, sign) => { const L = rowLabel(r), p = r.product ? prodBy(r.product) : null; return `<div class="diff ${sign === '+' ? 'add' : 'del'}"><b>${sign}</b> ${esc(p ? p.name : L.text)} <span class="tiny muted">· ${esc(L.cat)} · ${fmtD(r.start)}–${fmtD(r.end)}</span></div>`; };
+  const dirty = isDirty();
+  return `<section class="card stack"><h2 style="font-size:16px">สิ่งที่เปลี่ยนจาก v${PUB.version}</h2>
+      ${dirty ? [...added.map(r => line(r, '+')), ...removed.map(r => line(r, '−')), rDiff ? '<div class="diff add"><b>~</b> แก้ไขรายการเหตุผล</div>' : ''].join('') : '<div class="small muted">ไม่มีการเปลี่ยนแปลง</div>'}
+    </section>
+    <section class="card stack"><h2 style="font-size:16px">กฎการเผยแพร่</h2>
+      <div class="small">• เผยแพร่แล้ว<b>ล็อก</b> — แก้ระหว่างเดือนจะกลายเป็นเวอร์ชันใหม่ เวอร์ชันเก่ายังเก็บไว้</div>
+      <div class="small">• คำถามที่<b>ตั้งเวลา</b>ไว้ จะขึ้นให้พนักงานเห็นเองเมื่อถึงวันเริ่ม และหายเองเมื่อหมดเวลา</div>
+      <div class="small">• คำตอบผูกกับ <b>รหัสคำถาม + รหัสสินค้า</b> จึงเทียบข้ามเดือนได้เสมอ</div></section>
+    <div class="seg2"><button class="btn" data-act="discard" ${dirty ? '' : 'disabled'}>ยกเลิก Draft</button><button class="btn primary" data-act="publish" ${dirty ? '' : 'disabled'}>Publish v${PUB.version + 1}</button></div>`;
+}
+
+/* --- รีพอร์ตของเมอร์: แพลน vs เข้าจริง 7 วัน --- */
+const DOW = ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'];
+function planOf(user, dayIso) {
+  // แพลนจำลอง: วันละ 5–7 สาขาจากเส้นทาง · การแวะ = จำนวนร้าน + ร้านที่ต้องกลับไปติดตามงาน
+  const route = user.route.map(storeBy).filter(Boolean);
+  const rnd = mulberry32(dayIso.split('-').join('') * 1 + user.code.length);
+  if (dayIso === TODAY) return { stores: route.map(s => s.code), revisit: route.slice(0, 1).map(s => s.code) };
+  const n = Math.min(route.length, 5 + Math.floor(rnd() * 3));
+  const stores = route.slice().sort(() => rnd() - .5).slice(0, n).map(s => s.code);
+  return { stores, revisit: rnd() < .5 ? [stores[0]] : [] };
+}
+function recordsOf(user, dayIso) {
+  const real = [...S.server, ...S.queue].filter(v => v.user === user.code && iso(v.startedAt) === dayIso);
+  if (dayIso === TODAY) return real.map(v => ({ code: v.store, time: v.startedAt, purpose: v.purpose, access: v.access }));
+  const plan = planOf(user, dayIso), rnd = mulberry32(dayIso.split('-').join('') * 3 + 11), out = [];
+  const visitCount = plan.stores.length + plan.revisit.length;
+  let t = new Date(dayIso + 'T08:40:00');
+  plan.stores.forEach((c, i) => { if (rnd() < .86) { out.push({ code: c, time: t.toISOString(), purpose: 'เข้าตามปกติ', access: rnd() < .95 ? 'in' : 'out' }); } t = new Date(t.getTime() + (35 + rnd() * 25) * 60000); });
+  plan.revisit.forEach(c => { if (rnd() < .7) out.push({ code: c, time: t.toISOString(), purpose: 'ติดตามงาน', access: 'in' }); });
+  return out.slice(0, visitCount);
+}
+function vReport() {
+  const u = S.user;
+  const days = Array.from({ length: 7 }, (_, i) => addDays(i - 6));
+  const rows = days.map(d => {
+    const p = planOf(u, d), rec = recordsOf(u, d);
+    const visited = new Set(rec.map(r => r.code));
+    return { d, planStores: p.stores.length, realStores: p.stores.filter(c => visited.has(c)).length + [...visited].filter(c => !p.stores.includes(c)).length,
+      planVisits: p.stores.length + p.revisit.length, realVisits: rec.length, plan: p, rec };
+  });
+  if (!S.repDay || !days.includes(S.repDay)) S.repDay = TODAY;
+  const sel = rows.find(r => r.d === S.repDay);
+  const max = Math.max(...rows.map(r => Math.max(r.planVisits, r.realVisits)), 1);
+  const sum = k => rows.reduce((a, r) => a + r[k], 0);
+  const pct = (a, b) => b ? Math.round(a / b * 100) + '%' : '—';
+  const dl = d => { const x = new Date(d + 'T00:00:00'); return `${DOW[x.getDay()]} ${x.getDate()}`; };
+  const recBy = new Map(); sel.rec.forEach(r => { if (!recBy.has(r.code)) recBy.set(r.code, r); });
+  return `<main class="main">
+    <div><h1 style="font-size:24px">รีพอร์ตของฉัน</h1><div class="small muted">${esc(u.code)} ${esc(u.name)} · ย้อนหลัง 7 วัน</div></div>
+    <div class="kpis">
+      <div class="kpi"><b>${sum('realStores')}<span class="kof">/${sum('planStores')}</span></b><span>ร้านที่เข้าจริง / แพลน · ${pct(sum('realStores'), sum('planStores'))}</span></div>
+      <div class="kpi"><b>${sum('realVisits')}<span class="kof">/${sum('planVisits')}</span></b><span>การแวะจริง / แพลน · ${pct(sum('realVisits'), sum('planVisits'))}</span></div>
+    </div>
+    <section class="card stack"><div class="between"><h2 style="font-size:16px">แพลน vs เข้าจริง รายวัน</h2>
+      <div class="legend"><span><i style="background:#D9D5CE"></i>แพลน</span><span><i style="background:var(--red)"></i>เข้าจริง</span></div></div>
+      <div class="chart" role="img" aria-label="กราฟจำนวนการแวะ แพลนเทียบเข้าจริง 7 วัน">
+        ${rows.map(r => `<button class="col ${r.d === S.repDay ? 'on' : ''}" data-act="repDay" data-d="${r.d}" aria-label="${dl(r.d)} แพลน ${r.planVisits} เข้าจริง ${r.realVisits}">
+          <span class="bars"><i class="p" style="height:${Math.round(r.planVisits / max * 100)}%"></i><i class="a" style="height:${Math.round(r.realVisits / max * 100)}%"></i></span>
+          <span class="cv">${r.realVisits}/${r.planVisits}</span><span class="cd">${dl(r.d)}</span></button>`).join('')}
+      </div>
+      <div class="tiny muted">แตะที่วันเพื่อดูรายการร้าน · ตัวเลข = การแวะจริง/แพลน</div>
+    </section>
+    <section class="card"><div style="overflow-x:auto"><table class="mtable">
+      <thead><tr><th>วัน</th><th class="num">ร้านแพลน</th><th class="num">ร้านเข้าจริง</th><th class="num">แวะแพลน</th><th class="num">แวะจริง</th></tr></thead>
+      <tbody>${rows.map(r => `<tr class="${r.d === S.repDay ? 'sel' : ''}"><td>${dl(r.d)}${r.d === TODAY ? ' <span class="badge b-gold">วันนี้</span>' : ''}</td><td class="num">${r.planStores}</td><td class="num">${r.realStores}</td><td class="num">${r.planVisits}</td><td class="num"><b style="color:${r.realVisits >= r.planVisits ? 'var(--ok-ink)' : 'inherit'}">${r.realVisits}</b></td></tr>`).join('')}</tbody>
+    </table></div></section>
+    <section class="card stack"><div class="between"><h2 style="font-size:16px">ร้านในแพลน · ${dl(S.repDay)}</h2><span class="small muted">${sel.realStores}/${sel.planStores} ร้าน</span></div>
+      ${sel.plan.stores.map(c => { const st = storeBy(c), r = recBy.get(c), again = sel.plan.revisit.includes(c);
+        return `<div class="between" style="border-top:1px solid var(--line2);padding-top:8px">
+          <div style="min-width:0"><b>${esc(st.name)}</b> <span class="small muted">#${esc(c)}</span>${again ? ' <span class="badge b-gold">แวะ 2 ครั้ง</span>' : ''}</div>
+          ${r ? `<span class="badge ${r.access === 'out' ? 'b-warn' : 'b-ok'}">${r.access === 'out' ? 'เข้าไม่ได้' : 'เข้าแล้ว'} ${fmtTime(r.time)}</span>` : `<span class="badge b-grey">${S.repDay === TODAY ? 'ยังไม่เข้า' : 'ไม่ได้เข้า'}</span>`}</div>`; }).join('')}
+    </section>
+    <section class="card stack"><div class="between"><h2 style="font-size:16px">Record การเข้าเยี่ยม · ${dl(S.repDay)}</h2><span class="small muted">${sel.rec.length} ครั้ง</span></div>
+      ${sel.rec.length ? sel.rec.slice().sort((a, b) => a.time.localeCompare(b.time)).map(r => { const st = storeBy(r.code); return `<div class="row" style="border-top:1px solid var(--line2);padding-top:8px">
+        <span class="dist" style="width:48px">${fmtTime(r.time)}</span><div style="flex:1;min-width:0"><b>${esc(st.name)}</b> <span class="small muted">#${esc(r.code)}</span></div>
+        <span class="badge ${r.purpose === 'เข้าตามปกติ' ? 'b-grey' : 'b-gold'}">${esc(r.purpose || '')}</span></div>`; }).join('') : '<div class="small muted">ยังไม่มีการเข้าเยี่ยม</div>'}
+    </section>
   </main>`;
 }
 
 function render() {
   const app = document.getElementById('app');
-  const views = { login: vLogin, home: vHome, pick: vPick, audit: vAudit, done: vDone, queue: vQueue, dashboard: vDashboard, detail: vDetail, form: vForm };
-  app.innerHTML = header() + views[S.screen]() + (S.screen === 'audit' ? '' : '<div class="note">Scotch Field Audit · Concept prototype · ข้อมูลจำลองทั้งหมด</div>');
+  const views = { login: vLogin, home: vHome, pick: vPick, newstore: vNewStore, closed: vClosed, audit: vAudit, done: vDone, queue: vQueue, dashboard: vDashboard, detail: vDetail, form: vForm, report: vReport };
+  app.innerHTML = header() + views[S.screen]() + (S.screen === 'audit' ? '' : '<div class="note">Scotch Field Audit · Concept prototype v3 · ข้อมูลจำลองทั้งหมด</div>');
 }
 
 let toastTimer;
@@ -931,7 +1604,7 @@ function toast(msg) {
 }
 
 /* =============================================================
-   10) EVENTS — event delegation จุดเดียว
+   11) EVENTS — event delegation จุดเดียว
    ============================================================= */
 document.addEventListener('click', e => {
   const el = e.target.closest('[data-act]'); if (!el || el.disabled) return;
@@ -939,15 +1612,27 @@ document.addEventListener('click', e => {
 });
 document.addEventListener('input', e => {
   const t = e.target;
-  if (t.id === 'store-q') {          // อัปเดตเฉพาะรายการ ไม่ render ทั้งหน้า (input จะได้ไม่หลุด focus)
+  if (t.id === 'store-q') {
     S.search = t.value;
-    const withD = STORES.map(s => ({ ...s, d: S.pos ? haversine(S.pos, s) : null }));
-    document.getElementById('store-list').innerHTML = storeList(withD, withD.slice().sort((a, b) => a.d - b.d).slice(0, 5), S.search.trim().toLowerCase());
+    const withD = routeStores().map(s => ({ ...s, d: S.pos ? haversine(S.pos, s) : null, t: S.pos ? tierOf(S.pos, s).k : null }));
+    document.getElementById('store-list').innerHTML = storeList(withD, S.search.trim().toLowerCase());
   }
   if (t.dataset.bind && S.visit) S.visit[t.dataset.bind] = t.value;
+  if (t.dataset.draft && S.draft) S.draft[t.dataset.draft] = t.value;
+  if (t.dataset.ans && S.visit) {
+    const [key, f, cid] = t.dataset.ans.split('|'); const a = ansOf(key);
+    if (f === 'other') { a.other = a.other || {}; a.other[cid] = t.value; } else a[f] = t.value;
+  }
+});
+document.addEventListener('change', e => {
+  const t = e.target, k = t.dataset.sel; if (!k) return;
+  S.b[k] = t.value;
+  if (k === 'cat') { S.b.q = t.value === 'Must List' ? 'MSL' : ((QM.find(q => q.cat === t.value && !q.child) || {}).id || ''); S.b.product = ''; }
+  if (k === 'q') S.b.product = '';
+  render();
 });
 document.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.id === 'pin') A.login(); });
-setInterval(() => { const el = document.getElementById('elapsed'); if (el && S.visit) el.textContent = fmtDur((Date.now() - new Date(S.visit.startedAt)) / 1000); }, 1000);
+setInterval(() => { const el = document.getElementById('elapsed'); if (el && S.visit) el.textContent = fmtDur((Date.now() - new Date(S.visit.surveyStartedAt || S.visit.startedAt)) / 1000); }, 1000);
 
 seedToday();
 render();
