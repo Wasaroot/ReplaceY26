@@ -212,6 +212,47 @@
     .hero-figure { font-size: 30px; }
     .grand-total .gt-value { font-size: 22px; }
   }
+
+  /* ===== Version History tab ===== */
+  :root { --ver: #e0702f; --ver-soft: rgba(224,112,47,0.14); }
+  .tab-btn[data-tab="ver"].active { border-bottom-color: var(--ver); }
+  .hero-figure.ver { color: var(--ver); }
+  #verSlider::-webkit-slider-thumb, #verSlider::-moz-range-thumb { background: var(--ver); }
+  .ver-presets { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+  .ver-presets .tier-btn.active { background: var(--ver); border-color: var(--ver); }
+  .company-gauge { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin: 0 0 16px; }
+  .company-gauge .cg-title { font-size: 12.5px; font-weight: 700; margin-bottom: 10px; }
+  .cg-line { display: grid; grid-template-columns: 82px 1fr 150px; align-items: center; gap: 10px; font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; }
+  .cg-line .meter-track { margin: 0; }
+  .cg-fill { height: 100%; border-radius: 5px; transition: width .2s ease; }
+  .cg-fill.lvl-good     { background: #0ca30c; }
+  .cg-fill.lvl-warning  { background: #ec835a; }
+  .cg-fill.lvl-critical { background: #d03b3b; }
+  .cg-line .cg-val { text-align: right; }
+  .site-block { margin-bottom: 16px; }
+  .site-row { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; margin-bottom: 10px; }
+  .site-row-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+  .site-row-name { font-size: 13px; font-weight: 700; }
+  .site-row-freed { font-size: 12px; color: var(--text-secondary); }
+  .site-row-freed b { color: var(--ver); font-size: 14px; }
+  .stack-track { display: flex; height: 16px; border-radius: 6px; overflow: hidden; background: var(--gridline); }
+  .stack-seg { height: 100%; transition: width .2s ease; }
+  .stack-seg.actual { background: var(--sp-blue); }
+  .stack-seg.vkept { background: #f0a37a; }
+  .stack-seg.freed {
+    background: repeating-linear-gradient(45deg, #fbe3d3, #fbe3d3 4px, #f6c9ad 4px, #f6c9ad 8px);
+    outline: 1px dashed var(--ver); outline-offset: -1px;
+  }
+  .site-row-meta { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; font-size: 11px; color: var(--text-muted); margin-top: 7px; }
+  .site-row-meta b { color: var(--text-secondary); }
+  .stack-legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 11px; color: var(--text-secondary); margin: 2px 0 16px; }
+  .stack-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+  .ver-sec-title { font-size: 12.5px; font-weight: 700; margin: 18px 0 8px; }
+  table.top-files td.fname { max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  table.top-files td.num, table.top-files th.num { text-align: right; white-space: nowrap; }
+  table.top-files td.freed { font-weight: 700; color: var(--ver); }
+  .top-wrap { overflow-x: auto; }
+  @media (max-width: 560px) { .cg-line { grid-template-columns: 70px 1fr; } .cg-line .cg-val { grid-column: 1 / -1; text-align: left; } }
 </style>
 </head>
 <body>
@@ -266,8 +307,8 @@
         <button type="button" class="year-btn" data-year="2025">2025</button>
         <button type="button" class="year-btn active" data-year="2026">2026</button>
       </div>
-      <div class="meter-track"><div class="meter-fill" id="spMeterFill" data-used="2.71" data-total="3.68"></div></div>
-      <div class="meter-label">ใช้ <b id="spUsedLabel">2.71 TB</b> จาก <b>3.68 TB</b> · <span class="meter-pct"></span></div>
+      <div class="meter-track"><div class="meter-fill" id="spMeterFill" data-used="3.58" data-total="3.74"></div></div>
+      <div class="meter-label">ใช้ <b id="spUsedLabel">3.58 TB</b> จาก <b>3.74 TB</b> · <span class="meter-pct"></span></div>
     </div>
 
     <div class="svc-card">
@@ -299,6 +340,7 @@
 
     <div class="tabs">
       <button class="tab-btn active" data-tab="sp">SharePoint</button>
+      <button class="tab-btn" data-tab="ver">Version History</button>
       <button class="tab-btn" data-tab="gdrive">Google Workspace</button>
       <button class="tab-btn" data-tab="g1">Google One</button>
       <button class="tab-btn" data-tab="onprem">On-Premise</button>
@@ -433,6 +475,63 @@
       </div>
     </div>
 
+    <!-- Version History panel -->
+    <div class="panel" id="panel-ver">
+      <div class="panel-sub">ข้อมูลจริงจากการสแกน library <b>Function</b> ของ 3 ไซต์ (Customer Development, CHMBD, Internal Document) เมื่อ 18 พ.ย. 2569 — เลื่อนเพื่อดูว่าถ้าจำกัดจำนวน version ต่อไฟล์ จะคืนพื้นที่ได้เท่าไร โดย <b>ยังไม่มีการลบข้อมูลใดๆ</b></div>
+
+      <div class="control-row">
+        <input type="range" id="verSlider" min="5" max="100" step="1" value="30">
+        <input type="number" id="verInput" class="num-input" min="5" max="500" step="1" value="30">
+        <span class="num-unit">versions ต่อไฟล์</span>
+      </div>
+      <div class="ver-presets" id="verPresets">
+        <button type="button" class="tier-btn" data-n="60">เหลือ 60</button>
+        <button type="button" class="tier-btn active" data-n="30">เหลือ 30</button>
+        <button type="button" class="tier-btn" data-n="15">เหลือ 15</button>
+        <button type="button" class="tier-btn" data-n="10">เหลือ 10</button>
+      </div>
+
+      <div class="hero-figure ver" id="verHero">0 GB</div>
+      <div class="hero-caption" id="verCaption">คืนพื้นที่ได้ (ประมาณการสูงสุด)</div>
+      <div class="breakdown">
+        <div class="bd-item"><div class="bd-label">เทียบเท่าค่าพื้นที่ SharePoint ที่ไม่ต้องซื้อ/ปี (รวม VAT)</div><div class="bd-value" id="verBaht">0 บาท</div></div>
+        <div class="bd-item"><div class="bd-label">ไฟล์ที่ถูกตัด version</div><div class="bd-value" id="verFiles">0 ไฟล์</div></div>
+        <div class="bd-item"><div class="bd-label">ใช้โควตาทั้งบริษัทหลังเคลียร์</div><div class="bd-value" id="verQuotaAfter">0%</div></div>
+      </div>
+
+      <div class="ver-sec-title">โควตา SharePoint ทั้งบริษัท (3.74 TB)</div>
+      <div class="company-gauge">
+        <div class="cg-line">
+          <span>ตอนนี้</span>
+          <div class="meter-track"><div class="cg-fill" id="cgNowFill"></div></div>
+          <span class="cg-val" id="cgNowTxt"></span>
+        </div>
+        <div class="cg-line">
+          <span>หลังเคลียร์</span>
+          <div class="meter-track"><div class="cg-fill" id="cgAfterFill"></div></div>
+          <span class="cg-val" id="cgAfterTxt"></span>
+        </div>
+      </div>
+
+      <div class="ver-sec-title">แยกตามไซต์ (library Function)</div>
+      <div class="stack-legend">
+        <span><i style="background:var(--sp-blue)"></i>ไฟล์ที่ใช้งานจริง</span>
+        <span><i style="background:#f0a37a"></i>Version history ที่ยังเหลือ</span>
+        <span><i style="background:repeating-linear-gradient(45deg,#fbe3d3,#fbe3d3 2px,#f6c9ad 2px,#f6c9ad 4px);outline:1px dashed var(--ver);outline-offset:-1px"></i>พื้นที่ที่คืนได้</span>
+      </div>
+      <div class="site-block" id="verSites"></div>
+
+      <div class="ver-sec-title">ไฟล์ที่คืนพื้นที่ได้มากสุดที่เกณฑ์นี้</div>
+      <div class="top-wrap">
+        <table class="tier-compare top-files">
+          <thead><tr><th>ไฟล์</th><th>ไซต์</th><th class="num">version ตอนนี้</th><th class="num">คืนได้</th></tr></thead>
+          <tbody id="verTop"></tbody>
+        </table>
+      </div>
+
+      <div class="warn-note"><b>อ่านก่อนนำไปใช้:</b> ตัวเลขเป็น<b>ค่าประมาณสูงสุด</b> คำนวณโดยสมมติว่าทุก version ในไฟล์เดียวกันมีขนาดเท่ากัน (version เก่ามักเล็กกว่า ของจริงจึงอาจน้อยกว่านี้) · นับเฉพาะไฟล์ที่มี version ตั้งแต่ 5 ขึ้นไป และเฉพาะ library Function ของ 3 ไซต์ · พื้นที่จะคืนทันทีหรือไม่ขึ้นกับวิธีลบ ควรทดสอบกับ 1–2 ไฟล์ก่อน และปรึกษาเจ้าของข้อมูลของแต่ละฝ่ายก่อนกำหนดนโยบาย · ตารางไฟล์ด้านบนเป็นชื่อไฟล์จริงของบริษัท ควรตัดออกก่อนส่งต่อนอกองค์กร</div>
+    </div>
+
     <!-- Pros & Cons panel -->
     <div class="panel" id="panel-cmp">
       <div class="warn-note">ประเมินตามสิทธิ์ที่บริษัทถืออยู่จริง คือ <b>Microsoft 365 Business Standard</b> ซึ่งยังไม่รวม DLP และ Conditional Access (ต้องอัปเกรดเป็น Business Premium ขึ้นไป) — ช่องสีส้มของ SharePoint คือส่วนที่ต้องลงทุนเพิ่มถ้าต้องการ</div>
@@ -523,7 +622,8 @@
   </div>
 
   <footer>
-    ราคา SharePoint อ้างอิงใบเสนอราคา Fujifilm Business Innovation Thailand No. MBP_2706202603 (28/6/2026) · ราคา On-Premise ประมาณจาก TCO Calculator ที่กรอกไว้ · ราคา Google Workspace อ้างอิงราคา list price ปัจจุบัน แปลงเป็นบาทที่ 33 THB/USD · ราคา Google One อ้างอิง one.google.com/about/plans (ราคาไทย แบบเรียกเก็บรายปี; AI Ultra คิดจากราคารายเดือน 9,400 บาท × 12) — ราคาจริงควรตรวจสอบกับผู้ให้บริการก่อนอนุมัติงบ
+    ราคา SharePoint อ้างอิงใบเสนอราคา Fujifilm Business Innovation Thailand No. MBP_2706202603 (28/6/2026) · ราคา On-Premise ประมาณจาก TCO Calculator ที่กรอกไว้ · ราคา Google Workspace อ้างอิงราคา list price ปัจจุบัน แปลงเป็นบาทที่ 33 THB/USD · ราคา Google One อ้างอิง one.google.com/about/plans (ราคาไทย แบบเรียกเก็บรายปี; AI Ultra คิดจากราคารายเดือน 9,400 บาท × 12) — ราคาจริงควรตรวจสอบกับผู้ให้บริการก่อนอนุมัติงบ<br>
+    ข้อมูลการใช้งาน SharePoint ปี 2026 (3.58 จาก 3.74 TB) และ limit รายไซต์ อ้างอิง SharePoint Admin Center เมื่อ 18 พ.ย. 2569 · ข้อมูล version history สแกนด้วย PnP PowerShell (อ่านอย่างเดียว) จาก library Function ของไซต์ Customer Development, CHMBD และ Internal Document เมื่อ 18 พ.ย. 2569
   </footer>
 
 </div>
@@ -787,7 +887,7 @@
 
   // ---------- ปุ่มเลือกปี ย้อนดูปริมาณการใช้งานย้อนหลัง (SharePoint / On-Premise) ----------
   const YEAR_HISTORY = {
-    sp: { '2023': 1,   '2024': 1.8, '2025': 2.3, '2026': 2.71 },
+    sp: { '2023': 1,   '2024': 1.8, '2025': 2.3, '2026': 3.58 },
     op: { '2024': 4.5, '2025': 5,   '2026': 5.55 },
   };
   const YEAR_TARGETS = {
@@ -809,6 +909,99 @@
     });
   });
 
+
+  // ---------- Version History (ข้อมูลสแกนจริง 18 พ.ย. 2569) ----------
+  // rows: [จำนวน version, ขนาดรวมของ version ทั้งหมด (GB)] ต่อไฟล์ เฉพาะไฟล์ที่ version > 5
+  const VER_DATA = {
+    CD:    { name: 'Customer Development', lib: 1168.94, ver: 819.08, siteUsed: 1170.13, limit: 1180, rows: [[149,111.05],[146,95.44],[86,29.52],[125,23.06],[23,19.88],[41,19.59],[107,18.9],[19,18.04],[100,14.61],[68,11.89],[49,11.4],[13,10.7],[48,10.19],[25,10.19],[57,10.13],[27,9.67],[34,8.98],[19,8.95],[13,8.8],[17,8.44],[32,8.44],[27,8.0],[68,7.82],[54,7.73],[32,7.41],[27,7.33],[24,6.98],[6,6.84],[76,6.77],[29,6.44],[44,6.3],[17,5.47],[11,5.28],[47,4.99],[6,4.96],[47,4.87],[47,4.8],[17,4.67],[47,3.63],[52,3.4],[15,3.33],[19,3.3],[25,3.05],[12,3.03],[10,3.01],[11,2.91],[69,2.9],[28,2.85],[22,2.73],[18,2.53],[16,2.49],[9,2.13],[45,2.1],[22,2.05],[17,1.82],[6,1.79],[7,1.69],[8,1.59],[13,1.5],[8,1.46],[6,1.44],[47,1.42],[10,1.39],[10,1.3],[8,1.28],[12,1.27],[6,1.21],[11,1.16],[7,1.11],[18,1.11],[10,1.02],[48,0.98],[6,0.97],[11,0.95],[22,0.95],[26,0.92],[21,0.91],[9,0.86],[6,0.86],[6,0.81],[10,0.77],[9,0.74],[83,0.73],[42,0.73],[24,0.71],[6,0.7],[8,0.7],[35,0.69],[11,0.68],[22,0.66],[24,0.65],[14,0.64],[9,0.63],[27,0.63],[219,0.63],[52,0.63],[6,0.62],[18,0.6],[6,0.57],[22,0.56],[74,0.55],[58,0.54],[72,0.51],[15,0.51],[21,0.51],[10,0.51],[22,0.49],[14,0.49],[13,0.48],[7,0.48],[7,0.48],[16,0.47],[118,0.47],[57,0.47],[14,0.47],[6,0.46],[8,0.46],[78,0.45],[30,0.43],[72,0.42],[6,0.41],[99,0.4],[8,0.4],[16,0.39],[6,0.39],[7,0.36],[12,0.36],[9,0.35],[11,0.35],[8,0.35],[11,0.35],[39,0.34],[24,0.33],[11,0.33],[9,0.32],[36,0.32],[48,0.32],[10,0.32],[25,0.3],[25,0.3],[8,0.3],[10,0.3],[29,0.29],[49,0.29],[6,0.29],[19,0.28],[31,0.27],[8,0.27],[9,0.27],[34,0.26],[77,0.25],[20,0.24],[12,0.23],[93,0.23],[16,0.22],[19,0.21],[15,0.21],[12,0.21],[7,0.21],[11,0.21],[117,0.2],[10,0.2],[18,0.19],[56,0.19],[6,0.19],[26,0.19],[9,0.19],[12,0.18],[15,0.18],[8,0.18],[20,0.17],[7,0.17],[19,0.17],[17,0.16],[6,0.16],[51,0.16],[37,0.16],[122,0.16],[27,0.16],[19,0.15],[11,0.15],[131,0.15],[11,0.15],[11,0.15],[14,0.15],[15,0.15],[14,0.15],[56,0.14],[9,0.14],[16,0.14],[7,0.14],[10,0.14],[20,0.14],[14,0.13],[46,0.13],[166,0.13],[31,0.13],[18,0.13],[29,0.13],[47,0.13],[69,0.13],[9,0.12],[30,0.12],[49,0.12],[11,0.12],[6,0.12],[36,0.12],[9,0.12],[17,0.12],[14,0.12],[42,0.12],[12,0.12],[14,0.12],[37,0.11],[37,0.11],[8,0.11],[6,0.11],[8,0.11],[246,0.11],[10,0.1],[7,0.1],[32,0.1],[6,0.09],[6,0.09],[42,0.09],[10,0.09],[20,0.09],[177,0.09],[7,0.09],[14,0.09],[10,0.09],[82,0.09],[73,0.09],[42,0.09],[21,0.08],[11,0.08],[36,0.08],[65,0.08],[7,0.08],[7,0.08],[27,0.08],[20,0.08],[12,0.08],[10,0.08],[13,0.08],[8,0.08],[6,0.08],[26,0.08],[9,0.08],[7,0.08],[19,0.08],[23,0.08],[8,0.08],[7,0.08],[9,0.08],[28,0.08],[63,0.07],[8,0.07],[8,0.07],[7,0.07],[53,0.07],[7,0.07],[41,0.07],[8,0.07],[8,0.07],[7,0.07],[31,0.07],[19,0.07],[76,0.07],[13,0.07],[8,0.07],[13,0.07],[44,0.06],[7,0.06],[13,0.06],[6,0.06],[18,0.06],[23,0.06],[27,0.06],[6,0.06],[129,0.06],[7,0.06],[12,0.06],[7,0.06],[7,0.06],[6,0.06],[7,0.06],[7,0.06],[16,0.06],[7,0.06],[8,0.06],[7,0.06],[8,0.06],[7,0.06],[11,0.06],[11,0.06],[12,0.05],[6,0.05],[13,0.05],[6,0.05],[6,0.05],[28,0.05],[6,0.05],[6,0.05],[17,0.05],[6,0.05],[6,0.05],[16,0.05],[8,0.05],[29,0.05],[6,0.05],[11,0.05],[20,0.05],[10,0.04],[13,0.04],[15,0.04],[16,0.04],[7,0.04],[6,0.04],[20,0.04],[66,0.04],[19,0.04],[45,0.04],[36,0.04],[21,0.04],[7,0.04],[6,0.04],[11,0.04],[33,0.04],[14,0.04],[15,0.04],[8,0.04],[17,0.04],[6,0.04],[18,0.04],[9,0.04],[9,0.04],[64,0.04],[14,0.04],[30,0.04],[33,0.03],[9,0.03],[11,0.03],[122,0.03],[9,0.03],[13,0.03],[17,0.03],[10,0.03],[9,0.03],[7,0.03],[15,0.03],[10,0.03],[11,0.03],[21,0.03],[8,0.03],[10,0.03],[9,0.03],[6,0.03],[17,0.03],[10,0.03],[18,0.03],[11,0.03],[15,0.03],[18,0.03],[7,0.03],[21,0.03],[22,0.03],[10,0.03],[14,0.03],[19,0.03],[15,0.03],[17,0.03],[18,0.03],[10,0.03],[83,0.03],[16,0.03],[19,0.03],[40,0.03],[20,0.03],[10,0.03],[8,0.03],[8,0.03],[9,0.03],[11,0.02],[6,0.02],[14,0.02],[8,0.02],[6,0.02],[9,0.02],[20,0.02],[17,0.02],[7,0.02],[9,0.02],[8,0.02],[15,0.02],[24,0.02],[8,0.02],[7,0.02],[6,0.02],[10,0.02],[7,0.02],[7,0.02],[8,0.02],[9,0.02],[6,0.02],[16,0.02],[34,0.02],[10,0.02],[15,0.02],[10,0.02],[9,0.02],[11,0.02],[6,0.02],[14,0.02],[30,0.02],[10,0.02],[8,0.02],[8,0.02],[8,0.02],[12,0.02],[9,0.02],[19,0.02],[37,0.02],[7,0.02],[6,0.02],[10,0.02],[8,0.02],[13,0.02],[24,0.02],[14,0.02],[6,0.02],[12,0.02],[7,0.02],[82,0.02],[34,0.02],[13,0.02],[6,0.02],[9,0.02],[11,0.02],[6,0.02],[10,0.01],[17,0.01],[6,0.01],[6,0.01],[7,0.01],[9,0.01],[6,0.01],[18,0.01],[6,0.01],[9,0.01],[31,0.01],[13,0.01],[7,0.01],[8,0.01],[8,0.01],[6,0.01],[6,0.01],[9,0.01],[11,0.01],[31,0.01],[25,0.01],[9,0.01],[18,0.01],[6,0.01],[6,0.01],[7,0.01],[15,0.01],[9,0.01],[9,0.01],[16,0.01],[7,0.01],[30,0.01],[12,0.01],[13,0.01],[11,0.01],[10,0.01],[41,0.01],[128,0.01],[9,0.01],[11,0.01],[92,0.01],[32,0.01],[18,0.01],[7,0.01],[13,0.01],[25,0.01],[9,0.01],[23,0.01],[6,0.01],[22,0.01],[8,0.01],[8,0.01],[7,0.01],[8,0.01],[15,0.01],[7,0.01],[31,0.01],[6,0.01],[7,0.01],[62,0.01],[6,0.01],[7,0.01],[8,0.01],[9,0.01],[6,0.01],[10,0.01],[6,0.01],[7,0.01],[17,0.01],[7,0.01],[10,0.01],[19,0.01],[13,0.01],[16,0.01],[6,0.01],[7,0.01],[8,0.01],[6,0.01],[7,0.01],[7,0.01],[20,0.01],[22,0.01],[24,0.01],[15,0.01],[8,0.01],[88,0.01],[8,0.01],[6,0.01],[26,0.01],[15,0.01],[9,0.01],[154,0.01],[12,0.01],[8,0.01],[27,0.01],[11,0.01],[7,0.01],[12,0.01],[7,0.01],[6,0.01],[6,0.01],[7,0.01],[17,0.01],[26,0.01],[19,0.01],[8,0.01],[19,0.01],[7,0.01],[9,0.01],[14,0.01],[6,0.01],[14,0.0],[8,0.0],[12,0.0],[7,0.0],[8,0.0],[13,0.0],[9,0.0],[6,0.0],[11,0.0],[11,0.0],[18,0.0],[7,0.0],[6,0.0],[11,0.0],[7,0.0],[12,0.0],[9,0.0],[23,0.0],[7,0.0],[17,0.0],[12,0.0],[11,0.0],[16,0.0],[12,0.0],[7,0.0],[10,0.0],[22,0.0],[6,0.0],[12,0.0],[13,0.0],[9,0.0],[9,0.0],[10,0.0],[7,0.0],[29,0.0],[6,0.0],[16,0.0],[9,0.0],[8,0.0],[14,0.0],[8,0.0],[17,0.0],[10,0.0],[11,0.0],[6,0.0],[8,0.0],[26,0.0],[7,0.0],[6,0.0],[7,0.0],[7,0.0],[7,0.0],[7,0.0],[6,0.0],[17,0.0],[6,0.0],[8,0.0],[6,0.0],[18,0.0],[6,0.0],[40,0.0],[10,0.0],[12,0.0],[7,0.0],[8,0.0],[6,0.0],[7,0.0],[9,0.0],[9,0.0],[8,0.0],[17,0.0],[9,0.0],[33,0.0],[11,0.0],[19,0.0],[34,0.0],[6,0.0],[6,0.0],[7,0.0],[12,0.0],[22,0.0],[6,0.0],[23,0.0],[15,0.0],[64,0.0],[6,0.0],[13,0.0],[68,0.0],[7,0.0],[56,0.0],[22,0.0],[6,0.0],[18,0.0],[10,0.0],[13,0.0],[17,0.0],[8,0.0],[6,0.0],[8,0.0],[6,0.0],[7,0.0],[13,0.0],[10,0.0],[6,0.0],[31,0.0],[23,0.0],[8,0.0],[17,0.0],[15,0.0],[25,0.0],[14,0.0],[10,0.0],[8,0.0],[20,0.0],[26,0.0],[6,0.0],[9,0.0],[13,0.0],[10,0.0],[15,0.0],[10,0.0],[11,0.0],[12,0.0],[8,0.0],[10,0.0],[6,0.0],[9,0.0],[6,0.0],[6,0.0],[7,0.0],[7,0.0],[8,0.0],[10,0.0],[6,0.0],[19,0.0],[11,0.0],[6,0.0],[7,0.0],[43,0.0],[8,0.0],[18,0.0],[6,0.0],[6,0.0],[6,0.0],[21,0.0],[15,0.0],[8,0.0],[47,0.0],[14,0.0],[11,0.0],[19,0.0],[10,0.0],[10,0.0],[8,0.0],[19,0.0],[10,0.0],[8,0.0],[11,0.0],[6,0.0],[9,0.0],[8,0.0],[7,0.0],[6,0.0],[7,0.0],[8,0.0],[6,0.0],[7,0.0],[10,0.0],[15,0.0],[38,0.0],[6,0.0],[6,0.0],[8,0.0],[11,0.0],[14,0.0],[9,0.0],[21,0.0],[15,0.0],[9,0.0],[10,0.0],[6,0.0],[26,0.0],[6,0.0],[14,0.0],[6,0.0],[21,0.0],[7,0.0],[6,0.0],[7,0.0],[6,0.0],[8,0.0],[11,0.0],[6,0.0],[10,0.0],[7,0.0],[7,0.0],[15,0.0],[7,0.0],[7,0.0],[9,0.0],[6,0.0],[6,0.0],[6,0.0],[6,0.0],[9,0.0],[8,0.0],[6,0.0],[12,0.0],[10,0.0],[6,0.0],[6,0.0],[8,0.0],[6,0.0],[6,0.0],[8,0.0],[6,0.0],[7,0.0],[7,0.0],[6,0.0],[8,0.0],[9,0.0],[6,0.0],[12,0.0],[6,0.0],[9,0.0],[10,0.0],[11,0.0],[6,0.0],[12,0.0],[7,0.0],[9,0.0],[10,0.0],[6,0.0],[8,0.0],[22,0.0],[16,0.0],[7,0.0],[11,0.0],[18,0.0],[6,0.0],[6,0.0],[11,0.0],[12,0.0],[6,0.0],[9,0.0],[11,0.0],[6,0.0],[58,0.0],[13,0.0],[14,0.0],[7,0.0],[8,0.0],[9,0.0],[12,0.0],[56,0.0],[6,0.0],[6,0.0],[9,0.0],[34,0.0],[11,0.0],[6,0.0],[6,0.0],[7,0.0],[7,0.0],[6,0.0],[6,0.0],[36,0.0],[6,0.0],[10,0.0],[13,0.0],[36,0.0],[40,0.0],[9,0.0],[17,0.0],[32,0.0],[17,0.0],[20,0.0],[8,0.0],[22,0.0],[8,0.0],[23,0.0],[17,0.0],[16,0.0],[21,0.0],[41,0.0],[9,0.0],[35,0.0],[11,0.0],[7,0.0],[7,0.0],[9,0.0],[7,0.0],[7,0.0],[12,0.0],[8,0.0]] },
+    CHMBD: { name: 'CHMBD',                lib: 1689.17, ver: 790.91, siteUsed: 1672.27, limit: 1900, rows: [[146,65.33],[159,45.96],[47,30.15],[44,28.89],[116,25.41],[73,24.17],[32,15.18],[202,15.16],[25,14.99],[27,13.93],[46,12.76],[27,10.54],[97,10.06],[17,9.91],[20,9.05],[33,9.0],[60,8.86],[60,8.52],[18,8.24],[34,8.23],[12,8.06],[15,7.95],[16,7.42],[10,5.93],[14,5.83],[27,5.79],[16,5.37],[128,4.77],[31,4.37],[8,4.32],[15,4.12],[17,4.05],[10,3.68],[10,3.56],[11,3.53],[12,3.5],[14,3.49],[12,3.47],[14,3.28],[13,3.26],[6,3.19],[76,3.16],[6,2.94],[7,2.93],[16,2.89],[22,2.85],[13,2.76],[8,2.74],[9,2.61],[25,2.58],[9,2.52],[18,2.49],[11,2.43],[7,2.42],[6,2.37],[7,2.21],[9,2.21],[12,2.18],[7,2.13],[7,2.09],[32,2.07],[7,2.05],[7,2.05],[12,1.94],[8,1.91],[8,1.84],[256,1.81],[52,1.71],[6,1.63],[6,1.63],[8,1.57],[9,1.53],[7,1.44],[148,1.44],[6,1.42],[9,1.41],[8,1.41],[7,1.4],[6,1.4],[6,1.33],[6,1.32],[9,1.32],[6,1.28],[6,1.27],[6,1.23],[7,1.22],[7,1.2],[7,1.15],[11,1.13],[6,1.13],[9,1.09],[136,1.02],[18,1.01],[7,1.01],[6,0.96],[19,0.94],[7,0.92],[7,0.91],[23,0.87],[6,0.86],[7,0.84],[11,0.8],[12,0.78],[18,0.74],[7,0.72],[12,0.71],[10,0.71],[6,0.68],[11,0.67],[7,0.65],[10,0.65],[6,0.62],[6,0.58],[14,0.56],[22,0.54],[6,0.54],[27,0.54],[21,0.52],[20,0.51],[9,0.51],[8,0.51],[6,0.49],[9,0.47],[7,0.45],[8,0.45],[6,0.43],[55,0.41],[7,0.41],[7,0.39],[18,0.38],[7,0.38],[6,0.36],[9,0.36],[7,0.35],[40,0.35],[9,0.33],[6,0.33],[7,0.3],[11,0.29],[17,0.29],[8,0.28],[39,0.27],[34,0.25],[26,0.24],[9,0.23],[12,0.22],[34,0.2],[6,0.2],[114,0.2],[174,0.19],[71,0.18],[8,0.18],[48,0.18],[11,0.18],[8,0.18],[42,0.17],[6,0.16],[79,0.16],[135,0.16],[6,0.15],[6,0.15],[6,0.15],[6,0.13],[20,0.13],[9,0.13],[6,0.13],[66,0.12],[33,0.12],[283,0.12],[50,0.11],[10,0.11],[7,0.11],[25,0.11],[26,0.1],[13,0.1],[14,0.1],[38,0.1],[6,0.1],[8,0.1],[53,0.1],[160,0.09],[34,0.09],[11,0.09],[69,0.09],[6,0.09],[49,0.09],[7,0.09],[68,0.09],[9,0.08],[11,0.08],[11,0.08],[7,0.08],[176,0.08],[10,0.08],[10,0.07],[7,0.07],[8,0.07],[17,0.07],[20,0.07],[54,0.07],[71,0.07],[102,0.07],[13,0.07],[17,0.07],[17,0.07],[81,0.07],[20,0.06],[7,0.06],[17,0.06],[64,0.06],[9,0.06],[18,0.06],[9,0.06],[14,0.06],[11,0.06],[9,0.06],[12,0.05],[20,0.05],[7,0.05],[9,0.05],[7,0.05],[9,0.05],[17,0.05],[6,0.05],[37,0.05],[23,0.05],[6,0.04],[24,0.04],[51,0.04],[9,0.04],[24,0.04],[37,0.04],[27,0.04],[49,0.03],[8,0.03],[8,0.03],[11,0.03],[19,0.03],[12,0.03],[26,0.03],[9,0.03],[14,0.03],[8,0.03],[6,0.03],[14,0.03],[39,0.03],[32,0.03],[58,0.02],[6,0.02],[99,0.02],[74,0.02],[10,0.02],[29,0.02],[10,0.02],[8,0.02],[6,0.02],[38,0.02],[42,0.02],[66,0.02],[12,0.02],[13,0.02],[6,0.02],[45,0.02],[19,0.02],[104,0.02],[13,0.02],[229,0.02],[90,0.02],[21,0.02],[8,0.02],[36,0.02],[7,0.02],[17,0.01],[35,0.01],[6,0.01],[17,0.01],[23,0.01],[10,0.01],[6,0.01],[8,0.01],[7,0.01],[8,0.01],[7,0.01],[13,0.01],[48,0.01],[44,0.01],[64,0.01],[18,0.01],[12,0.01],[30,0.01],[9,0.01],[44,0.01],[11,0.01],[20,0.01],[41,0.01],[8,0.01],[44,0.01],[52,0.01],[10,0.01],[18,0.01],[13,0.01],[52,0.01],[30,0.01],[35,0.01],[43,0.01],[8,0.01],[18,0.01],[6,0.01],[22,0.01],[15,0.01],[17,0.01],[13,0.01],[8,0.01],[31,0.01],[42,0.01],[8,0.0],[11,0.0],[13,0.0],[7,0.0],[26,0.0],[19,0.0],[7,0.0],[10,0.0],[10,0.0],[19,0.0],[15,0.0],[19,0.0],[6,0.0],[18,0.0],[6,0.0],[6,0.0],[16,0.0],[12,0.0],[6,0.0],[15,0.0],[49,0.0],[14,0.0],[9,0.0],[7,0.0],[7,0.0],[6,0.0],[8,0.0],[16,0.0],[16,0.0],[11,0.0],[6,0.0],[49,0.0],[18,0.0],[6,0.0],[18,0.0],[12,0.0],[35,0.0],[18,0.0],[9,0.0],[16,0.0],[8,0.0],[22,0.0],[6,0.0],[10,0.0],[18,0.0],[18,0.0],[6,0.0],[7,0.0],[17,0.0],[12,0.0],[9,0.0],[22,0.0],[8,0.0],[9,0.0],[18,0.0],[8,0.0],[17,0.0],[6,0.0],[7,0.0],[6,0.0],[15,0.0],[9,0.0],[9,0.0],[17,0.0],[7,0.0],[19,0.0],[11,0.0],[7,0.0],[10,0.0],[7,0.0],[6,0.0],[6,0.0],[8,0.0],[20,0.0],[19,0.0],[11,0.0],[13,0.0],[15,0.0],[17,0.0],[13,0.0],[33,0.0],[13,0.0],[14,0.0],[7,0.0],[19,0.0],[7,0.0],[11,0.0],[6,0.0],[7,0.0],[8,0.0],[31,0.0],[7,0.0],[10,0.0],[12,0.0],[8,0.0],[10,0.0],[8,0.0],[7,0.0],[9,0.0],[6,0.0],[11,0.0],[6,0.0],[17,0.0],[16,0.0],[7,0.0],[8,0.0],[9,0.0],[14,0.0],[10,0.0],[6,0.0],[6,0.0],[9,0.0],[7,0.0],[24,0.0],[7,0.0],[6,0.0],[9,0.0],[6,0.0],[7,0.0],[15,0.0],[11,0.0],[9,0.0],[12,0.0],[7,0.0],[8,0.0],[7,0.0],[6,0.0],[7,0.0],[8,0.0],[18,0.0],[7,0.0],[7,0.0],[43,0.0],[10,0.0],[26,0.0],[14,0.0],[8,0.0],[6,0.0],[18,0.0],[6,0.0],[6,0.0],[6,0.0],[18,0.0],[20,0.0],[90,0.0],[11,0.0],[7,0.0],[7,0.0],[8,0.0],[6,0.0],[14,0.0],[9,0.0],[6,0.0],[8,0.0],[10,0.0],[7,0.0],[9,0.0],[6,0.0],[16,0.0],[7,0.0],[8,0.0],[6,0.0],[11,0.0],[6,0.0],[7,0.0],[6,0.0],[14,0.0],[35,0.0],[17,0.0],[9,0.0],[9,0.0],[15,0.0],[16,0.0],[6,0.0],[8,0.0],[7,0.0],[12,0.0],[7,0.0],[30,0.0],[13,0.0],[8,0.0],[6,0.0],[13,0.0],[11,0.0],[6,0.0],[6,0.0],[7,0.0],[15,0.0],[8,0.0],[6,0.0],[15,0.0],[10,0.0],[9,0.0],[8,0.0],[7,0.0],[8,0.0],[6,0.0],[8,0.0],[7,0.0],[9,0.0],[6,0.0],[11,0.0],[10,0.0],[13,0.0],[8,0.0],[51,0.0],[14,0.0],[7,0.0],[6,0.0],[8,0.0],[13,0.0],[8,0.0],[9,0.0],[10,0.0],[6,0.0],[7,0.0],[7,0.0],[6,0.0],[8,0.0],[16,0.0],[8,0.0],[11,0.0],[52,0.0],[6,0.0],[14,0.0],[6,0.0],[8,0.0],[10,0.0],[7,0.0],[14,0.0],[8,0.0],[6,0.0],[15,0.0],[25,0.0],[6,0.0],[7,0.0],[9,0.0],[8,0.0],[9,0.0]] },
+    ID:    { name: 'Internal Document',    lib: 610.32,  ver: 47.05,  siteUsed: 617.57,  limit: 625,  rows: [[8,5.9],[74,4.17],[156,2.78],[18,1.93],[45,1.88],[13,1.45],[11,1.38],[10,1.26],[9,1.14],[9,0.99],[8,0.94],[7,0.8],[29,0.72],[9,0.65],[20,0.63],[17,0.62],[6,0.56],[11,0.35],[144,0.25],[10,0.24],[7,0.19],[60,0.19],[22,0.17],[9,0.15],[25,0.15],[7,0.13],[17,0.12],[15,0.07],[85,0.07],[72,0.06],[7,0.06],[16,0.05],[23,0.04],[31,0.04],[6,0.03],[6,0.03],[40,0.03],[35,0.03],[7,0.03],[7,0.02],[15,0.02],[26,0.02],[12,0.02],[27,0.02],[24,0.02],[25,0.02],[8,0.02],[6,0.01],[17,0.01],[17,0.01],[6,0.01],[6,0.01],[9,0.01],[10,0.01],[16,0.01],[10,0.01],[7,0.01],[9,0.01],[122,0.01],[10,0.01],[9,0.01],[17,0.01],[9,0.01],[6,0.01],[33,0.01],[29,0.0],[18,0.0],[7,0.0],[17,0.0],[35,0.0],[8,0.0],[6,0.0],[9,0.0],[7,0.0],[6,0.0],[6,0.0],[6,0.0],[9,0.0],[6,0.0],[9,0.0],[61,0.0],[13,0.0],[8,0.0],[6,0.0],[15,0.0],[19,0.0],[6,0.0],[6,0.0],[11,0.0],[17,0.0],[7,0.0],[6,0.0],[8,0.0],[11,0.0],[9,0.0],[8,0.0],[11,0.0],[6,0.0],[6,0.0],[8,0.0],[8,0.0],[25,0.0],[8,0.0],[7,0.0],[66,0.0],[6,0.0],[6,0.0],[6,0.0],[6,0.0],[9,0.0],[13,0.0],[7,0.0],[18,0.0],[16,0.0]] }
+  };
+  const VER_COMPANY = { usedTB: 3.58, quotaTB: 3.74 };
+  const VER_TOP = [{"site":"CD","file":"New Year Brief_NY2526-27_Clickconnexion.pptx","folder":"01. Field Force Operations/01.Large Format/05.Monthly Brief/New Year/2026","cur":0.8,"v":149,"g":111.05},{"site":"CD","file":"Tops Business Plan 2027 1st draft.pptx","folder":"02. Sales MT/01.Business plan/2027","cur":0.71,"v":146,"g":95.44},{"site":"CHMBD","file":"ASSIST_MT Nov'26.pptx","folder":"01. MT/01. Assist/Y2026/11 Nov","cur":0.56,"v":146,"g":65.33},{"site":"CHMBD","file":"Channel Plan 2027_Wann.pptx","folder":"01. MT/15. Channel Plan/MT_Working File","cur":0.43,"v":159,"g":45.96},{"site":"CHMBD","file":"ASSIST_MT Oct'26.pptx","folder":"01. MT/01. Assist/Y2026/10 Oct","cur":0.69,"v":47,"g":30.15},{"site":"CD","file":"CJ Business Plan 2027 1st draft NEW.pptx","folder":"02. Sales MT/01.Business plan/2027","cur":0.39,"v":86,"g":29.52},{"site":"CHMBD","file":"MT Trade Brief_15.10.26.pptx","folder":"01. MT/05. MT Trade Brief Meeting/Y2026/10 Oct","cur":0.66,"v":44,"g":28.89},{"site":"CHMBD","file":"ASSIST_TT Nov'26.pptx","folder":"01. MT/01. Assist/Y2026/11 Nov","cur":0.25,"v":116,"g":25.41},{"site":"CHMBD","file":"ASSIST_TT Oct'26.pptx","folder":"01. MT/01. Assist/Y2026/10 Oct","cur":0.3,"v":73,"g":24.17},{"site":"CD","file":"Big C BP2027.pptx","folder":"02. Sales MT/01.Business plan/2027","cur":0.24,"v":125,"g":23.06},{"site":"CD","file":"New Year Brief_NY2526-27.pptx","folder":"01. Field Force Operations/01.Large Format/05.Monthly Brief/New Year/2026/Data by Chain (ข้อมูลยังไม่อัพเดท)","cur":0.82,"v":23,"g":19.88},{"site":"CD","file":"11.Brief  Mer SH_Nov -2026 Up date.pptx","folder":"01. Field Force Operations/02.Small Format/05.Monthly Priority/02.Monthly Brief/SH","cur":0.19,"v":41,"g":19.59},{"site":"CD","file":"MT Update W1 Nov 2026.pptx","folder":"02. Sales MT/14.NY2026-2027/NY Weekly Update","cur":0.24,"v":107,"g":18.9},{"site":"CD","file":"Big C Check Price Scotch&Brand's_2025 update.xlsx","folder":"01. Field Force Operations/2025/08.Check Price/2025","cur":1.05,"v":19,"g":18.04},{"site":"CHMBD","file":"Opearation brief Nov 26.pptx","folder":"01. MT/09. Operation Meeting/Y2026/11 Nov 2026","cur":0.52,"v":32,"g":15.18},{"site":"CHMBD","file":"03_TopSKU_pareto to list in assortement.xlsx","folder":"07. Business Analysis/!! Shared Data/261101_Hand Over_Junior Business Analyst_Nattapat/261026_POG Tops - Assortment review Projects","cur":0.08,"v":202,"g":15.16},{"site":"CHMBD","file":"MT Trade Brief_17.09.26.pptx","folder":"01. MT/05. MT Trade Brief Meeting/Y2026/09 Sep","cur":0.61,"v":25,"g":14.99},{"site":"CD","file":"Lotus_BP2027.pptx","folder":"02. Sales MT/01.Business plan/2027","cur":0.31,"v":100,"g":14.61},{"site":"CHMBD","file":"MT Trade Brief_19.11.26.pptx","folder":"01. MT/05. MT Trade Brief Meeting/Y2026/11 Nov","cur":0.54,"v":27,"g":13.93},{"site":"CHMBD","file":"Sales Brief TT Nov'26.pptx","folder":"02. TT/00. File Present ต่างๆ/2026/11.Nov'26","cur":0.23,"v":46,"g":12.76},{"site":"CD","file":"MT Meeting Tops Sep'26.pptx","folder":"02. Sales MT/07.MT Meeting/Y2026/Oct'26","cur":0.18,"v":68,"g":11.89},{"site":"CD","file":"MT Update W2 Nov 2026 (Performance W1Nov).pptx","folder":"02. Sales MT/14.NY2026-2027/NY Weekly Update","cur":0.31,"v":49,"g":11.4},{"site":"CD","file":"10.Brief  Mer SH_Oct- 2026 Up date.pptx","folder":"01. Field Force Operations/02.Small Format/05.Monthly Priority/02.Monthly Brief/SH","cur":0.77,"v":13,"g":10.7},{"site":"CHMBD","file":"EOC Media_Dec25 Review.pptx","folder":"01. MT/02. Performance Review/Y2026/01 Jan","cur":0.59,"v":27,"g":10.54},{"site":"CD","file":"MT meeting Sep26 TheMall-DearTummy.pptx","folder":"02. Sales MT/07.MT Meeting/Y2026/Oct'26","cur":0.19,"v":48,"g":10.19},{"site":"CD","file":"01. PC brief May 26_BKK.pptx","folder":"01. Field Force Operations/01.Large Format/05.Monthly Brief/01.PC Brief/05.May 26","cur":0.46,"v":25,"g":10.19},{"site":"CD","file":"Field Force Operation  Template Field Force Planning Supervisor Dec S1.pptx","folder":"01. Field Force Operations/2025/06.Monthly Report/Field Force Meeting/2025/012.Dec","cur":0.32,"v":57,"g":10.13},{"site":"CHMBD","file":"2027 TT Channel Plan_Present 25 Sep.pptx","folder":"02. TT/04. Performance Review/2026/Channel plan 2027","cur":0.12,"v":97,"g":10.06},{"site":"CHMBD","file":"ASSIST_MT Sep'26.pptx","folder":"01. MT/01. Assist/Y2026/09 Sep","cur":0.61,"v":17,"g":9.91},{"site":"CD","file":"CJ Business Plan 2027 1st draft.pptx","folder":"02. Sales MT/01.Business plan/2027","cur":0.36,"v":27,"g":9.67},{"site":"CHMBD","file":"MT Trade Brief_16.07.26.pptx","folder":"01. MT/05. MT Trade Brief Meeting/Y2026/07 Jul","cur":0.47,"v":20,"g":9.05},{"site":"CHMBD","file":"Sales Brief TT Oct'26.pptx","folder":"02. TT/02. Brief/2026/10.Oct'26","cur":0.31,"v":33,"g":9.0},{"site":"CD","file":"MT Update W2 Nov 2026 (Performance W2Nov).pptx","folder":"02. Sales MT/14.NY2026-2027/NY Weekly Update","cur":0.28,"v":34,"g":8.98},{"site":"CD","file":"MT Meeting BigC Hyper Performance_ Sep 21 Oct.pptx","folder":"02. Sales MT/07.MT Meeting/Y2026/Oct'26","cur":0.48,"v":19,"g":8.95},{"site":"CHMBD","file":"2027 TT Channel Plan.pptx","folder":"02. TT/04. Performance Review/2026/Channel plan 2027","cur":0.2,"v":60,"g":8.86},{"site":"CD","file":"01. PC brief Apr_26_BKK.pptx","folder":"01. Field Force Operations/01.Large Format/05.Monthly Brief/01.PC Brief/04.Apr 26","cur":0.79,"v":13,"g":8.8},{"site":"CHMBD","file":"MT Trade Brief- Giving Nov'26.pptx","folder":"01. MT/05. MT Trade Brief Meeting/Y2026/11 Nov","cur":1.89,"v":5,"g":8.68},{"site":"CHMBD","file":"Giving Channel Plan 2027.pptx","folder":"03. Giving/11. Giving Plan & Strategy/2026","cur":0.15,"v":60,"g":8.52},{"site":"CD","file":"New Year Brief_NY2526-27_Clickconnexion_ข้อมูลเก่า.pptx","folder":"01. Field Force Operations/01.Large Format/05.Monthly Brief/New Year/2026/Data by Chain (ข้อมูลยังไม่อัพเดท)","cur":0.53,"v":17,"g":8.44},{"site":"CD","file":"Makro Check Price Scotch&Brand _ 2026.xlsx","folder":"01. Field Force Operations/01.Large Format/03.Infield Execution (Tracking&price check) ใช้ไฟล์นี้/02.Price Check Tracking/MAKRO","cur":0.4,"v":32,"g":8.44}];
+
+  const verSlider = document.getElementById('verSlider');
+  const verInput = document.getElementById('verInput');
+
+  function verSaving(rows, n) {
+    let gb = 0, files = 0;
+    for (const [v, g] of rows) { if (v > n) { gb += g * (v - n) / v; files++; } }
+    return { gb, files };
+  }
+  function lvlOf(pct) { return pct >= 91 ? 'critical' : pct >= 80 ? 'warning' : 'good'; }
+  function setGauge(fillId, txtId, usedGB, totalGB) {
+    const pct = totalGB > 0 ? usedGB / totalGB * 100 : 0;
+    const fill = document.getElementById(fillId);
+    fill.style.width = Math.max(1.5, Math.min(100, pct)) + '%';
+    fill.classList.remove('lvl-good', 'lvl-warning', 'lvl-critical');
+    fill.classList.add('lvl-' + lvlOf(pct));
+    document.getElementById(txtId).innerHTML =
+      '<b>' + (usedGB / 1024).toFixed(2) + ' TB</b> (' + pct.toFixed(1) + '%)';
+    return pct;
+  }
+  function fmtGBdec(gb) { return gb >= 1024 ? (gb / 1024).toFixed(2) + ' TB' : Math.round(gb).toLocaleString('th-TH') + ' GB'; }
+  function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+
+  function recalcVer(n) {
+    let freedTotal = 0, filesTotal = 0;
+    const maxLib = Math.max(...Object.values(VER_DATA).map(s => s.lib));
+    let html = '';
+    Object.keys(VER_DATA).forEach(k => {
+      const s = VER_DATA[k];
+      const r = verSaving(s.rows, n);
+      const freed = Math.min(r.gb, s.ver);
+      freedTotal += freed; filesTotal += r.files;
+      const actual = s.lib - s.ver, vKept = s.ver - freed;
+      const w = x => (x / maxLib * 100).toFixed(2) + '%';
+      const pBefore = s.siteUsed / s.limit * 100;
+      const pAfter = Math.max(0, s.siteUsed - freed) / s.limit * 100;
+      html += '<div class="site-row">' +
+        '<div class="site-row-head"><span class="site-row-name">' + esc(s.name) + '</span>' +
+        '<span class="site-row-freed">คืนได้ <b>' + fmtGBdec(freed) + '</b> · ' + r.files.toLocaleString('th-TH') + ' ไฟล์</span></div>' +
+        '<div class="stack-track"><div class="stack-seg actual" style="width:' + w(actual) + '"></div>' +
+        '<div class="stack-seg vkept" style="width:' + w(vKept) + '"></div>' +
+        '<div class="stack-seg freed" style="width:' + w(freed) + '"></div></div>' +
+        '<div class="site-row-meta"><span>รวม <b>' + fmtGBdec(s.lib) + '</b> = ไฟล์จริง <b>' + fmtGBdec(actual) + '</b> + version <b>' + fmtGBdec(s.ver) + '</b></span>' +
+        '<span>ใช้ของ limit ไซต์ (' + s.limit.toLocaleString('th-TH') + ' GB): <b>' + pBefore.toFixed(1) + '%</b> → <b>' + pAfter.toFixed(1) + '%</b></span></div>' +
+        '</div>';
+    });
+    document.getElementById('verSites').innerHTML = html;
+
+    const usedGB = VER_COMPANY.usedTB * 1024, quotaGB = VER_COMPANY.quotaTB * 1024;
+    const pctNow = setGauge('cgNowFill', 'cgNowTxt', usedGB, quotaGB);
+    const pctAfter = setGauge('cgAfterFill', 'cgAfterTxt', Math.max(0, usedGB - freedTotal), quotaGB);
+
+    document.getElementById('verHero').textContent = '≈ ' + fmtGBdec(freedTotal);
+    document.getElementById('verCaption').textContent = freedTotal > 0
+      ? 'คืนพื้นที่ได้ถ้าเก็บไว้ไฟล์ละไม่เกิน ' + n + ' versions (ประมาณการสูงสุด · ' + (freedTotal / usedGB * 100).toFixed(1) + '% ของที่ใช้อยู่ทั้งบริษัท)'
+      : 'ยังไม่มีไฟล์ใดเกินเกณฑ์นี้ — ลองลดจำนวน version ลง';
+    document.getElementById('verBaht').textContent = fmt(freedTotal * SP_RATE * (1 + VAT));
+    document.getElementById('verFiles').textContent = filesTotal.toLocaleString('th-TH') + ' ไฟล์';
+    document.getElementById('verQuotaAfter').textContent = pctAfter.toFixed(1) + '%';
+
+    const top = VER_TOP.map(f => ({ f, save: f.v > n ? f.g * (f.v - n) / f.v : 0 }))
+      .filter(x => x.save > 0).sort((a, b) => b.save - a.save).slice(0, 8);
+    document.getElementById('verTop').innerHTML = top.length ? top.map(x =>
+      '<tr><td class="fname" title="' + esc(VER_DATA[x.f.site].name + ' / ' + x.f.folder + ' / ' + x.f.file) + '">' + esc(x.f.file) + '</td>' +
+      '<td>' + esc(VER_DATA[x.f.site].name) + '</td>' +
+      '<td class="num">' + x.f.v + ' → ' + n + '</td>' +
+      '<td class="num freed">' + x.save.toFixed(1) + ' GB</td></tr>').join('')
+      : '<tr><td colspan="4" style="color:var(--text-muted)">ไม่มีไฟล์เกินเกณฑ์นี้</td></tr>';
+
+    document.querySelectorAll('#verPresets .tier-btn').forEach(b =>
+      b.classList.toggle('active', Number(b.dataset.n) === n));
+  }
+  function setVer(n) {
+    n = Math.max(5, Math.min(500, Math.round(n) || 5));
+    verSlider.value = Math.min(100, n);
+    verInput.value = n;
+    recalcVer(n);
+  }
+  verSlider.addEventListener('input', () => setVer(Number(verSlider.value)));
+  verInput.addEventListener('input', () => setVer(Number(verInput.value)));
+  document.querySelectorAll('#verPresets .tier-btn').forEach(b =>
+    b.addEventListener('click', () => setVer(Number(b.dataset.n))));
+
   // ---------- Tabs ----------
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -818,7 +1011,7 @@
       document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
       // ยอดรวมไม่เกี่ยวกับแท็บเปรียบเทียบ จึงซ่อนไว้
       document.getElementById('grandTotalCard').style.display =
-        btn.dataset.tab === 'cmp' ? 'none' : 'flex';
+        (btn.dataset.tab === 'cmp' || btn.dataset.tab === 'ver') ? 'none' : 'flex';
     });
   });
 
@@ -827,6 +1020,7 @@
   recalcOnprem(Number(onpremSlider.value));
   recalcAuto(Number(gStorageSlider.value));
   recalcG1Auto(Number(g1StorageSlider.value));
+  setVer(Number(verSlider.value));
 </script>
 </body>
 </html>
